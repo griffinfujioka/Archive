@@ -25,15 +25,11 @@
             d:Source="{Binding AllGroups, Source={d:DesignInstance Type=data:SampleDataSource, IsDesignTimeCreatable=True}}"/>
     </Page.Resources>
 
-    <!--
-        This grid acts as a root panel for the page that defines two rows:
-        * Row 0 contains the back button and page title
-        * Row 1 contains the rest of the page layout
-    -->
+
     <Grid Style="{StaticResource LayoutRootStyle}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
         <!-- Horizontal scrolling grid used in most view states -->
@@ -42,13 +38,16 @@
             AutomationProperties.AutomationId="ItemGridView"
             AutomationProperties.Name="Grouped Items"
             Grid.RowSpan="2"
-            Padding="116,137,40,46"
+            Padding="116,90,40,46"
             ItemsSource="{Binding Source={StaticResource groupedItemsViewSource}}"
             ItemTemplate="{StaticResource Standard250x250ItemTemplate}"
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick">
+            ItemClick="ItemView_ItemClick"
+            Grid.Row="0"
+            Margin="0,0,0,20"
+            >
 
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>                        
@@ -118,14 +117,9 @@
             </ListView.GroupStyle>
         </ListView>
 
-        <!-- Back button and page title -->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
-            <!-- <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Grid.Column="1" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}"/> -->
+
+        <Grid Grid.Row="1" >
+            <Button x:Name="newvideoBtn" Style="{StaticResource VideoAppBarButtonStyle}" Tag="Video" HorizontalAlignment="Center" Click="newvideoBtn_Click_1"/>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>

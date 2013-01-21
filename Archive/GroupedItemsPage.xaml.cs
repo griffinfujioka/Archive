@@ -80,5 +80,12 @@ namespace Archive
             this.Frame.Navigate(typeof(ItemDetailPage), itemId);
         }
         #endregion 
+
+        #region Capture new video 
+        private void newvideoBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CapturePage));
+        }
+        #endregion 
     }
 }

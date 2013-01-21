@@ -310,7 +310,7 @@ namespace Archive.Data
             this.AllGroups.Add(group1);
 
             var group2 = new SampleDataGroup("Group-2",
-                    "Group Title: 2",
+                    "Favorites",
                     "Group Subtitle: 2",
                     "Assets/LightGray.png",
                     "Group Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tempor scelerisque lorem in vehicula. Aliquam tincidunt, lacus ut sagittis tristique, turpis massa volutpat augue, eu rutrum ligula ante a ante");
@@ -338,7 +338,7 @@ namespace Archive.Data
             this.AllGroups.Add(group2);
 
             var group3 = new SampleDataGroup("Group-3",
-                    "Group Title: 3",
+                    "Personal",
                     "Group Subtitle: 3",
                     "Assets/MediumGray.png",
                     "Group Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tempor scelerisque lorem in vehicula. Aliquam tincidunt, lacus ut sagittis tristique, turpis massa volutpat augue, eu rutrum ligula ante a ante");
@@ -554,6 +554,8 @@ namespace Archive.Data
     [Windows.Foundation.Metadata.WebHostHidden]
     public abstract class VideoDataCommon : Archive.Common.BindableBase
     {
+        private static Uri _baseUri = new Uri("ms-appx:///");
+
         public VideoDataCommon(String uniqueId, String title, String subtitle, String imagePath, String description)
         {
             this._uniqueId = uniqueId;
@@ -599,7 +601,7 @@ namespace Archive.Data
             {
                 if (this._image == null && this._imagePath != null)
                 {
-                    this._image = new BitmapImage(new Uri(SampleDataCommon._baseUri, this._imagePath));
+                    this._image = new BitmapImage(new Uri(VideoDataCommon._baseUri, this._imagePath));
                 }
                 return this._image;
             }
