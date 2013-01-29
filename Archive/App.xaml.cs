@@ -15,6 +15,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.ApplicationSettings;
+using Windows.UI;
+using Callisto.Controls;
+using Archive.Pages; 
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -84,6 +88,9 @@ namespace Archive
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            // Settings
+            SettingsPane.GetForCurrentView().CommandsRequested += Settings_CommandsRequested;
         }
 
         /// <summary>
@@ -98,6 +105,42 @@ namespace Archive
             var deferral = e.SuspendingOperation.GetDeferral();
             await SuspensionManager.SaveAsync();
             deferral.Complete();
+        }
+
+        /// <summary>
+        /// Define Settings Pages for the application once the OnCommandsRequested event is raised.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void Settings_CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            Color _background = Color.FromArgb(255, 178, 34, 34);
+
+            // Add an About command
+            var About = new SettingsCommand("About", "About", (handler) =>
+            {
+                var settings = new SettingsFlyout();
+                settings.Content = new AboutPage();
+                settings.HeaderBrush = new SolidColorBrush(_background);
+                settings.Background = new SolidColorBrush(_background);
+                settings.HeaderText = "About";
+                settings.IsOpen = true;
+            });
+
+            var Settings = new SettingsCommand("Settings", "Settings", (handler) =>
+            {
+                var settings = new SettingsFlyout();
+                settings.Content = new SettingsPage();
+                settings.HeaderBrush = new SolidColorBrush(_background);
+                settings.Background = new SolidColorBrush(_background);
+                settings.HeaderText = "Settings";
+                settings.IsOpen = true;
+            });
+
+
+
+            args.Request.ApplicationCommands.Add(About);
+            args.Request.ApplicationCommands.Add(Settings);
         }
     }
 }
