@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.Live;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,6 +22,20 @@ namespace Archive.Pages
         public SettingsPage()
         {
             this.InitializeComponent();
+        }
+
+        private void SyncSkydriveToggle_Toggled_1(object sender, RoutedEventArgs e)
+        {
+            if (SyncSkydriveToggle.IsOn)
+            {
+                // Create folder in Skydrive if it doesn't exist 
+                // Save all videos into Skydrive folder 
+            }
+        }
+
+        private void SignIntoSkydriveButton_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.ApplicationSettings;
 using Windows.UI;
 using Callisto.Controls;
-using Archive.Pages; 
+using Archive.Pages;
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -29,6 +29,8 @@ namespace Archive
     /// </summary>
     sealed partial class App : Application
     {
+
+        public static bool SynchronizeVideosToSkydrive = false; 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -85,6 +87,9 @@ namespace Archive
                 {
                     throw new Exception("Failed to create initial page");
                 }
+                SplashScreen splashScreen = args.SplashScreen;
+                Splash eSplash = new Splash(splashScreen, args);
+                Window.Current.Content = eSplash;
             }
             // Ensure the current window is active
             Window.Current.Activate();
@@ -135,6 +140,7 @@ namespace Archive
                 settings.Background = new SolidColorBrush(_background);
                 settings.HeaderText = "Settings";
                 settings.IsOpen = true;
+                settings.ContentBackgroundBrush = new SolidColorBrush(_background); 
             });
 
 
