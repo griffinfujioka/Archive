@@ -101,7 +101,11 @@ namespace Archive
         {
             try
             {
+                
                 StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
+                var stream = await file.OpenReadAsync();
+                StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
+                //form.Add(streamContent, "video", file.Path);
                 IRandomAccessStream fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
                 // TODO: Figure out how to resume a paused video
                 CapturedVideo.SetSource(fileStream, "video/mp4");

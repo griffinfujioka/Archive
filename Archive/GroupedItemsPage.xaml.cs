@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage;  // ApplicationData
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
 
@@ -23,10 +24,39 @@ namespace Archive
     /// </summary>
     public sealed partial class GroupedItemsPage : Archive.Common.LayoutAwarePage
     {
+        #region Variable declarations
+        private Windows.Foundation.Collections.IPropertySet appSettings;
+        private const String usernameKey = "Username";
+        private const String passwordKey = "Password"; 
+        #endregion 
+
         #region Constructor
         public GroupedItemsPage()
         {
             this.InitializeComponent();
+
+            appSettings = ApplicationData.Current.LocalSettings.Values;
+
+            var bounds = Window.Current.Bounds;
+            var height = bounds.Height;
+            var width = bounds.Width;
+
+            // If the user is not logged in 
+            if (!appSettings.ContainsKey(usernameKey) || !appSettings.ContainsKey(passwordKey))
+            {
+                loginPopUp.IsOpen = true;
+                usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
+                //logoutBtn.Visibility = Visibility.Collapsed;
+                //accoutnBtn.Visibility = Visibility.Collapsed;
+                //videosBtn.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                loginPopUp.IsOpen = false;
+                //logoutBtn.Visibility = Visibility.Visible;
+                //accoutnBtn.Visibility = Visibility.Visible;
+                //videosBtn.Visibility = Visibility.Visible;
+            }
         }
         #endregion 
 
@@ -85,6 +115,23 @@ namespace Archive
         private void newvideoBtn_Click_1(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CapturePage));
+        }
+        #endregion 
+
+        #region Submit login credentials button click
+        private void submitLoginBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            // TODO: Verify login credentials against user database 
+            appSettings[usernameKey] = usernameTxtBox.Text;
+            appSettings[passwordKey] = passwordTxtBox.Password;
+            loginPopUp.IsOpen = false;
+            // if(login is valid)
+            //logoutBtn.Content = "Log out";
+            //logoutBtn.Visibility = Visibility.Visible;
+            //accoutnBtn.Visibility = Visibility.Visible;
+            //videosBtn.Visibility = Visibility.Visible;
+            //signupBtn.Visibility = Visibility.Collapsed;
+            //BottomAppBar.IsOpen = true;
         }
         #endregion 
     }
