@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="90f42238-fcf5-4f46-9bbf-faffece2d893" Publisher="CN=Griffin" Version="1.0.0.0" />
+  <Identity Name="36726GriffinFujioka.ArchiveVideoBlogging" Publisher="CN=7A2280AF-F3B0-499B-A221-E1F53BF165FF" Version="1.0.0.0" />
   <Properties>
-    <DisplayName>Archive</DisplayName>
-    <PublisherDisplayName>Griffin</PublisherDisplayName>
+    <DisplayName>Archive: Video Blogging</DisplayName>
+    <PublisherDisplayName>Griffin Fujioka</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Archive.App">
-      <VisualElements DisplayName="Archive" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Archive" ForegroundText="light" BackgroundColor="#464646">
+      <VisualElements DisplayName="Archive: Video Blogging" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Archive" ForegroundText="light" BackgroundColor="#464646">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets\SplashScreen.png" />
       </VisualElements>

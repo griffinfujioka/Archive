@@ -19,6 +19,8 @@ using Windows.UI.ApplicationSettings;
 using Windows.UI;
 using Callisto.Controls;
 using Archive.Pages;
+using Microsoft.Live;
+using SkyDriveHelper; 
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -30,7 +32,7 @@ namespace Archive
     sealed partial class App : Application
     {
 
-        public static bool SynchronizeVideosToSkydrive = false; 
+        public static bool SynchronizeVideosToSkydrive = true; 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -87,15 +89,58 @@ namespace Archive
                 {
                     throw new Exception("Failed to create initial page");
                 }
-                SplashScreen splashScreen = args.SplashScreen;
-                Splash eSplash = new Splash(splashScreen, args);
-                Window.Current.Content = eSplash;
+                //SplashScreen splashScreen = args.SplashScreen;
+                //Splash eSplash = new Splash(splashScreen, args);
+                //Window.Current.Content = eSplash;
             }
             // Ensure the current window is active
             Window.Current.Activate();
 
             // Settings
             SettingsPane.GetForCurrentView().CommandsRequested += Settings_CommandsRequested;
+
+            #region Syncronize with Skydrive
+            if (SynchronizeVideosToSkydrive)
+            {
+                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+
+                LiveAuthClient authClient = new LiveAuthClient();
+                LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+                if (result.Status == LiveConnectSessionStatus.Connected)
+                {
+                    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+
+                    // Get hold of the root folder from SkyDrive. 
+                    // NB: this does not traverse the network and get the full folder details.
+                    SkyDriveFolder root = new SkyDriveFolder(
+                      cxnClient, SkyDriveWellKnownFolder.Root);
+
+                    // This *does* traverse the network and get those details.
+                    await root.LoadAsync();
+
+                    string id = root.Name;
+                    string desc = root.Description;
+                    DateTimeOffset update = root.UpdatedTime;
+                    uint count = root.Count;
+                    Uri linkLocation = root.LinkLocation;
+                    Uri uploadLocation = root.UploadLocation;
+                    SkyDriveFolder subFolder = null;
+
+                    try
+                    {
+                        subFolder = await root.GetFolderAsync("Archive");
+                    }
+                    catch { }
+
+
+                    if(subFolder == null)
+                         subFolder = await root.CreateFolderAsync("Archive"); 
+                   
+                }
+            }
+            #endregion 
+
         }
 
         /// <summary>
