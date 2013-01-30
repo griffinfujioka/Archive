@@ -17,6 +17,10 @@ using Windows.Storage.Streams;  /* Used to store a video stream to a file */
 using System.Threading.Tasks;   /* Tasks */
 using Windows.Storage;
 using Windows.Media.Capture;    /* Camera */ 
+using Microsoft.Live; 
+using SkyDriveHelper;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers; 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
 namespace Archive
@@ -161,14 +165,78 @@ namespace Archive
 
                 if (file != null)
                 {
-                    IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read);
-                    CapturedVideo.SetSource(fileStream, "video/mp4");
+                    if (App.SynchronizeVideosToSkydrive)
+                    {
+                        var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
 
-                    // Store the file path in Application Data
-                    // Each time you Capture a video file.Path is a different, randomly generated path. 
-                    appSettings[videoKey] = file.Path;
-                    appSettings[fileKey] = file.Path;
-                    filePath = file.Path;       // Set the global variable so when you record a video, that's that video that will send 
+                        LiveAuthClient authClient = new LiveAuthClient();
+                        LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+                        if (result.Status == LiveConnectSessionStatus.Connected)
+                        {
+                            LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+
+                            // Get hold of the root folder from SkyDrive. 
+                            // NB: this does not traverse the network and get the full folder details.
+                            SkyDriveFolder root = new SkyDriveFolder(
+                              cxnClient, SkyDriveWellKnownFolder.Root);
+
+                            // This *does* traverse the network and get those details.
+                            await root.LoadAsync();
+
+                            SkyDriveFolder subFolder = null;
+
+                            try
+                            {
+                                subFolder = await root.GetFolderAsync("Archive");
+                            }
+                            catch { }
+
+
+                            if (subFolder == null)
+                                subFolder = await root.CreateFolderAsync("Archive");
+
+
+                            //StorageFile newVideo = await ApplicationData.Current.LocalFolder.CreateFileAsync(file.Name); 
+                            using(IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                            {
+                                using(IOutputStream outStream = fileStream.GetOutputStreamAt(0))
+                                {
+                                        DataWriter dw = new DataWriter(outStream);
+                                        await dw.StoreAsync();
+                                        dw.DetachStream(); 
+                                        await outStream.FlushAsync(); 
+                                }
+                            }
+
+
+                            SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(file, file.Name);
+                            //var stream = await file.OpenAsync(FileAccessMode.Read);
+
+                            //using (var outputStream = stream.GetOutputStreamAt(0))
+                            //{
+                            //    DataWriter dw = new DataWriter(outputStream);
+                            //    await dw.StoreAsync();
+                            //    await outputStream.FlushAsync();
+
+                            //}
+
+                            //FileOpenPicker picker = new FileOpenPicker();
+                            //picker.FileTypeFilter.Add(".jpg");
+                            //StorageFile file1 = await picker.PickSingleFileAsync();
+
+                            //SkyDriveFile skyDriveFile1 = await subFolder.UploadFileAsync(file1);
+
+                        }
+                    }
+                    //IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read);
+                    //CapturedVideo.SetSource(fileStream, "video/mp4");
+
+                    //// Store the file path in Application Data
+                    //// Each time you Capture a video file.Path is a different, randomly generated path. 
+                    //appSettings[videoKey] = file.Path;
+                    //appSettings[fileKey] = file.Path;
+                    //filePath = file.Path;       // Set the global variable so when you record a video, that's that video that will send 
 
 
                 }
