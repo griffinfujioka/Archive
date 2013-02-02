@@ -20,7 +20,8 @@ using Windows.UI;
 using Callisto.Controls;
 using Archive.Pages;
 using Microsoft.Live;
-using SkyDriveHelper; 
+using SkyDriveHelper;
+using Archive.DataModel;
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -135,7 +136,11 @@ namespace Archive
 
 
                     if(subFolder == null)
-                         subFolder = await root.CreateFolderAsync("Archive"); 
+                         subFolder = await root.CreateFolderAsync("Archive");
+
+                    VideosDataSource data = new VideosDataSource();
+                    //data.Completed += Data_Completed;
+                    await data.Load();
                    
                 }
             }

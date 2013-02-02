@@ -211,6 +211,7 @@ namespace Archive.DataModel
     #region VideosDataSource
     public sealed class VideosDataSource
     {
+        public static bool DataLoaded;
         private static VideosDataSource _videosDataSource = new VideosDataSource();
 
         private ObservableCollection<VideoDataGroup> _allGroups = new ObservableCollection<VideoDataGroup>();
@@ -521,6 +522,28 @@ namespace Archive.DataModel
             //        group6));
             //this.AllGroups.Add(group6);
         }
+
+        /// <summary>
+        /// Clean AllGroups collection
+        /// </summary>
+        public static void Unload()
+        {
+            _videosDataSource._allGroups.Clear();
+        }
+
+        async public Task Load()
+        {
+            try
+            {
+                await DataManager.LoadAsyncFromSkydrive();
+                DataLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                DataLoaded = false;
+            }
+        }
+
     }
     #endregion 
 }

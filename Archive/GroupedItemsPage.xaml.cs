@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;  // ApplicationData
+using System.Net.Http;          // For http handlers
+using System.Net.Http.Headers;  // For ProductInfoHeaderValue class
+using Archive.Common; 
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
 
@@ -27,7 +30,10 @@ namespace Archive
         #region Variable declarations
         private Windows.Foundation.Collections.IPropertySet appSettings;
         private const String usernameKey = "Username";
-        private const String passwordKey = "Password"; 
+        private const String passwordKey = "Password";
+        public String ArchiveAPIuri = "http://trout.wadec.com/API";
+        public String API_Key = "";
+        public String API_Secret = "";
         #endregion 
 
         #region Constructor
@@ -41,21 +47,21 @@ namespace Archive
             var height = bounds.Height;
             var width = bounds.Width;
 
+            AuthenticateArchiveAPI();       // Authenticate client app with Archive API
+
             // If the user is not logged in 
             if (!appSettings.ContainsKey(usernameKey) || !appSettings.ContainsKey(passwordKey))
             {
                 loginPopUp.IsOpen = true;
                 usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
-                //logoutBtn.Visibility = Visibility.Collapsed;
-                //accoutnBtn.Visibility = Visibility.Collapsed;
-                //videosBtn.Visibility = Visibility.Collapsed;
+                logoutBtn.Visibility = Visibility.Collapsed;
+                loginBtn.Visibility = Visibility.Visible; 
             }
             else
             {
                 loginPopUp.IsOpen = false;
-                //logoutBtn.Visibility = Visibility.Visible;
-                //accoutnBtn.Visibility = Visibility.Visible;
-                //videosBtn.Visibility = Visibility.Visible;
+                logoutBtn.Visibility = Visibility.Visible;
+                loginBtn.Visibility = Visibility.Collapsed; 
             }
         }
         #endregion 
@@ -119,20 +125,73 @@ namespace Archive
         #endregion 
 
         #region Submit login credentials button click
-        private void submitLoginBtn_Click_1(object sender, RoutedEventArgs e)
+        private async void submitLoginBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            // TODO: Verify login credentials against user database 
+            // TODO: Verify login credentials against Archive API
+            var username = usernameTxtBox.Text;
+            var password = passwordTxtBox.Password;
+            
+           
             appSettings[usernameKey] = usernameTxtBox.Text;
             appSettings[passwordKey] = passwordTxtBox.Password;
             loginPopUp.IsOpen = false;
-            // if(login is valid)
-            //logoutBtn.Content = "Log out";
-            //logoutBtn.Visibility = Visibility.Visible;
-            //accoutnBtn.Visibility = Visibility.Visible;
-            //videosBtn.Visibility = Visibility.Visible;
-            //signupBtn.Visibility = Visibility.Collapsed;
-            //BottomAppBar.IsOpen = true;
+            logoutBtn.Visibility = Visibility.Visible;
+            loginBtn.Visibility = Visibility.Collapsed;
+            usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer); 
+        }
+        #endregion
+
+        #region Logout button clicked 
+        private async void signOutButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            appSettings.Remove(usernameKey);    // Clear the username key from appSettings
+            appSettings.Remove(passwordKey);    // Clear the password key from appSettings
+            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("You are now logged out.");
+            await dialog.ShowAsync();
+            loginBtn.Visibility = Visibility.Visible;
+            logoutBtn.Visibility = Visibility.Collapsed; 
         }
         #endregion 
+
+        #region Login button clicked
+        private void loginBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            loginPopUp.IsOpen = true;
+        }
+        #endregion 
+
+        #region AuthenticateArchiveAPI
+        /// <summary>
+        ///  Sends http request to Archive API to authenticate app as an Archive client app
+        /// </summary>
+        /// <returns></returns>
+        public async void AuthenticateArchiveAPI()
+        {
+            // Testing some functionality here: trying to contact Archive API
+            HttpClient httpClient;
+            HttpMessageHandler handler = new HttpClientHandler();
+            handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
+            httpClient = new HttpClient(handler);
+            MultipartFormDataContent form = new MultipartFormDataContent();
+
+
+            ArchiveAPIuri = (ArchiveAPIuri + "/REQUEST_token");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, ArchiveAPIuri);
+            httpRequestMessage.Headers.Add("X-ApiKey", "123456");
+            HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+            // Use an enum like that: System.Net.HttpStatusCode.Accepted;
+
+            switch ((int)response.StatusCode)
+            {
+                case 200:       // Everything is good! 
+                    // Parse some JSON to receive RequestTokenResponse: (string token, string method)
+                    break; 
+                default:
+                    break; 
+            }
+        }
+        #endregion 
+
+
     }
 }

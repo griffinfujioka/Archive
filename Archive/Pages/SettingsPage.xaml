@@ -22,7 +22,7 @@
                 <TextBlock Text="Sync with Skydrive: " FontFamily="Segoe UI" FontSize="14" FontWeight="Light" Foreground="Black" Margin="5,25,10,0"/>
                 
                 <ToggleSwitch x:Name="SyncSkydriveToggle" Tag="Sync with Skydrive" FontFamily="Segoe UI" FontSize="14" FontWeight="Light" IsOn="True" Foreground="Black" Margin="5,0,0,10" Toggled="SyncSkydriveToggle_Toggled_1" />
-                <Button x:Name="SignIntoSkydriveButton" Content="Sign in to Skydrive" Click="SignIntoSkydriveButton_Click_1"/>
+          
                 
             </StackPanel>
         </StackPanel>

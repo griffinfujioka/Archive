@@ -65,7 +65,7 @@
             <Button x:Name="discardButton" Style="{StaticResource DiscardAppBarButtonStyle}" Tag="Discard" HorizontalAlignment="Center" Click="discardButton_Click_1" />
         </StackPanel>
         
-        <TextBlock x:Name="CapturePageSnappedTextBlock" FontFamily="Segoe UI" FontSize="18" FontWeight="Black" Text="Snap view is not supported by the capture page." TextWrapping="Wrap" Margin="10,20,10,20" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="Collapsed" 
+        <TextBlock x:Name="CapturePageSnappedTextBlock" FontFamily="Segoe UI" FontSize="18" FontWeight="Black" Text="This page does not support snap view." TextWrapping="Wrap" Margin="10,20,10,20" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="Collapsed" 
                    Grid.Row="1"
                    Grid.RowSpan="2"
                    Grid.Column="0"

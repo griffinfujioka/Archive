@@ -24,27 +24,12 @@ namespace Archive.Pages
             this.InitializeComponent();
         }
 
-        private async void SyncSkydriveToggle_Toggled_1(object sender, RoutedEventArgs e)
-        {
-            if (SyncSkydriveToggle.IsOn)
-            {
-                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
-
-                LiveAuthClient authClient = new LiveAuthClient();
-                LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-                if (result.Status == LiveConnectSessionStatus.Connected)
-                {
-
-                }
-                // Create folder in Skydrive if it doesn't exist 
-                // Save all videos into Skydrive folder 
-            }
-        }
-
-        private void SignIntoSkydriveButton_Click_1(object sender, RoutedEventArgs e)
+        private void SyncSkydriveToggle_Toggled_1(object sender, RoutedEventArgs e)
         {
 
         }
+
+
+
     }
 }

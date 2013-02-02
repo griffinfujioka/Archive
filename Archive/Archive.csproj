@@ -111,6 +111,9 @@
     <Compile Include="CapturePage.xaml.cs">
       <DependentUpon>CapturePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="Common\PlugInHandler.cs" />
+    <Compile Include="DataModel\DataManager.cs" />
     <Compile Include="DataModel\VideosDataSource.cs" />
     <Compile Include="GroupedItemsPage.xaml.cs">
       <DependentUpon>GroupedItemsPage.xaml</DependentUpon>
