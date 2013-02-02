@@ -147,6 +147,8 @@ namespace Archive
 
                 if (file != null)
                 {
+                    video_metadataPopup.IsOpen = true;
+                    ShowMetaDataPopUp();
                     if (App.SynchronizeVideosToSkydrive)
                     {
                         var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
@@ -193,21 +195,6 @@ namespace Archive
 
 
                             SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(file, file.Name);
-                            //var stream = await file.OpenAsync(FileAccessMode.Read);
-
-                            //using (var outputStream = stream.GetOutputStreamAt(0))
-                            //{
-                            //    DataWriter dw = new DataWriter(outputStream);
-                            //    await dw.StoreAsync();
-                            //    await outputStream.FlushAsync();
-
-                            //}
-
-                            //FileOpenPicker picker = new FileOpenPicker();
-                            //picker.FileTypeFilter.Add(".jpg");
-                            //StorageFile file1 = await picker.PickSingleFileAsync();
-
-                            //SkyDriveFile skyDriveFile1 = await subFolder.UploadFileAsync(file1);
 
                         }
                     }
@@ -229,5 +216,53 @@ namespace Archive
         }
         #endregion 
 
+        #region Submit video button click
+        private async void submit_videoBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            video_metadataPopup.IsOpen = false;
+
+            try
+            {
+                var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
+                output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                await dialog.ShowAsync();
+                //if (appSettings.ContainsKey(videoKey))
+                //{
+                //    //MultipartFormDataContent form = new MultipartFormDataContent();
+                //    //// BUG HERE: If the video was recorded previously, this breaks. 
+                //    //// That's because videos are only being stored temporarily right now. 
+                //    //StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
+                //    //var stream = await file.OpenReadAsync();
+                //    //StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
+                //    //form.Add(streamContent, "video", file.Path);
+                //    //string address = "http://trout.wadec.com/upload";
+                //    ////HttpResponseMessage response = await httpClient.PostAsync(address, form);
+
+                //    var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
+                //    output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
+                //    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                //    await dialog.ShowAsync();
+                //}
+                //else
+                //{
+                //    //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("There is no video file to upload.");
+                //    //await dialog.ShowAsync();
+                //}
+
+            }
+            catch (HttpRequestException hre)
+            {
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        }
+        #endregion
+
+        public async Task ShowMetaDataPopUp()
+        {
+            video_metadataPopup.IsOpen = true; 
+        }
     }
 }

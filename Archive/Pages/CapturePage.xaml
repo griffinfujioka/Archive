@@ -21,10 +21,6 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="140"/> <!-- The buttons will go in this row -->
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.6*"/>
-            <ColumnDefinition Width="0.4*"/>
-        </Grid.ColumnDefinitions>
 
 
         <!-- Back button and page title -->
@@ -38,24 +34,22 @@
                 <MediaElement x:Name="CapturedVideo" HorizontalAlignment="Center" AutoPlay="True" VerticalAlignment="Center" Height="500" Width="530" Grid.Row="0" Margin="10, 100, 10, 20"/>
             </Grid>
         </Grid>
-        
-        <Grid x:Name="VideoDetailsGrid" Grid.Column="1" Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="70"/> <!-- Video Details title -->
-                <RowDefinition Height="Auto"/> <!-- Text fields for video data (title, description, tags) -->
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <!--<TextBlock Text="Video Details" Grid.Row="0" FontSize="48" FontFamily="Segoe UI Semibold" Margin="20,5"/>-->
-            <StackPanel x:Name="stackPanel" Orientation="Vertical" Grid.Row="1">
-                <TextBlock Text="Title:" FontSize="18" Margin="20,5"/>
-                <TextBox x:Name="titleTxtBox" Height="40" Width="350" HorizontalAlignment="Left" Margin="20,5" />
-                <TextBlock Text="Description:" FontSize="18" Margin="20,5"/>
-                <TextBox x:Name="descriptionTxtBox" Height="160" Width="350" HorizontalAlignment="Left" Margin="20,5"/>
-                <TextBlock Text="Tags (separate with commas):" FontSize="18" Margin="20,5"/>
-                <TextBox x:Name="tagTxtBox" Height="40" Width="350" HorizontalAlignment="Left" Margin="20,5" />
-                <TextBlock Text="Share:" FontSize="18" Margin="20,5"/>
-            </StackPanel>
-        </Grid>
+
+        <Popup x:Name="video_metadataPopup" Visibility="Visible" AllowDrop="False" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="400" Height="Auto" Grid.Row="1">
+            <Grid Height="Auto" Width="400" Background="White">
+                <StackPanel Orientation="Vertical">
+                <TextBlock Text="Video Details" FontSize="28" HorizontalAlignment="Left" Margin="10,5,10,10" Foreground="Black"/>
+                <TextBlock Text="Title:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="47"  />
+                <TextBox x:Name="titleTxtBox" Width="381" Height="20" AcceptsReturn="False" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left"/>
+                <TextBlock Text="Description:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="101"  />
+                <TextBox x:Name="descriptionTxtBox" Width="380" Height="180" HorizontalAlignment="Center" AcceptsReturn="True" TextWrapping="Wrap" Foreground="Black" Background="Gray" Margin="10,0,10,5"/>
+                    <TextBlock Text="Tags (separate with commas):" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black"/>
+                    <TextBox x:Name="tagTxtBox" Height="40" Width="350" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left" />
+                <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>
+                </StackPanel>
+            </Grid>
+        </Popup>
+
 
         <StackPanel x:Name="ButtonsPanel" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.ColumnSpan="2">
             <Button x:Name="newvideoBtn" Style="{StaticResource VideoAppBarButtonStyle}" Tag="Video" HorizontalAlignment="Center" Click="Capture_Button_Click"/>

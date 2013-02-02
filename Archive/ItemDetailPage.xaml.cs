@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Archive.DataModel; 
 
 // The Item Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
 
@@ -48,6 +49,7 @@ namespace Archive
 
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             var item = SampleDataSource.GetItem((String)navigationParameter);
+            //var item = VideosDataSource.GetItem((String)navigationParameter); 
             this.DefaultViewModel["Group"] = item.Group;
             this.DefaultViewModel["Items"] = item.Group.Items;
             this.flipView.SelectedItem = item;
@@ -62,7 +64,9 @@ namespace Archive
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
             var selectedItem = (SampleDataItem)this.flipView.SelectedItem;
+            //var selectedItem = (VideoDataItem)this.flipView.SelectedItem;
             pageState["SelectedItem"] = selectedItem.UniqueId;
+            //pageState["SelectedItem"] = selectedItem.VideoId;
         }
     }
 }

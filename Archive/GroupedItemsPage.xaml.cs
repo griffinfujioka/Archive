@@ -16,7 +16,8 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Storage;  // ApplicationData
 using System.Net.Http;          // For http handlers
 using System.Net.Http.Headers;  // For ProductInfoHeaderValue class
-using Archive.Common; 
+using Archive.Common;
+using Archive.DataModel; 
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
 
@@ -79,6 +80,8 @@ namespace Archive
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
+            //var videoDataGroups = VideosDataSource.GetGroups((string)navigationParameter);
+            //this.DefaultViewModel["Groups"] = videoDataGroups; 
             var sampleDataGroups = SampleDataSource.GetGroups((String)navigationParameter);
             this.DefaultViewModel["Groups"] = sampleDataGroups;
         }
@@ -97,6 +100,7 @@ namespace Archive
 
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
+            //this.Frame.Navigate(typeof(GroupDetailPage), ((VideoDataGroup)group).VideoId);
             this.Frame.Navigate(typeof(GroupDetailPage), ((SampleDataGroup)group).UniqueId);
         }
         #endregion 
@@ -112,6 +116,7 @@ namespace Archive
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
+            //var itemId = ((VideoDataItem)e.ClickedItem).VideoId;
             var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
             this.Frame.Navigate(typeof(ItemDetailPage), itemId);
         }
@@ -137,7 +142,11 @@ namespace Archive
             loginPopUp.IsOpen = false;
             logoutBtn.Visibility = Visibility.Visible;
             loginBtn.Visibility = Visibility.Collapsed;
-            usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer); 
+            usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
+            //var videoDataGroups = VideosDataSource.GetGroups((string)navigationParameter);
+            //this.DefaultViewModel["Groups"] = videoDataGroups; 
+            //var sampleDataGroups = SampleDataSource.GetGroups((String)sender);
+            //this.DefaultViewModel["Groups"] = sampleDataGroups;
         }
         #endregion
 
@@ -149,7 +158,9 @@ namespace Archive
             Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("You are now logged out.");
             await dialog.ShowAsync();
             loginBtn.Visibility = Visibility.Visible;
-            logoutBtn.Visibility = Visibility.Collapsed; 
+            logoutBtn.Visibility = Visibility.Collapsed;
+            this.DefaultViewModel["Groups"] = null; 
+
         }
         #endregion 
 
@@ -157,6 +168,7 @@ namespace Archive
         private void loginBtn_Click_1(object sender, RoutedEventArgs e)
         {
             loginPopUp.IsOpen = true;
+            //this.Frame.Navigate(typeof(GroupedItemsPage)); 
         }
         #endregion 
 
