@@ -44,11 +44,12 @@ namespace Archive.DataModel
                 {
                     try
                     {
-                        var newFile = await file.DownloadAsync();
+                        
                         // Stream?
                         if(file.Name.Contains(".mp4"))
                         {
-                            videos.Add((VideoDataCommon)newFile);
+                            var video = new VideoDataCommon(file.Id, file.Name, file.Description, file.LinkLocation.ToString(), file.Description); 
+                            videos.Add(video);
 
                             
                         }

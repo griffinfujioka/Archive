@@ -88,6 +88,11 @@ namespace Archive.DataModel
         {
             return this.Title;
         }
+
+        public VideoDataCommon Download()
+        {
+            return this; 
+        }
     }
     #endregion 
 

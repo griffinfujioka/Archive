@@ -36,6 +36,8 @@ namespace Archive
     {
 
         public static bool SynchronizeVideosToSkydrive = true;
+
+
         private static ObservableCollection<VideoDataCommon> _skydriveVideos;
         public static ObservableCollection<VideoDataCommon> SkyDriveVideos
         {
