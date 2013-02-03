@@ -41,6 +41,7 @@ namespace Archive
         private const String passwordKey = "Password";
         public static string filePath;
         HttpClient httpClient;
+        public StorageFile videoFile; 
         #endregion 
 
         #region Constructor
@@ -149,55 +150,8 @@ namespace Archive
                 {
                     video_metadataPopup.IsOpen = true;
                     ShowMetaDataPopUp();
-                    if (App.SynchronizeVideosToSkydrive)
-                    {
-                        var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+                    videoFile = file; 
 
-                        LiveAuthClient authClient = new LiveAuthClient();
-                        LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-                        if (result.Status == LiveConnectSessionStatus.Connected)
-                        {
-                            LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-
-                            // Get hold of the root folder from SkyDrive. 
-                            // NB: this does not traverse the network and get the full folder details.
-                            SkyDriveFolder root = new SkyDriveFolder(
-                              cxnClient, SkyDriveWellKnownFolder.Root);
-
-                            // This *does* traverse the network and get those details.
-                            await root.LoadAsync();
-
-                            SkyDriveFolder subFolder = null;
-
-                            try
-                            {
-                                subFolder = await root.GetFolderAsync("Archive");
-                            }
-                            catch { }
-
-
-                            if (subFolder == null)
-                                subFolder = await root.CreateFolderAsync("Archive");
-
-
-                            //StorageFile newVideo = await ApplicationData.Current.LocalFolder.CreateFileAsync(file.Name); 
-                            using(IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                            {
-                                using(IOutputStream outStream = fileStream.GetOutputStreamAt(0))
-                                {
-                                        DataWriter dw = new DataWriter(outStream);
-                                        await dw.StoreAsync();
-                                        dw.DetachStream(); 
-                                        await outStream.FlushAsync(); 
-                                }
-                            }
-
-
-                            SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(file, file.Name);
-
-                        }
-                    }
                     //IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read);
                     //CapturedVideo.SetSource(fileStream, "video/mp4");
 
@@ -221,6 +175,80 @@ namespace Archive
         {
             video_metadataPopup.IsOpen = false;
 
+            if (App.SynchronizeVideosToSkydrive)
+            {
+                #region Adjust some controls while the video is being uploaded
+                uploadingPopUp.Visibility = Visibility.Visible;
+                uploadingPopUp.IsOpen = true;
+                backButton.Visibility = Visibility.Collapsed;
+                ButtonsPanel.Visibility = Visibility.Collapsed;
+                #endregion 
+
+                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+
+                LiveAuthClient authClient = new LiveAuthClient();
+                LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+                if (result.Status == LiveConnectSessionStatus.Connected)
+                {
+                    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+
+                    // Get hold of the root folder from SkyDrive. 
+                    // NB: this does not traverse the network and get the full folder details.
+                    SkyDriveFolder root = new SkyDriveFolder(
+                      cxnClient, SkyDriveWellKnownFolder.Root);
+
+                    // This *does* traverse the network and get those details.
+                    await root.LoadAsync();
+
+                    SkyDriveFolder subFolder = null;
+
+                    try
+                    {
+                        subFolder = await root.GetFolderAsync("Archive");
+                    }
+                    catch { }
+
+
+                    if (subFolder == null)
+                        subFolder = await root.CreateFolderAsync("Archive");
+
+
+                    //StorageFile newVideo = await ApplicationData.Current.LocalFolder.CreateFileAsync(file.Name); 
+                    using (IRandomAccessStream fileStream = await videoFile.OpenAsync(FileAccessMode.ReadWrite))
+                    {
+                        using (IOutputStream outStream = fileStream.GetOutputStreamAt(0))
+                        {
+                            DataWriter dw = new DataWriter(outStream);
+                            await dw.StoreAsync();
+                            dw.DetachStream();
+                            await outStream.FlushAsync();
+                        }
+                    }
+
+                    
+                    try
+                    {
+
+                        SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoFile.Name);
+                    }
+                    catch
+                    {
+                        var errorMessage = string.Format("There was an error uploading your video.\nPlease use the upload button on the bottom of the screen to try again");
+                        Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog(errorMessage);
+                        errorDialog.ShowAsync();
+                    }
+
+                    #region Upload complete, put the controls to normal 
+                    uploadingPopUp.Visibility = Visibility.Collapsed;
+                    uploadingPopUp.IsOpen = false;
+                    backButton.Visibility = Visibility.Visible; ;
+                    ButtonsPanel.Visibility = Visibility.Visible;
+                    #endregion 
+
+                    // Show progress ring here
+                }
+            }
             try
             {
                 var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");

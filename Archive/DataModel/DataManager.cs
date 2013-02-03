@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SkyDriveHelper;
 using System.Collections.ObjectModel;   // Observable Collection
 using Microsoft.Live;
+using Archive; 
 
 namespace Archive.DataModel
 {
@@ -44,9 +45,12 @@ namespace Archive.DataModel
                     try
                     {
                         var newFile = await file.DownloadAsync();
+                        // Stream?
                         if(file.Name.Contains(".mp4"))
                         {
                             videos.Add((VideoDataCommon)newFile);
+
+                            
                         }
                     }
                     catch { }
@@ -54,6 +58,8 @@ namespace Archive.DataModel
             }
 
             var debugCollection = new ObservableCollection<VideoDataCommon>(videos);
+            
+            App.SkyDriveVideos = new ObservableCollection<VideoDataCommon>(videos); 
             //DataContractJsonSerializer des = new DataContractJsonSerializer(typeof(NoteDataCommon), types);
         }
     }

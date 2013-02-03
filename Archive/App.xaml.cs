@@ -22,6 +22,8 @@ using Archive.Pages;
 using Microsoft.Live;
 using SkyDriveHelper;
 using Archive.DataModel;
+using System.Collections.ObjectModel;
+
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -33,7 +35,15 @@ namespace Archive
     sealed partial class App : Application
     {
 
-        public static bool SynchronizeVideosToSkydrive = true; 
+        public static bool SynchronizeVideosToSkydrive = true;
+        private static ObservableCollection<VideoDataCommon> _skydriveVideos;
+        public static ObservableCollection<VideoDataCommon> SkyDriveVideos
+        {
+            get { return _skydriveVideos; }
+            set { _skydriveVideos = value; }
+        }
+ 
+
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -78,6 +88,8 @@ namespace Archive
                     }
                 }
 
+                //var VideosDataSource = new VideosDataSource();
+                //await VideosDataSource.Load(); 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }

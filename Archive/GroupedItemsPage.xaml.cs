@@ -159,7 +159,8 @@ namespace Archive
             await dialog.ShowAsync();
             loginBtn.Visibility = Visibility.Visible;
             logoutBtn.Visibility = Visibility.Collapsed;
-            this.DefaultViewModel["Groups"] = null; 
+            this.DefaultViewModel["Groups"] = null;
+            newvideoBtn.Visibility = Visibility.Collapsed; 
 
         }
         #endregion 
