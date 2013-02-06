@@ -108,10 +108,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="API Helpers\User.cs" />
     <Compile Include="Pages\CapturePage.xaml.cs">
       <DependentUpon>CapturePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="API Helpers\HashHelper.cs" />
     <Compile Include="Common\PlugInHandler.cs" />
     <Compile Include="DataModel\DataManager.cs" />
     <Compile Include="DataModel\VideosDataSource.cs" />
@@ -150,6 +151,7 @@
     <None Include="Archive_StoreKey.pfx" />
     <None Include="Common\ReadMe.txt" />
     <None Include="Archive_TemporaryKey.pfx" />
+    <None Include="griffin.JSON" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -218,9 +220,7 @@
       <Name>Live SDK</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="API Helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

@@ -256,56 +256,36 @@ namespace Archive
                 output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
                 await dialog.ShowAsync();
-                //if (appSettings.ContainsKey(videoKey))
+
+                //var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+                //LiveAuthClient authClient = new LiveAuthClient();
+                //LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+                //if (result.Status == LiveConnectSessionStatus.Connected)
                 //{
-                //    //MultipartFormDataContent form = new MultipartFormDataContent();
-                //    //// BUG HERE: If the video was recorded previously, this breaks. 
-                //    //// That's because videos are only being stored temporarily right now. 
-                //    //StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
-                //    //var stream = await file.OpenReadAsync();
-                //    //StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
-                //    //form.Add(streamContent, "video", file.Path);
-                //    //string address = "http://trout.wadec.com/upload";
-                //    ////HttpResponseMessage response = await httpClient.PostAsync(address, form);
+                //    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+                //    SkyDriveFolder subFolder = null;
+                //    // Get hold of the root folder from SkyDrive. 
+                //    // NB: this does not traverse the network and get the full folder details.
+                //    SkyDriveFolder root = new SkyDriveFolder(
+                //      cxnClient, SkyDriveWellKnownFolder.Root);
 
-                //    var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
-                //    output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
-                //    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-                //    await dialog.ShowAsync();
-                //}
-                //else
-                //{
-                //    //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("There is no video file to upload.");
-                //    //await dialog.ShowAsync();
-                //}
-                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
-                LiveAuthClient authClient = new LiveAuthClient();
-                LiveLoginResult result = await authClient.LoginAsync(scopes);
+                //    // This *does* traverse the network and get those details.
+                //    await root.LoadAsync();
+                //    try
+                //    {
+                //        subFolder = await root.GetFolderAsync("Archive");
+                //    }
+                //    catch { }
 
-                if (result.Status == LiveConnectSessionStatus.Connected)
-                {
-                    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-                    SkyDriveFolder subFolder = null;
-                    // Get hold of the root folder from SkyDrive. 
-                    // NB: this does not traverse the network and get the full folder details.
-                    SkyDriveFolder root = new SkyDriveFolder(
-                      cxnClient, SkyDriveWellKnownFolder.Root);
-
-                    // This *does* traverse the network and get those details.
-                    await root.LoadAsync();
-                    try
-                    {
-                        subFolder = await root.GetFolderAsync("Archive");
-                    }
-                    catch { }
-
-                    if (subFolder != null)
-                    {
-                        var file = await subFolder.GetFileAsync("video000.mp4");
-                        CapturedVideo.SetSource((IRandomAccessStream)file, "video/mp4"); 
+                //    if (subFolder != null)
+                //    {
                         
-                    }
-                }
+                //        var file = await subFolder.GetFileAsync("video000.mp4");
+                //        //CapturedVideo.SetSource(file as StorageFile, "video/mp4"); 
+                        
+                //    }
+                //}
             }
             catch (HttpRequestException hre)
             {

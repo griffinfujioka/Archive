@@ -1,8 +1,8 @@
-﻿using Archive.Data;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Text; 
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -13,11 +13,18 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.Storage;  // ApplicationData
+using Windows.Storage;          // ApplicationData
+using Windows.Storage.Streams;
 using System.Net.Http;          // For http handlers
 using System.Net.Http.Headers;  // For ProductInfoHeaderValue class
 using Archive.Common;
-using Archive.DataModel; 
+using Archive.Data;
+using Archive.DataModel;
+using Archive.API_Helpers; 
+using Microsoft.Live;
+using SkyDriveHelper;           // Wrapper for accessing SkyDrive 
+using System.Runtime.Serialization.Json;    // JSON Serialization
+
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
 
@@ -135,6 +142,17 @@ namespace Archive
             // TODO: Verify login credentials against Archive API
             var username = usernameTxtBox.Text;
             var password = passwordTxtBox.Password;
+            Authenticate_User(username, password); 
+            HttpClient httpClient;
+            HttpMessageHandler handler = new HttpClientHandler();
+            handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
+            httpClient = new HttpClient(handler);
+
+
+            ArchiveAPIuri = (ArchiveAPIuri + "/login");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, ArchiveAPIuri);
+            httpRequestMessage.Headers.Add("X-ApiKey", "123456");
+            HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
             
            
             appSettings[usernameKey] = usernameTxtBox.Text;
@@ -159,7 +177,7 @@ namespace Archive
             await dialog.ShowAsync();
             loginBtn.Visibility = Visibility.Visible;
             logoutBtn.Visibility = Visibility.Collapsed;
-            this.DefaultViewModel["Groups"] = null;
+            //this.DefaultViewModel["Groups"] = null;
             newvideoBtn.Visibility = Visibility.Collapsed; 
 
         }
@@ -169,6 +187,7 @@ namespace Archive
         private void loginBtn_Click_1(object sender, RoutedEventArgs e)
         {
             loginPopUp.IsOpen = true;
+
             //this.Frame.Navigate(typeof(GroupedItemsPage)); 
         }
         #endregion 
@@ -197,6 +216,7 @@ namespace Archive
             switch ((int)response.StatusCode)
             {
                 case 200:       // Everything is good! 
+                    App.API_Authenticated = true; 
                     // Parse some JSON to receive RequestTokenResponse: (string token, string method)
                     break; 
                 default:
@@ -205,6 +225,120 @@ namespace Archive
         }
         #endregion 
 
+        #region Sync button 
+        private async void syncButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            // Define permissions we have with SkyDrive: SignIn, Access, Update
+            var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
 
+            // Create client for authenticating Live ID, login with the permissions defined above in scopes[]
+            LiveAuthClient authClient = new LiveAuthClient();
+            LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+            if (result.Status == LiveConnectSessionStatus.Connected)    // If we're connected to SkyDrive 
+            {
+                LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+                SkyDriveFolder subFolder = null;
+                // Get hold of the root folder from SkyDrive. 
+                // NB: this does not traverse the network and get the full folder details.
+                SkyDriveFolder root = new SkyDriveFolder(
+                  cxnClient, SkyDriveWellKnownFolder.Root);
+
+                // This *does* traverse the network and get those details.
+                await root.LoadAsync();
+                // Try to open the Archive folder 
+                try
+                {
+                    subFolder = await root.GetFolderAsync("Archive");
+                }
+                catch { }
+
+                if (subFolder != null)
+                {
+                    var files = await subFolder.GetFilesAsync(); 
+
+                    var file = await subFolder.GetFileAsync("video000.mp4");
+                    //CapturedVideo.SetSource(file as StorageFile, "video/mp4"); 
+
+                }
+            }
+        }
+        #endregion 
+
+        #region Authenticate user 
+        public async void Authenticate_User(string username, string password)
+        {
+            WebResponse response;       // Reponse from URL
+            Stream responseStream;     // Stream data from responding URL
+            StreamReader reader;        // Read data in stream 
+            string responseJSON;        // The JSON string returned to us by the Archive API 
+            User loggedInUser;          // The user that is now logged in
+            DataContractJsonSerializer des = new DataContractJsonSerializer(typeof(User));
+
+            HttpClient client = new HttpClient();
+            
+
+            // Create HttpWebRequest
+            var loginAuthenticationURL = ArchiveAPIuri + "/login";
+            HttpWebRequest request = HttpWebRequest.CreateHttp("http://trout.wadec.com/API/login"); 
+
+            // Set the method to POST
+            request.Method = "POST";
+
+            // Add headers 
+            request.Headers["X-ApiKey"] = "123456";
+            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+
+            // Set the ContentType property of the WebRequest
+            request.ContentType = "application/x-www-form-urlencoded"; 
+
+            // Create POST data and convert it to a byte array
+            string postData = String.Format("Username={0}&Password={1}", username, password);
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData); 
+
+            // Create a stream request
+            Stream dataStream = await request.GetRequestStreamAsync();
+
+            // Write the data to the stream
+            dataStream.Write(byteArray, 0, byteArray.Length);
+
+            // Flush the Stream object 
+            //dataStream.Flush();     // Note: What exactly does Flush do? Is this the correct placement for this statement?
+
+            
+
+            try
+            {
+                // Get response from URL, whether user credentials are valid 
+                //response = await request.GetResponseAsync(); 
+                response = await request.GetResponseAsync();
+               
+                
+                using (responseStream = response.GetResponseStream())
+                {
+                    reader = new StreamReader(responseStream); 
+                    responseJSON = reader.ReadToEnd();
+                    byte[] JSON_bytes = Encoding.UTF8.GetBytes(responseJSON);
+                    using (MemoryStream stream = new MemoryStream(JSON_bytes))
+                    {
+                        loggedInUser = (User)des.ReadObject(stream);
+                        var tempUser = des.ReadObject(stream) as User; 
+                    }
+                }
+
+     
+
+                
+                 
+            }
+            catch (Exception ex)
+            {
+                // If user credentials are invalid, we will catch it here 
+            }
+
+            
+
+        }
+        #endregion 
     }
 }

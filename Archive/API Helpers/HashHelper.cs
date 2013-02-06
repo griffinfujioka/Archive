@@ -9,7 +9,7 @@ using Windows.Security.Cryptography;
 using Windows.Storage.Streams; 
 
 // This class helps to hash tokens for the Archive API
-namespace Archive.Common
+namespace Archive.API_Helpers
 {
     public static class HashHelper
     {

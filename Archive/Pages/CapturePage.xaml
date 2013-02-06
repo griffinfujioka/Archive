@@ -63,6 +63,7 @@
             <Button x:Name="stopBtn" Style="{StaticResource StopAppBarButtonStyle}" Tag="Stop" HorizontalAlignment="Center" Click="stopBtn_Click_1"/>
             <Button x:Name="uploadBtn" Style="{StaticResource UploadAppBarButtonStyle}" Tag="Upload" HorizontalAlignment="Center" Click="uploadBtn_Click_1"/>
             <Button x:Name="discardButton" Style="{StaticResource DiscardAppBarButtonStyle}" Tag="Discard" HorizontalAlignment="Center" Click="discardButton_Click_1" />
+            <!--<Button x:Name="syncButton" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Sync" HorizontalAlignment="Center"/>-->
         </StackPanel>
         
         <TextBlock x:Name="CapturePageSnappedTextBlock" FontFamily="Segoe UI" FontSize="18" FontWeight="Black" Text="This page does not support snap view." TextWrapping="Wrap" Margin="10,20,10,20" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="Collapsed" 
@@ -118,29 +119,14 @@
                                 </DiscreteObjectKeyFrame.Value>
                             </DiscreteObjectKeyFrame>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.RowSpan)" Storyboard.TargetName="stackPanel">
-                            <DiscreteObjectKeyFrame KeyTime="0">
-                                <DiscreteObjectKeyFrame.Value>
-                                    <x:Int32>2</x:Int32>
-                                </DiscreteObjectKeyFrame.Value>
-                            </DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="stackPanel">
-                            <DiscreteObjectKeyFrame KeyTime="0">
-                                <DiscreteObjectKeyFrame.Value>
-                                    <Thickness>-188,88,0,-188</Thickness>
-                                </DiscreteObjectKeyFrame.Value>
-                            </DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
+                        
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CapturePageSnappedTextBlock" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ButtonsPanel" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VideoDetailsGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
+                        
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VidGrid" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
