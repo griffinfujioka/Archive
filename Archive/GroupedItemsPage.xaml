@@ -128,28 +128,26 @@
         </ListView>
 
 
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <Button x:Name="logoutBtn" Content="Log out" Click="signOutButton_Click_1" Margin="10,5,10,5" BorderThickness="0"/>
-            <Button x:Name="loginBtn" Content="Login" Click="loginBtn_Click_1" Margin="10,5,10,5" BorderThickness="0"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <StackPanel x:Name="loginPopUp" Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="usernameTxtBlock" Text="Username:" FontSize="16" FontFamily="Segoe UI" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,10,5" Foreground="White"/>
+                <TextBox x:Name="usernameTxtBox" Width="230" Height="20" Margin="10,5,10,5" IsTabStop="True" Background="Gray" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                    <TextBlock Text="Password: " FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="White"/>
+                    <PasswordBox x:Name="passwordTxtBox" Width="232" Height="20" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,5,10,5" IsTabStop="True" Background="Gray"/>
+                <Button x:Name="submitLoginBtn" Content="Sign in" Height="35" Width="78" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="submitLoginBtn_Click_1" IsTabStop="True" Foreground="White" IsHitTestVisible="True"/>
+            </StackPanel>
+            <Button x:Name="logoutBtn" Content="Log out" Click="signOutButton_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+            <Button x:Name="loginBtn" Content="Login" Click="loginBtn_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
         </StackPanel>
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                
                 <Button x:Name="newvideoBtn" Style="{StaticResource VideoAppBarButtonStyle}" Tag="Video" HorizontalAlignment="Center" Click="newvideoBtn_Click_1"/>
                 <Button x:Name="syncButton" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Sync" HorizontalAlignment="Center" Click="syncButton_Click_1"/>
             </StackPanel>
         </Grid>
 
-        <Popup x:Name="loginPopUp" Visibility="Visible" AllowDrop="False" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="300" Height="250" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <Grid Width="300" Height="250" Background="SkyBlue">
-                <TextBlock Text="Login" FontSize="32" HorizontalAlignment="Left" Foreground="Black" Margin="8,10,0,10"/>
-                <TextBlock x:Name="usernameTxtBlock" Text="Username:" FontSize="16" HorizontalAlignment="Left" Margin="10,52,0,178" Foreground="Black" Width="78"/>
-                <TextBox x:Name="usernameTxtBox" Width="230" Height="20" HorizontalAlignment="Left" Margin="10,77,0,136" IsTabStop="True" Background="Gray"/>
-                <TextBlock Text="Password: " FontSize="16" HorizontalAlignment="Left" Margin="10,114,0,-112" Foreground="Black"/>
-                <PasswordBox x:Name="passwordTxtBox" Width="232" Height="20" HorizontalAlignment="Left" Margin="8,141,0,77" IsTabStop="True" Background="Gray"/>
-                <Button x:Name="submitLoginBtn" Content="Sign in" Height="35" Width="78" Margin="2,173,0,42" BorderThickness="0" HorizontalAlignment="Left" Click="submitLoginBtn_Click_1" IsTabStop="True" Foreground="Black" Background="Gray" IsHitTestVisible="True"/>
-
-            </Grid>
-        </Popup>
+        
 
         <VisualStateManager.VisualStateGroups>
 

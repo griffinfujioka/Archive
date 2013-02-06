@@ -60,14 +60,15 @@ namespace Archive
             // If the user is not logged in 
             if (!appSettings.ContainsKey(usernameKey) || !appSettings.ContainsKey(passwordKey))
             {
-                loginPopUp.IsOpen = true;
+         
                 usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
+                loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Collapsed;
                 loginBtn.Visibility = Visibility.Visible; 
             }
             else
             {
-                loginPopUp.IsOpen = false;
+                loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed; 
             }
@@ -137,34 +138,11 @@ namespace Archive
         #endregion 
 
         #region Submit login credentials button click
-        private async void submitLoginBtn_Click_1(object sender, RoutedEventArgs e)
+        private void submitLoginBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            // TODO: Verify login credentials against Archive API
             var username = usernameTxtBox.Text;
             var password = passwordTxtBox.Password;
             Authenticate_User(username, password); 
-            HttpClient httpClient;
-            HttpMessageHandler handler = new HttpClientHandler();
-            handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
-            httpClient = new HttpClient(handler);
-
-
-            ArchiveAPIuri = (ArchiveAPIuri + "/login");
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, ArchiveAPIuri);
-            httpRequestMessage.Headers.Add("X-ApiKey", "123456");
-            HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
-            
-           
-            appSettings[usernameKey] = usernameTxtBox.Text;
-            appSettings[passwordKey] = passwordTxtBox.Password;
-            loginPopUp.IsOpen = false;
-            logoutBtn.Visibility = Visibility.Visible;
-            loginBtn.Visibility = Visibility.Collapsed;
-            usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
-            //var videoDataGroups = VideosDataSource.GetGroups((string)navigationParameter);
-            //this.DefaultViewModel["Groups"] = videoDataGroups; 
-            //var sampleDataGroups = SampleDataSource.GetGroups((String)sender);
-            //this.DefaultViewModel["Groups"] = sampleDataGroups;
         }
         #endregion
 
@@ -186,8 +164,9 @@ namespace Archive
         #region Login button clicked
         private void loginBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            loginPopUp.IsOpen = true;
-
+            loginPopUp.Visibility = Visibility.Visible;
+            loginBtn.Visibility = Visibility.Collapsed; 
+            usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
             //this.Frame.Navigate(typeof(GroupedItemsPage)); 
         }
         #endregion 
@@ -207,8 +186,8 @@ namespace Archive
             MultipartFormDataContent form = new MultipartFormDataContent();
 
 
-            ArchiveAPIuri = (ArchiveAPIuri + "/REQUEST_token");
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, ArchiveAPIuri);
+            var AuthenticationURI = (ArchiveAPIuri + "/REQUEST_token");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, AuthenticationURI);
             httpRequestMessage.Headers.Add("X-ApiKey", "123456");
             HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
             // Use an enum like that: System.Net.HttpStatusCode.Accepted;
@@ -280,7 +259,7 @@ namespace Archive
 
             // Create HttpWebRequest
             var loginAuthenticationURL = ArchiveAPIuri + "/login";
-            HttpWebRequest request = HttpWebRequest.CreateHttp("http://trout.wadec.com/API/login"); 
+            HttpWebRequest request = HttpWebRequest.CreateHttp(loginAuthenticationURL); 
 
             // Set the method to POST
             request.Method = "POST";
@@ -322,22 +301,38 @@ namespace Archive
                     using (MemoryStream stream = new MemoryStream(JSON_bytes))
                     {
                         loggedInUser = (User)des.ReadObject(stream);
-                        var tempUser = des.ReadObject(stream) as User; 
                     }
                 }
 
-     
+                appSettings[usernameKey] = username;
+                appSettings[passwordKey] = password;
+                loginPopUp.Visibility = Visibility.Collapsed; 
+                logoutBtn.Visibility = Visibility.Visible;
+                loginBtn.Visibility = Visibility.Collapsed;
+                usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
 
-                
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
+                await dialog.ShowAsync();
                  
             }
             catch (Exception ex)
             {
                 // If user credentials are invalid, we will catch it here 
+                InvalidLoginCredentials();
             }
 
             
 
+        }
+        #endregion 
+
+        #region InvalidLoginCredentials
+        private async void InvalidLoginCredentials()
+        {
+            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid login credentials.");
+            await dialog.ShowAsync();
+            loginPopUp.Visibility = Visibility.Visible;
+            loginBtn.Visibility = Visibility.Collapsed;
         }
         #endregion 
     }
