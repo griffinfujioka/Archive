@@ -10,11 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!--
-        This grid acts as a root panel for the page that defines two rows:
-        * Row 0 contains the back button and page title
-        * Row 1 contains the rest of the page layout
-    -->
+
     <Grid x:Name="MainGrid" Style="{StaticResource LayoutRootStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
@@ -61,9 +57,8 @@
             <Button x:Name="newvideoBtn" Style="{StaticResource VideoAppBarButtonStyle}" Tag="Video" HorizontalAlignment="Center" Click="Capture_Button_Click"/>
             <Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" Click="playBtn_Click_1" />
             <Button x:Name="stopBtn" Style="{StaticResource StopAppBarButtonStyle}" Tag="Stop" HorizontalAlignment="Center" Click="stopBtn_Click_1"/>
-            <Button x:Name="uploadBtn" Style="{StaticResource UploadAppBarButtonStyle}" Tag="Upload" HorizontalAlignment="Center" Click="uploadBtn_Click_1"/>
+            <!--<Button x:Name="uploadBtn" Style="{StaticResource UploadAppBarButtonStyle}" Tag="Upload" HorizontalAlignment="Center" Click="uploadBtn_Click_1"/>-->
             <Button x:Name="discardButton" Style="{StaticResource DiscardAppBarButtonStyle}" Tag="Discard" HorizontalAlignment="Center" Click="discardButton_Click_1" />
-            <!--<Button x:Name="syncButton" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Sync" HorizontalAlignment="Center"/>-->
         </StackPanel>
         
         <TextBlock x:Name="CapturePageSnappedTextBlock" FontFamily="Segoe UI" FontSize="18" FontWeight="Black" Text="This page does not support snap view." TextWrapping="Wrap" Margin="10,20,10,20" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="Collapsed" 
