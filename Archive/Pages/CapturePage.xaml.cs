@@ -5,6 +5,8 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
+using Windows.UI;
+using Windows.UI.Popups; 
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -235,10 +237,9 @@ namespace Archive
                     }
                     catch
                     {
-                        var errorMessage = string.Format("There was an error uploading your video.\nPlease use the upload button on the bottom of the screen to try again");
-                        Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog(errorMessage);
-                        errorDialog.ShowAsync();
+                        ShowUploadErrorMessage();
                     }
+                    
 
                     #region Upload complete, put the controls to normal 
                     uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -252,10 +253,8 @@ namespace Archive
             }
             try
             {
-                var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
-                output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
-                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-                await dialog.ShowAsync();
+                ShowUploadCompleteMessage();
+                
 
                 //var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
                 //LiveAuthClient authClient = new LiveAuthClient();
@@ -299,6 +298,22 @@ namespace Archive
         public async Task ShowMetaDataPopUp()
         {
             video_metadataPopup.IsOpen = true; 
+        }
+
+        private async void ShowUploadErrorMessage()
+        {
+            var errorMessage = string.Format("There was an error uploading your video.\nPlease use the upload button on the bottom of the screen to try again");
+            Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog(errorMessage);
+            await errorDialog.ShowAsync();
+        }
+
+        private async void ShowUploadCompleteMessage()
+        {
+            var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
+            output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
+            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+            var task = dialog.ShowAsync().AsTask();
+            await task; 
         }
     }
 }
