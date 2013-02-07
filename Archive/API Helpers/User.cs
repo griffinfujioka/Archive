@@ -14,13 +14,13 @@ namespace Archive.API_Helpers
         [DataMember(Name="UserId")]
         public int UserId { get; set; }
 
-        [DataMember(Name="Username)")] 
+        [DataMember(Name="Username")] 
         public string Username { get; set; }
 
-        [DataMember(Name = "Email)")] 
+        [DataMember(Name = "Email")] 
         public string Email { get; set; }
 
-        [DataMember(Name = "Created)")] 
+        [DataMember(Name = "Created")] 
         public DateTime Created { get; set; }
     }
 }

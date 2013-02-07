@@ -40,14 +40,17 @@
         <Popup x:Name="video_metadataPopup" Visibility="Visible" AllowDrop="False" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="400" Height="Auto" Grid.Row="1">
             <Grid Height="Auto" Width="400" Background="White">
                 <StackPanel Orientation="Vertical">
-                <TextBlock Text="Video Details" FontSize="28" HorizontalAlignment="Left" Margin="10,5,10,10" Foreground="Black"/>
-                <TextBlock Text="Title:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="47"  />
-                <TextBox x:Name="titleTxtBox" Width="381" Height="20" AcceptsReturn="False" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left"/>
-                <TextBlock Text="Description:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="101"  />
-                <TextBox x:Name="descriptionTxtBox" Width="380" Height="180" HorizontalAlignment="Center" AcceptsReturn="True" TextWrapping="Wrap" Foreground="Black" Background="Gray" Margin="10,0,10,5"/>
+                    <TextBlock Text="Video Details" FontSize="28" HorizontalAlignment="Left" Margin="10,5,10,10" Foreground="Black"/>
+                    <TextBlock Text="Title:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="47"  />
+                    <TextBox x:Name="titleTxtBox" Width="381" Height="20" AcceptsReturn="False" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Description:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="101"  />
+                    <TextBox x:Name="descriptionTxtBox" Width="380" Height="180" HorizontalAlignment="Center" AcceptsReturn="True" TextWrapping="Wrap" Foreground="Black" Background="Gray" Margin="10,0,10,5"/>
                     <TextBlock Text="Tags (separate with commas):" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black"/>
                     <TextBox x:Name="tagTxtBox" Height="40" Width="350" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left" />
-                <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>
+                        <Button x:Name="discard_videoBtn" Content="Discard" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="discard_videoBtn_Click_1"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Popup>
@@ -57,7 +60,6 @@
             <Button x:Name="newvideoBtn" Style="{StaticResource VideoAppBarButtonStyle}" Tag="Video" HorizontalAlignment="Center" Click="Capture_Button_Click"/>
             <Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" Click="playBtn_Click_1" />
             <Button x:Name="stopBtn" Style="{StaticResource StopAppBarButtonStyle}" Tag="Stop" HorizontalAlignment="Center" Click="stopBtn_Click_1"/>
-            <!--<Button x:Name="uploadBtn" Style="{StaticResource UploadAppBarButtonStyle}" Tag="Upload" HorizontalAlignment="Center" Click="uploadBtn_Click_1"/>-->
             <Button x:Name="discardButton" Style="{StaticResource DiscardAppBarButtonStyle}" Tag="Discard" HorizontalAlignment="Center" Click="discardButton_Click_1" />
         </StackPanel>
         

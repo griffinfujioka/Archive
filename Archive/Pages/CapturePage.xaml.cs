@@ -51,20 +51,35 @@ namespace Archive
         public CapturePage()
         {
             this.InitializeComponent();
+
         }
         #endregion 
 
-
-
-        #region Upload button click
-        private async void uploadBtn_Click_1(object sender, RoutedEventArgs e)
+        #region 
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            /* video_metadataPopup.IsOpen = true;
-             while (video_metadataPopup.IsOpen) ; */
-            titleTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
+            try
+            {
+                // Using Windows.Media.Capture.CameraCaptureUI API to capture a photo
+                CameraCaptureUI dialog = new CameraCaptureUI();
+                dialog.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
 
+                StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Video);
+
+                if (file != null)
+                {
+                    video_metadataPopup.IsOpen = true;
+                    ShowMetaDataPopUp();  // Should I await here? 
+                    videoFile = file;
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         }
-        #endregion
+        #endregion 
 
         #region Discard button click
         private async void discardButton_Click_1(object sender, RoutedEventArgs e)
@@ -153,16 +168,7 @@ namespace Archive
                 {
                     video_metadataPopup.IsOpen = true;
                     ShowMetaDataPopUp();
-                    videoFile = file; 
-
-                    //IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read);
-                    //CapturedVideo.SetSource(fileStream, "video/mp4");
-
-                    //// Store the file path in Application Data
-                    //// Each time you Capture a video file.Path is a different, randomly generated path. 
-                    //appSettings[videoKey] = file.Path;
-                    //appSettings[fileKey] = file.Path;
-                    //filePath = file.Path;       // Set the global variable so when you record a video, that's that video that will send 
+                    videoFile = file;
 
 
                 }
@@ -309,11 +315,19 @@ namespace Archive
 
         private async void ShowUploadCompleteMessage()
         {
-            var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
-            output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
-            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-            var task = dialog.ShowAsync().AsTask();
-            await task; 
+            // This async call keeps causing a bug! 
+            //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
+            //output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
+            //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+            //await dialog.ShowAsync(); 
+            //var task = dialog.ShowAsync().AsTask();
+            //await task; 
+        }
+
+        private void discard_videoBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            video_metadataPopup.IsOpen = false;
+            videoFile = null; 
         }
     }
 }

@@ -24,6 +24,7 @@ using Archive.API_Helpers;
 using Microsoft.Live;
 using SkyDriveHelper;           // Wrapper for accessing SkyDrive 
 using System.Runtime.Serialization.Json;    // JSON Serialization
+using Newtonsoft.Json; 
 
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
@@ -155,8 +156,10 @@ namespace Archive
             await dialog.ShowAsync();
             loginBtn.Visibility = Visibility.Visible;
             logoutBtn.Visibility = Visibility.Collapsed;
-            //this.DefaultViewModel["Groups"] = null;
-            newvideoBtn.Visibility = Visibility.Collapsed; 
+
+            // Clear the username and password textboxes
+            usernameTxtBox.Text = "";
+            passwordTxtBox.Password = ""; 
 
         }
         #endregion 
@@ -296,12 +299,12 @@ namespace Archive
                 using (responseStream = response.GetResponseStream())
                 {
                     reader = new StreamReader(responseStream); 
+
+                    // Read a string of JSON into responseJSON
                     responseJSON = reader.ReadToEnd();
-                    byte[] JSON_bytes = Encoding.UTF8.GetBytes(responseJSON);
-                    using (MemoryStream stream = new MemoryStream(JSON_bytes))
-                    {
-                        loggedInUser = (User)des.ReadObject(stream);
-                    }
+
+                    // Deserialize the JSON into a User object (using JSON.NET third party library)
+                    loggedInUser = JsonConvert.DeserializeObject<User>(responseJSON);
                 }
 
                 appSettings[usernameKey] = username;
