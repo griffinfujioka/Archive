@@ -292,7 +292,6 @@ namespace Archive
             try
             {
                 // Get response from URL, whether user credentials are valid 
-                //response = await request.GetResponseAsync(); 
                 response = await request.GetResponseAsync();
                
                 

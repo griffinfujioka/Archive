@@ -55,7 +55,10 @@ namespace Archive
         }
         #endregion 
 
-        #region 
+        #region OnNavigatedTo
+        // Instead of using the capture button on this page, 
+        // we're assuming that this page is only navigated to from 
+        // the main page, whereby the user would be expecting to record a video of themselves. 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             try
@@ -69,7 +72,6 @@ namespace Archive
                 if (file != null)
                 {
                     video_metadataPopup.IsOpen = true;
-                    ShowMetaDataPopUp();  // Should I await here? 
                     videoFile = file;
 
 
@@ -167,10 +169,7 @@ namespace Archive
                 if (file != null)
                 {
                     video_metadataPopup.IsOpen = true;
-                    ShowMetaDataPopUp();
                     videoFile = file;
-
-
                 }
             }
             catch (Exception ex)
@@ -182,7 +181,13 @@ namespace Archive
         #region Submit video button click
         private async void submit_videoBtn_Click_1(object sender, RoutedEventArgs e)
         {
+            string videoName = null; 
+            string videoDescription = descriptionTxtBox.Text;
+            string tags = tagTxtBox.Text; 
             video_metadataPopup.IsOpen = false;
+
+            if (titleTxtBox.Text != "")
+                videoName = titleTxtBox.Text + ".mp4"; 
 
             if (App.SynchronizeVideosToSkydrive)
             {
@@ -198,6 +203,7 @@ namespace Archive
                 LiveAuthClient authClient = new LiveAuthClient();
                 LiveLoginResult result = await authClient.LoginAsync(scopes);
 
+                
                 if (result.Status == LiveConnectSessionStatus.Connected)
                 {
                     LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
@@ -239,11 +245,11 @@ namespace Archive
                     try
                     {
 
-                        SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoFile.Name);
+                        SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoName == null ? videoFile.Name : videoName, OverwriteOption.Rename); 
                     }
                     catch
                     {
-                        ShowUploadErrorMessage();
+                        
                     }
                     
 
@@ -259,7 +265,8 @@ namespace Archive
             }
             try
             {
-                ShowUploadCompleteMessage();
+                #region Commented out code
+                //await ShowUploadCompleteMessage();
                 
 
                 //var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
@@ -291,6 +298,7 @@ namespace Archive
                         
                 //    }
                 //}
+                #endregion 
             }
             catch (HttpRequestException hre)
             {
@@ -308,20 +316,21 @@ namespace Archive
 
         private async void ShowUploadErrorMessage()
         {
-            var errorMessage = string.Format("There was an error uploading your video.\nPlease use the upload button on the bottom of the screen to try again");
+            var errorMessage = string.Format("There was an error uploading your video.");
             Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog(errorMessage);
             await errorDialog.ShowAsync();
         }
 
         private async void ShowUploadCompleteMessage()
         {
-            // This async call keeps causing a bug! 
+            // // This async call keeps causing a bug! 
             //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
             //output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
             //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
             //await dialog.ShowAsync(); 
             //var task = dialog.ShowAsync().AsTask();
-            //await task; 
+            //await task;
+            //return task; 
         }
 
         private void discard_videoBtn_Click_1(object sender, RoutedEventArgs e)
