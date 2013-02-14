@@ -20,6 +20,13 @@ namespace Archive.API_Helpers
         [DataMember(Name = "DateCreated")]
         public DateTime DateCreated { get; set; }
 
+        public VideoMetadata()
+        {
+            this.Title = "";
+            this.Description = "";
+            this.DateCreated = DateTime.Now; 
+        }
+
         public VideoMetadata(string Title, string Description, DateTime DateCreated)
         {
             this.Title = Title;

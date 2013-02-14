@@ -49,6 +49,7 @@ namespace Archive
         public GroupedItemsPage()
         {
             this.InitializeComponent();
+            Loaded += OnLoaded;
 
             appSettings = ApplicationData.Current.LocalSettings.Values;
 
@@ -56,7 +57,8 @@ namespace Archive
             var height = bounds.Height;
             var width = bounds.Width;
 
-            AuthenticateArchiveAPI();       // Authenticate client app with Archive API
+            if(App.HasNetworkConnection)
+                AuthenticateArchiveAPI();       // Authenticate client app with Archive API
 
             // If the user is not logged in 
             if (!appSettings.ContainsKey(usernameKey) || !appSettings.ContainsKey(passwordKey))
@@ -165,8 +167,17 @@ namespace Archive
         #endregion 
 
         #region Login button clicked
-        private void loginBtn_Click_1(object sender, RoutedEventArgs e)
+        private async void loginBtn_Click_1(object sender, RoutedEventArgs e)
         {
+            if (!App.HasNetworkConnection)
+            {
+
+                var output = string.Format("Archive has detected that network connectivity is not available.");
+                output += "\nSome features may be unavailable until network connectivity is restored.";
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                await dialog.ShowAsync();
+
+            }
             loginPopUp.Visibility = Visibility.Visible;
             loginBtn.Visibility = Visibility.Collapsed; 
             usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
@@ -336,5 +347,26 @@ namespace Archive
             loginBtn.Visibility = Visibility.Collapsed;
         }
         #endregion 
+
+        
+
+        
+        private async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (!App.HasNetworkConnection)
+            {
+                var output = string.Format("Archive has detected that network connectivity is not available.");
+                output += "\nSome features may be unavailable until network connectivity is restored.";
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                var output = string.Format("You can internet.");
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                await dialog.ShowAsync();
+
+            }
+        }
     }
 }
