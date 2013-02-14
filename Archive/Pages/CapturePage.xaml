@@ -49,7 +49,7 @@
                     <TextBox x:Name="tagTxtBox" Height="40" Width="350" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left" />
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>
-                        <Button x:Name="discard_videoBtn" Content="Discard" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="discard_videoBtn_Click_1"/>
+                        <Button x:Name="cancelUploadButton" Content="Cancel" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="cancelUploadButton_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

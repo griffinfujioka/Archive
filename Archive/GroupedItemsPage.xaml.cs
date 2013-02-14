@@ -186,7 +186,6 @@ namespace Archive
             HttpMessageHandler handler = new HttpClientHandler();
             handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
             httpClient = new HttpClient(handler);
-            MultipartFormDataContent form = new MultipartFormDataContent();
 
 
             var AuthenticationURI = (ArchiveAPIuri + "/REQUEST_token");

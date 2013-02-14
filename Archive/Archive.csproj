@@ -105,6 +105,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API Helpers\CreateVideoResponse.cs" />
+    <Compile Include="API Helpers\VideoMetadata.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>

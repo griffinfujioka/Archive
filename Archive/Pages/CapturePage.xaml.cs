@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Net; 
 using System.Net.Http;          /* For http handlers */
 using System.Net.Http.Headers;  /* For ProductInfoHeaderValue class */
 using Windows.Storage.Streams;  /* Used to store a video stream to a file */
@@ -23,7 +24,12 @@ using Microsoft.Live;
 using SkyDriveHelper;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
+using Archive.Common;
+using Archive.Data;
 using Archive.DataModel;
+using Archive.API_Helpers;
+using System.Text;  // Encoding 
+using Newtonsoft.Json;
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
 namespace Archive
@@ -181,14 +187,124 @@ namespace Archive
         #region Submit video button click
         private async void submit_videoBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            string videoName = null; 
+            WebResponse response;               // Response from createvideo URL 
+            Stream responseStream;              // Stream data from responding URL
+            StreamReader reader;                // Read data in stream 
+            string responseJSON;                // The JSON string returned to us by the Archive API 
+            CreateVideoResponse APIresponse;    // A simple object with only one attribute: VideoId 
+            HttpClient httpClient = new HttpClient();
+            HttpMessageHandler handler = new HttpClientHandler();
+            int VideoId; 
+
+
+            string videoName = null;
             string videoDescription = descriptionTxtBox.Text;
-            string tags = tagTxtBox.Text; 
+            string tags = tagTxtBox.Text;
+            DateTime dateCreated = DateTime.Now; 
+
+
             video_metadataPopup.IsOpen = false;
 
             if (titleTxtBox.Text != "")
-                videoName = titleTxtBox.Text + ".mp4"; 
+                videoName = titleTxtBox.Text + ".mp4";
 
+            VideoMetadata md = new VideoMetadata(videoName, videoDescription, dateCreated); 
+
+            string JSONstring = JsonConvert.SerializeObject(md, Formatting.None); 
+
+            #region Upload video to Archive database
+            
+            handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
+            httpClient = new HttpClient(handler);
+            var VideoUploadURI = "http://trout.wadec.com/API/video/createvideo?UserId=24";
+            HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
+            MultipartFormDataContent form = new MultipartFormDataContent();
+            
+
+            // Set the method to PUT
+            request.Method = "PUT";
+
+            // Add headers 
+            request.Headers["X-ApiKey"] = "123456";
+            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+
+            // Set the ContentType property of the WebRequest
+            request.ContentType = "application/x-www-form-urlencoded";
+
+
+
+            try
+            {
+                // Get response from URL
+                response = await request.GetResponseAsync();
+
+                using (responseStream = response.GetResponseStream())
+                {
+                    reader = new StreamReader(responseStream);
+
+                    // Read a string of JSON into responseJSON
+                    responseJSON = reader.ReadToEnd();
+
+
+
+                    // Deserialize the JSON into a User object (using JSON.NET third party library)
+                    // The createvideo?UserId=xx URL sends us back a VideoId
+                    APIresponse = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
+                    VideoId = APIresponse.VideoId;
+                }
+
+                var UploadVideoURI = "http://trout.wadec.com/API/uploadvideometadata";
+                HttpWebRequest UploadRequest = HttpWebRequest.CreateHttp(UploadVideoURI);
+
+                // Set method to post 
+                UploadRequest.Method = "POST";
+
+                // Add headers 
+                UploadRequest.Headers["X-ApiKey"] = "123456";
+                UploadRequest.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+
+                // Set the ContentType property of the WebRequest
+                UploadRequest.ContentType = "application/x-www-form-urlencoded";
+
+                
+
+                // Create POST data and convert it to a byte array
+                string postData = String.Format("VideoId={0}&Title={1}&Description={2}&Location={3}&Taken={4}", VideoId, videoName == null ? videoName : videoFile.DateCreated.ToString(), videoDescription, "Pullman, WA", videoFile.DateCreated.ToString());
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+                // Create a stream request
+                Stream dataStream = await request.GetRequestStreamAsync();
+
+                // Write the data to the stream
+                dataStream.Write(byteArray, 0, byteArray.Length);
+
+                //response = await UploadRequest.GetResponseAsync();
+
+
+                //using (responseStream = response.GetResponseStream())
+                //{
+                //    reader = new StreamReader(responseStream);
+
+
+                //}
+
+                IRandomAccessStream stream = await videoFile.OpenReadAsync();
+                StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
+                form.Add(streamContent, "video");
+                //string videoUploadAddress = "http://trout.wade.com/API/video/createvideo"; 
+                //HttpResponseMessage response = await httpClient.PostAsync(videoUploadAddress, form);
+            }
+            catch(Exception ex)
+            { }
+            
+          
+
+
+            
+            #endregion 
+
+            
+            #region Upload video to SkyDrive
             if (App.SynchronizeVideosToSkydrive)
             {
                 #region Adjust some controls while the video is being uploaded
@@ -229,7 +345,6 @@ namespace Archive
                         subFolder = await root.CreateFolderAsync("Archive");
 
 
-                    //StorageFile newVideo = await ApplicationData.Current.LocalFolder.CreateFileAsync(file.Name); 
                     using (IRandomAccessStream fileStream = await videoFile.OpenAsync(FileAccessMode.ReadWrite))
                     {
                         using (IOutputStream outStream = fileStream.GetOutputStreamAt(0))
@@ -245,13 +360,13 @@ namespace Archive
                     try
                     {
 
-                        SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoName == null ? videoFile.Name : videoName, OverwriteOption.Rename); 
+                        SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoName == null ? videoName : videoFile.DateCreated.ToString(), OverwriteOption.Rename); 
                     }
                     catch
                     {
                         
                     }
-                    
+                   
 
                     #region Upload complete, put the controls to normal 
                     uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -259,10 +374,15 @@ namespace Archive
                     backButton.Visibility = Visibility.Visible; ;
                     ButtonsPanel.Visibility = Visibility.Visible;
                     #endregion 
-
-                    // Show progress ring here
                 }
             }
+            #endregion 
+
+            var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
+            output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
+            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+            await dialog.ShowAsync();
+
             try
             {
                 #region Commented out code
@@ -321,22 +441,12 @@ namespace Archive
             await errorDialog.ShowAsync();
         }
 
-        private async void ShowUploadCompleteMessage()
-        {
-            // // This async call keeps causing a bug! 
-            //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
-            //output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
-            //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-            //await dialog.ShowAsync(); 
-            //var task = dialog.ShowAsync().AsTask();
-            //await task;
-            //return task; 
-        }
-
-        private void discard_videoBtn_Click_1(object sender, RoutedEventArgs e)
+        #region 
+        private void cancelUploadButton_Click(object sender, RoutedEventArgs e)
         {
             video_metadataPopup.IsOpen = false;
-            videoFile = null; 
+            videoFile = null;
         }
+        #endregion 
     }
 }
