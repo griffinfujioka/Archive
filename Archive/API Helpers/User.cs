@@ -22,5 +22,19 @@ namespace Archive.API_Helpers
 
         [DataMember(Name = "Created")] 
         public DateTime Created { get; set; }
+
+        public User()
+        {
+            Username = "";
+            Email = "";
+        }
+
+        public User(int uid, string username, string email, DateTime date_created)
+        {
+            this.UserId = uid;
+            this.Username = username;
+            this.Email = email;
+            this.Created = date_created;
+        }
     }
 }

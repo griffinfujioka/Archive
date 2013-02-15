@@ -187,49 +187,48 @@ namespace Archive
         #region Submit video button click
         private async void submit_videoBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            WebResponse response;               // Response from createvideo URL 
-            Stream responseStream;              // Stream data from responding URL
-            StreamReader reader;                // Read data in stream 
-            string responseJSON;                // The JSON string returned to us by the Archive API 
-            CreateVideoResponse APIresponse;    // A simple object with only one attribute: VideoId 
+            #region Variable declarations
+            WebResponse response;                   // Response from createvideo URL 
+            Stream responseStream;                  // Stream data from responding URL
+            StreamReader reader;                    // Read data in stream 
+            string responseJSON;                    // The JSON string returned to us by the Archive API 
+            CreateVideoResponse API_response;       // A simple object with only one attribute: VideoId 
             HttpClient httpClient = new HttpClient();
             HttpMessageHandler handler = new HttpClientHandler();
-            int VideoId; 
+            int VideoId = -1;
+            #endregion 
 
-
-            string videoName = null;
-            string videoDescription = descriptionTxtBox.Text;
-            string tags = tagTxtBox.Text;
-            DateTime dateCreated = DateTime.Now; 
-
-
+            // Close the metadata popup 
             video_metadataPopup.IsOpen = false;
 
-            if (titleTxtBox.Text != "")
-                videoName = titleTxtBox.Text + ".mp4";
-
-            VideoMetadata md = new VideoMetadata(videoName, videoDescription, dateCreated); 
-
-            string JSONstring = JsonConvert.SerializeObject(md, Formatting.None); 
-
-            #region Upload video to Archive database
-            
-            handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
-            httpClient = new HttpClient(handler);
-            var VideoUploadURI = "http://trout.wadec.com/API/video/createvideo?UserId=24";
+            #region Send out CreateVideo request to Archive API, which will return a new VideoId
+            // Get VideoId from API first 
+            // Initiate HttpWebRequest with Archive API
+            var VideoUploadURI = "http://trout.wadec.com/API/createvideo";  // Note hard-coded UserId
             HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
-            MultipartFormDataContent form = new MultipartFormDataContent();
-            
 
-            // Set the method to PUT
-            request.Method = "PUT";
+
+            string UserID_JSON = JsonConvert.SerializeObject(new { UserId = 24 });
+
+            // Set the method to POST
+            request.Method = "POST";
 
             // Add headers 
             request.Headers["X-ApiKey"] = "123456";
             request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
 
             // Set the ContentType property of the WebRequest
-            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentType = "application/json";
+
+            // Create POST data and convert it to a byte array
+            byte[] byteArray = Encoding.UTF8.GetBytes(UserID_JSON);
+
+
+            // Create a stream request
+            Stream dataStream = await request.GetRequestStreamAsync();
+
+            // Write the data to the stream
+            dataStream.Write(byteArray, 0, byteArray.Length);
 
 
 
@@ -245,65 +244,92 @@ namespace Archive
                     // Read a string of JSON into responseJSON
                     responseJSON = reader.ReadToEnd();
 
+                    // Deserialize the JSON into a User object (using JSON.NET third party library)
+                    API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
+
+                    // Get the VideoId
+                    VideoId = API_response.VideoId;
+                }
+
+            }
+            catch (Exception ex)
+            { }
+
+            #endregion 
+
+            #region Extract video metadata from metadata pop up 
+            string videoName = null;
+            string videoDescription = descriptionTxtBox.Text;
+            string tags = tagTxtBox.Text;
+            DateTime dateCreated = DateTime.Now;
+
+            if (titleTxtBox.Text != "")
+                videoName = titleTxtBox.Text + ".mp4";
+            #endregion 
+           
+            #region Send metadata 
+            // Send metadata first 
+            var VideoMetadataURI = "http://trout.wadec.com/API/uploadvideometadata";
+            HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
+
+            // Create a VideoMetadata object 
+            VideoMetadata md = new VideoMetadata(VideoId, "Test name", videoDescription, "ACM HQ", dateCreated.ToUniversalTime());
+
+            // Serialize the VideoMetadata object into JSON string
+            string video_metadata_JSON = JsonConvert.SerializeObject(md);
+
+            // Set the method to POST
+            metadata_request.Method = "POST";
+
+            // Add headers 
+            metadata_request.Headers["X-ApiKey"] = "123456";
+            metadata_request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+
+            // Set the ContentType property of the WebRequest
+            metadata_request.ContentType = "application/json";
+
+            // Create POST data and convert it to a byte array
+            byteArray = Encoding.UTF8.GetBytes(video_metadata_JSON);
+
+            // Create a stream request
+            dataStream = await metadata_request.GetRequestStreamAsync();
+
+            // Write the data to the stream
+            dataStream.Write(byteArray, 0, byteArray.Length);
+
+
+
+            try
+            {
+                // Get response from URL
+                response = await metadata_request.GetResponseAsync();
+
+                using (responseStream = response.GetResponseStream())
+                {
+                    reader = new StreamReader(responseStream);
+
+                    // Read a string of JSON into responseJSON
+                    responseJSON = reader.ReadToEnd();
+
 
 
                     // Deserialize the JSON into a User object (using JSON.NET third party library)
-                    // The createvideo?UserId=xx URL sends us back a VideoId
-                    APIresponse = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
-                    VideoId = APIresponse.VideoId;
+                    API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
                 }
 
-                var UploadVideoURI = "http://trout.wadec.com/API/uploadvideometadata";
-                HttpWebRequest UploadRequest = HttpWebRequest.CreateHttp(UploadVideoURI);
-
-                // Set method to post 
-                UploadRequest.Method = "POST";
-
-                // Add headers 
-                UploadRequest.Headers["X-ApiKey"] = "123456";
-                UploadRequest.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
-
-                // Set the ContentType property of the WebRequest
-                UploadRequest.ContentType = "application/x-www-form-urlencoded";
-
-                
-
-                // Create POST data and convert it to a byte array
-                string postData = String.Format("VideoId={0}&Title={1}&Description={2}&Location={3}&Taken={4}", VideoId, videoName == null ? videoName : videoFile.DateCreated.ToString(), videoDescription, "Pullman, WA", videoFile.DateCreated.ToString());
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-                // Create a stream request
-                Stream dataStream = await request.GetRequestStreamAsync();
-
-                // Write the data to the stream
-                dataStream.Write(byteArray, 0, byteArray.Length);
-
-                //response = await UploadRequest.GetResponseAsync();
-
-
-                //using (responseStream = response.GetResponseStream())
-                //{
-                //    reader = new StreamReader(responseStream);
-
-
-                //}
-
-                IRandomAccessStream stream = await videoFile.OpenReadAsync();
-                StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
-                form.Add(streamContent, "video");
-                //string videoUploadAddress = "http://trout.wade.com/API/video/createvideo"; 
-                //HttpResponseMessage response = await httpClient.PostAsync(videoUploadAddress, form);
             }
-            catch(Exception ex)
-            { }
-            
-          
+            catch (WebException ex)
+            {
+                using (responseStream = ex.Response.GetResponseStream())
+                {
 
-
-            
+                }
+            }
             #endregion 
 
-            
+            #region Upload video to Archive API
+            #endregion 
+
             #region Upload video to SkyDrive
             if (App.SynchronizeVideosToSkydrive)
             {
@@ -378,54 +404,12 @@ namespace Archive
             }
             #endregion 
 
+            #region Show success message
             var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
             output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
             Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
             await dialog.ShowAsync();
-
-            try
-            {
-                #region Commented out code
-                //await ShowUploadCompleteMessage();
-                
-
-                //var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
-                //LiveAuthClient authClient = new LiveAuthClient();
-                //LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-                //if (result.Status == LiveConnectSessionStatus.Connected)
-                //{
-                //    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-                //    SkyDriveFolder subFolder = null;
-                //    // Get hold of the root folder from SkyDrive. 
-                //    // NB: this does not traverse the network and get the full folder details.
-                //    SkyDriveFolder root = new SkyDriveFolder(
-                //      cxnClient, SkyDriveWellKnownFolder.Root);
-
-                //    // This *does* traverse the network and get those details.
-                //    await root.LoadAsync();
-                //    try
-                //    {
-                //        subFolder = await root.GetFolderAsync("Archive");
-                //    }
-                //    catch { }
-
-                //    if (subFolder != null)
-                //    {
-                        
-                //        var file = await subFolder.GetFileAsync("video000.mp4");
-                //        //CapturedVideo.SetSource(file as StorageFile, "video/mp4"); 
-                        
-                //    }
-                //}
-                #endregion 
-            }
-            catch (HttpRequestException hre)
-            {
-            }
-            catch (TaskCanceledException)
-            {
-            }
+            #endregion 
         }
         #endregion
 

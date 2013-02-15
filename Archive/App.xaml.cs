@@ -24,7 +24,9 @@ using SkyDriveHelper;
 using Archive.DataModel;
 using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
-using Windows.Networking.Connectivity;
+using Windows.Networking.Connectivity;      // Check for internet connectivity 
+using Archive.Common;
+using Archive.API_Helpers; 
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -38,7 +40,9 @@ namespace Archive
 
         public static bool SynchronizeVideosToSkydrive = true;
         public static bool API_Authenticated = false;
-        public static bool HasNetworkConnection = false; 
+        public static bool HasNetworkConnection = false;
+        //public static User LoggedInUser;        // Maintain information about a User if one is logged in 
+        
 
         private static ObservableCollection<VideoDataCommon> _skydriveVideos;
         public static ObservableCollection<VideoDataCommon> SkyDriveVideos

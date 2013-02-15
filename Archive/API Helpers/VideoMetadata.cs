@@ -11,13 +11,20 @@ namespace Archive.API_Helpers
     [DataContract]
     class VideoMetadata
     {
+
+        [DataMember(Name = "VideoId")]
+        public int VideoId { get; set;}
+
         [DataMember(Name = "Title")]
         public string Title { get; set; }
 
         [DataMember(Name = "Description")]
         public string Description { get; set; }
 
-        [DataMember(Name = "DateCreated")]
+        [DataMember(Name = "Location")]
+        public string Location { get; set; }
+
+        [DataMember(Name = "Taken")]
         public DateTime DateCreated { get; set; }
 
         public VideoMetadata()
@@ -27,10 +34,12 @@ namespace Archive.API_Helpers
             this.DateCreated = DateTime.Now; 
         }
 
-        public VideoMetadata(string Title, string Description, DateTime DateCreated)
+        public VideoMetadata(int VideoId, string Title, string Description, string Location, DateTime DateCreated)
         {
+            this.VideoId = VideoId; 
             this.Title = Title;
             this.Description = Description;
+            this.Location = Location; 
             this.DateCreated = DateCreated; 
         }
 

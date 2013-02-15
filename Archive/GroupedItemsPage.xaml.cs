@@ -282,21 +282,22 @@ namespace Archive
             request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
 
             // Set the ContentType property of the WebRequest
-            request.ContentType = "application/x-www-form-urlencoded"; 
+            request.ContentType = "application/json";
+
+            // Create a new LoginRequest object 
+            LoginRequest login_request = new LoginRequest(username, password);
+
+            // Serialize the LoginRequest object into JSON
+            var login_request_JSON = JsonConvert.SerializeObject(login_request); 
 
             // Create POST data and convert it to a byte array
-            string postData = String.Format("Username={0}&Password={1}", username, password);
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData); 
+            byte[] byteArray = Encoding.UTF8.GetBytes(login_request_JSON); 
 
             // Create a stream request
             Stream dataStream = await request.GetRequestStreamAsync();
 
             // Write the data to the stream
             dataStream.Write(byteArray, 0, byteArray.Length);
-
-            // Flush the Stream object 
-            //dataStream.Flush();     // Note: What exactly does Flush do? Is this the correct placement for this statement?
-
             
 
             try
@@ -322,6 +323,8 @@ namespace Archive
                 logoutBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed;
                 usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
+
+                //App.LoggedInUser = new User(loggedInUser.UserId, loggedInUser.Username, loggedInUser.Email, loggedInUser.Created);
 
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
                 await dialog.ShowAsync();
@@ -362,9 +365,9 @@ namespace Archive
             }
             else
             {
-                var output = string.Format("You can internet.");
-                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-                await dialog.ShowAsync();
+                //var output = string.Format("You can internet.");
+                //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                //await dialog.ShowAsync();
 
             }
         }
