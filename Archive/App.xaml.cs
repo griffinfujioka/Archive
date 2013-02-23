@@ -41,7 +41,13 @@ namespace Archive
         public static bool SynchronizeVideosToSkydrive = true;
         public static bool API_Authenticated = false;
         public static bool HasNetworkConnection = false;
-        //public static User LoggedInUser;        // Maintain information about a User if one is logged in 
+
+        private static User _loggedinuser;      // Maintain information about a User if one is logged in 
+        public static User LoggedInUser
+        {
+            get { return _loggedinuser; }
+            set { _loggedinuser = value; }
+        }
         
 
         private static ObservableCollection<VideoDataCommon> _skydriveVideos;

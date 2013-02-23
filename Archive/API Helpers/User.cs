@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Json;    // JSON Serialization
 namespace Archive.API_Helpers
 {
     [DataContract]
-    class User
+    public class User
     {
         [DataMember(Name="UserId")]
         public int UserId { get; set; }

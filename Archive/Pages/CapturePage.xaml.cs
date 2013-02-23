@@ -30,6 +30,8 @@ using Archive.DataModel;
 using Archive.API_Helpers;
 using System.Text;  // Encoding 
 using Newtonsoft.Json;
+
+
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
 namespace Archive
@@ -39,7 +41,6 @@ namespace Archive
     /// </summary>
     public sealed partial class CapturePage : Archive.Common.LayoutAwarePage
     {
-
         #region Variable declarations
         // A pointer back to the main page.  This is needed if you want to call methods in MainPage such
         // as NotifyUser()
@@ -204,7 +205,7 @@ namespace Archive
             #region Send out CreateVideo request to Archive API, which will return a new VideoId
             // Get VideoId from API first 
             // Initiate HttpWebRequest with Archive API
-            var VideoUploadURI = "http://trout.wadec.com/API/createvideo";  // Note hard-coded UserId
+            var VideoUploadURI = "http://trout.wadec.com/API/createvideo";  
             HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
 
 
@@ -328,6 +329,22 @@ namespace Archive
             #endregion 
 
             #region Upload video to Archive API
+            HttpClient client = new HttpClient(); 
+            MultipartFormDataContent form = new MultipartFormDataContent();
+            StorageFile file = await StorageFile.GetFileFromPathAsync(videoFile.Path);
+            var stream = await file.OpenReadAsync();
+            StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
+            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            streamContent.Headers.ContentDisposition.Name = "\"file\"";
+            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(videoFile.Path) + "\"";
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("video/mp4");
+            form.Add(new StringContent(VideoId.ToString()), "\"videoId\"");
+            form.Add(streamContent, "file");
+
+            string address = "http://trout.wadec.com/API/uploadvideofile"; 
+            HttpContent response_content = client.PostAsync(address, form).Result.Content;
+
+
             #endregion 
 
             #region Upload video to SkyDrive
@@ -413,19 +430,23 @@ namespace Archive
         }
         #endregion
 
+        #region ShowMetaDataPopUp
         public async Task ShowMetaDataPopUp()
         {
             video_metadataPopup.IsOpen = true; 
         }
+        #endregion
 
+        #region Show Upload Error Message
         private async void ShowUploadErrorMessage()
         {
             var errorMessage = string.Format("There was an error uploading your video.");
             Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog(errorMessage);
             await errorDialog.ShowAsync();
         }
+        #endregion
 
-        #region 
+        #region Cancel upload clicked
         private void cancelUploadButton_Click(object sender, RoutedEventArgs e)
         {
             video_metadataPopup.IsOpen = false;

@@ -317,6 +317,7 @@ namespace Archive
                     loggedInUser = JsonConvert.DeserializeObject<User>(responseJSON);
                 }
 
+                App.LoggedInUser = loggedInUser;        // Store the User's data in the global variable
                 appSettings[usernameKey] = username;
                 appSettings[passwordKey] = password;
                 loginPopUp.Visibility = Visibility.Collapsed; 
