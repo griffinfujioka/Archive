@@ -241,10 +241,21 @@ namespace Archive
                 settings.ContentBackgroundBrush = new SolidColorBrush(_background); 
             });
 
+            var PrivacyPolicy = new SettingsCommand("PrivacyPolicy", "Privacy Policy", (handler) =>
+            {
+                var settings = new SettingsFlyout();
+                settings.Content = new PrivacyPolicy();
+                settings.HeaderBrush = new SolidColorBrush(_background);
+                settings.Background = new SolidColorBrush(_background);
+                settings.HeaderText = "Privacy Policy";
+                settings.IsOpen = true;
+            });
+
 
 
             args.Request.ApplicationCommands.Add(About);
-            args.Request.ApplicationCommands.Add(Settings);
+            //args.Request.ApplicationCommands.Add(Settings);
+            args.Request.ApplicationCommands.Add(PrivacyPolicy); 
         }
     }
 }

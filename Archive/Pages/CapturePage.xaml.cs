@@ -209,7 +209,8 @@ namespace Archive
             HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
 
 
-            string UserID_JSON = JsonConvert.SerializeObject(new { UserId = 24 });
+            string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
+            //string UserID_JSON = JsonConvert.SerializeObject(new { UserId = 1 });
 
             // Set the method to POST
             request.Method = "POST";

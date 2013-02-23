@@ -10,21 +10,13 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <StackPanel>
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="Sync with Skydrive: " FontFamily="Segoe UI" FontSize="14" FontWeight="Light" Foreground="Black" Margin="5,25,10,0"/>
-                
-                <ToggleSwitch x:Name="SyncSkydriveToggle" Tag="Sync with Skydrive" FontFamily="Segoe UI" FontSize="14" FontWeight="Light" IsOn="True" Foreground="Black" Margin="5,0,0,10" Toggled="SyncSkydriveToggle_Toggled_1" />
-          
-                
-            </StackPanel>
+    <Grid Background="White">
+        <StackPanel Orientation="Vertical">
+        <TextBlock Text="Sync with Skydrive: " FontFamily="Segoe UI" FontSize="14" FontWeight="Light" Foreground="Black" Margin="5,25,10,0"/>
+
+        <ToggleSwitch x:Name="SyncSkydriveToggle" Tag="Sync with Skydrive" FontFamily="Segoe UI" FontSize="14" FontWeight="Light" IsOn="True" Foreground="Black" Margin="5,0,0,10" Toggled="SyncSkydriveToggle_Toggled_1" />
+
+
         </StackPanel>
     </Grid>
 </UserControl>
