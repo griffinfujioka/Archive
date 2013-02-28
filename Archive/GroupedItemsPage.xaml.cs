@@ -40,6 +40,7 @@ namespace Archive
         private Windows.Foundation.Collections.IPropertySet appSettings;
         private const String usernameKey = "Username";
         private const String passwordKey = "Password";
+        public const String User = "User"; 
         public String ArchiveAPIuri = "http://trout.wadec.com/API";
         public String API_Key = "";
         public String API_Secret = "";
@@ -73,7 +74,14 @@ namespace Archive
             {
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
-                loginBtn.Visibility = Visibility.Collapsed; 
+                loginBtn.Visibility = Visibility.Collapsed;
+                try
+                {
+
+                    var userJSON = appSettings[User];
+                    App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
+                }
+                catch { }
             }
         }
         #endregion 
@@ -154,6 +162,7 @@ namespace Archive
         {
             appSettings.Remove(usernameKey);    // Clear the username key from appSettings
             appSettings.Remove(passwordKey);    // Clear the password key from appSettings
+            appSettings.Remove(User);           // Clear the User key from appSettings
             Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("You are now logged out.");
             await dialog.ShowAsync();
             loginBtn.Visibility = Visibility.Visible;
@@ -320,6 +329,7 @@ namespace Archive
                 App.LoggedInUser = loggedInUser;        // Store the User's data in the global variable
                 appSettings[usernameKey] = username;
                 appSettings[passwordKey] = password;
+                appSettings[User] = JsonConvert.SerializeObject(loggedInUser); 
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed;
@@ -352,9 +362,7 @@ namespace Archive
         }
         #endregion 
 
-        
-
-        
+        #region OnLoaded
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             if (!App.HasNetworkConnection)
@@ -372,5 +380,15 @@ namespace Archive
 
             }
         }
+        #endregion
+
+        #region Load a user's video feed
+        /// <summary>
+        /// Load a user's video feed (don't actually download the videos)
+        /// </summary>
+        public void LoadUsersVideos()
+        {
+        }
+        #endregion
     }
 }

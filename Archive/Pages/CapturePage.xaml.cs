@@ -30,6 +30,10 @@ using Archive.DataModel;
 using Archive.API_Helpers;
 using System.Text;  // Encoding 
 using Newtonsoft.Json;
+using Windows.Media;
+using Windows.Foundation;
+using Windows.Graphics.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -204,11 +208,11 @@ namespace Archive
 
             #region Send out CreateVideo request to Archive API, which will return a new VideoId
             // Get VideoId from API first 
+            var VideoUploadURI = "http://trout.wadec.com/API/createvideo";
             // Initiate HttpWebRequest with Archive API
-            var VideoUploadURI = "http://trout.wadec.com/API/createvideo";  
             HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
 
-
+            // Serialize a simple UserId object and send it to the Archive API
             string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
             //string UserID_JSON = JsonConvert.SerializeObject(new { UserId = 1 });
 
@@ -322,10 +326,7 @@ namespace Archive
             }
             catch (WebException ex)
             {
-                using (responseStream = ex.Response.GetResponseStream())
-                {
-
-                }
+     
             }
             #endregion 
 
@@ -342,8 +343,14 @@ namespace Archive
             form.Add(new StringContent(VideoId.ToString()), "\"videoId\"");
             form.Add(streamContent, "file");
 
-            string address = "http://trout.wadec.com/API/uploadvideofile"; 
-            HttpContent response_content = client.PostAsync(address, form).Result.Content;
+            string address = "http://trout.wadec.com/API/uploadvideofile";
+            try
+            {
+                HttpContent response_content = client.PostAsync(address, form).Result.Content;
+            }
+            catch
+            {
+            }
 
 
             #endregion 
@@ -400,6 +407,26 @@ namespace Archive
                         }
                     }
 
+                    using (IRandomAccessStream rs = await videoFile.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapImage image = new BitmapImage();
+                        rs.Seek(0);
+                        image.SetSource(rs);
+                    }
+
+                    // Get the first frame of the video 
+                    //IRandomAccessStream fs = await videoFile.OpenAsync(FileAccessMode.ReadWrite);
+                    //try
+                    //{
+                    //    BitmapDecoder bmpDecoder = await BitmapDecoder.CreateAsync(fs); 
+                    //    BitmapFrame frame = await bmpDecoder.GetFrameAsync(0);
+                    //}
+                    //catch (Exception ex)
+                    //{
+
+                    //}
+                    //BitmapImage video_image = new BitmapImage();
+                    //video_image.SetSource(fs); 
                     
                     try
                     {

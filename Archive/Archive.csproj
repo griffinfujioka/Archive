@@ -233,7 +233,12 @@
       <Name>Live SDK</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ThumbnailLibrary\ThumbnailLibrary.csproj">
+      <Project>{2c164463-d56d-43e6-96c4-a4e52013b75e}</Project>
+      <Name>ThumbnailLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
