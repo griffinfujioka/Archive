@@ -37,6 +37,7 @@
             <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
 
+        
         <!-- Horizontal scrolling grid used in most view states -->
         <GridView
             x:Name="itemGridView"

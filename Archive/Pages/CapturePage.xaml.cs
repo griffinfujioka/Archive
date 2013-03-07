@@ -31,9 +31,11 @@ using Archive.API_Helpers;
 using System.Text;  // Encoding 
 using Newtonsoft.Json;
 using Windows.Media;
-using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Media.MediaProperties;        // ImageProperties
+using Windows.Devices.Enumeration; 
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -45,6 +47,10 @@ namespace Archive
     /// </summary>
     public sealed partial class CapturePage : Archive.Common.LayoutAwarePage
     {
+
+        // NOTE: Maybe instead of trying to extract frames from a video, I can simply 
+        // capture an image of the person at the beginning of each video, save it temporarily, 
+        // then upload it with the video metadata if the video gets uploaded. 
         #region Variable declarations
         // A pointer back to the main page.  This is needed if you want to call methods in MainPage such
         // as NotifyUser()
@@ -53,43 +59,57 @@ namespace Archive
         private const String fileKey = "filePath";
         private const String usernameKey = "Username";
         private const String passwordKey = "Password";
+        public BitmapImage videoImage;
         public static string filePath;
         HttpClient httpClient;
-        public StorageFile videoFile; 
+        public StorageFile videoFile;
+        private Windows.Media.Capture.MediaCapture m_mediaCaptureMgr;
+        private readonly String TEMP_PHOTO_FILE_NAME = "photoTmp.jpg";
+        private bool m_bRotateVideoOnOrientationChange;
+        private bool m_bReversePreviewRotation;
+        private readonly String PHOTO_FILE_NAME = "photo.jpg";
+        private DeviceInformationCollection m_devInfoCollection;
+        string[] scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
         #endregion 
 
         #region Constructor
         public CapturePage()
         {
             this.InitializeComponent();
+            videoImage = new BitmapImage(); 
+            
 
         }
         #endregion 
 
         #region OnNavigatedTo
-        // Instead of using the capture button on this page, 
-        // we're assuming that this page is only navigated to from 
-        // the main page, whereby the user would be expecting to record a video of themselves. 
+        /// <summary>
+        /// Instead of using the capture button on this page, 
+        /// we're assuming that this page is only navigated to from 
+        /// the main page, whereby the user would be expecting to record a video of themselves. 
+        /// </summary>
+        /// <param name="e"></param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             try
             {
-                // Using Windows.Media.Capture.CameraCaptureUI API to capture a photo
+                // Open up the camera 
                 CameraCaptureUI dialog = new CameraCaptureUI();
                 dialog.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
-
+                
+                // Capture a video file 
                 StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Video);
 
+                // If the video file isn't null: 
                 if (file != null)
                 {
                     video_metadataPopup.IsOpen = true;
                     videoFile = file;
-
-
                 }
             }
             catch (Exception ex)
             {
+                // Do something here!!!
             }
         }
         #endregion 
@@ -185,6 +205,7 @@ namespace Archive
             }
             catch (Exception ex)
             {
+                // Do something here!!!
             }
         }
         #endregion 
@@ -206,6 +227,13 @@ namespace Archive
             // Close the metadata popup 
             video_metadataPopup.IsOpen = false;
 
+            #region Adjust some controls while the video is being uploaded
+            uploadingPopUp.Visibility = Visibility.Visible;
+            uploadingPopUp.IsOpen = true;
+            backButton.Visibility = Visibility.Collapsed;
+            ButtonsPanel.Visibility = Visibility.Collapsed;
+            #endregion 
+
             #region Send out CreateVideo request to Archive API, which will return a new VideoId
             // Get VideoId from API first 
             var VideoUploadURI = "http://trout.wadec.com/API/createvideo";
@@ -213,6 +241,13 @@ namespace Archive
             HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
 
             // Serialize a simple UserId object and send it to the Archive API
+            if (App.LoggedInUser == null)
+            {
+                var error_output = string.Format("You are not currently logged in.");
+                Windows.UI.Popups.MessageDialog error_dialog = new Windows.UI.Popups.MessageDialog(error_output);
+                await error_dialog.ShowAsync();
+                return; 
+            }
             string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
             //string UserID_JSON = JsonConvert.SerializeObject(new { UserId = 1 });
 
@@ -259,7 +294,9 @@ namespace Archive
 
             }
             catch (Exception ex)
-            { }
+            {
+                // Do something here!!!
+            }
 
             #endregion 
 
@@ -326,7 +363,7 @@ namespace Archive
             }
             catch (WebException ex)
             {
-     
+                // Do something here!!!
             }
             #endregion 
 
@@ -350,111 +387,167 @@ namespace Archive
             }
             catch
             {
+                // Do something here!!!
             }
 
 
             #endregion 
 
-            #region Upload video to SkyDrive
-            if (App.SynchronizeVideosToSkydrive)
+            // Get thumbnail of the video file 
+            var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
+            
+            var bmpimg = new BitmapImage();
+            bmpimg.SetSource(thumb);
+            videoImage.SetSource(thumb); 
+            PreviewImage.Source = bmpimg;
+
+            LiveAuthClient authClient = new LiveAuthClient();
+            LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+
+            if (result.Status == LiveConnectSessionStatus.Connected)
             {
-                #region Adjust some controls while the video is being uploaded
-                uploadingPopUp.Visibility = Visibility.Visible;
-                uploadingPopUp.IsOpen = true;
-                backButton.Visibility = Visibility.Collapsed;
-                ButtonsPanel.Visibility = Visibility.Collapsed;
-                #endregion 
+                LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
 
-                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+                // Get hold of the root folder from SkyDrive. 
+                // NB: this does not traverse the network and get the full folder details.
+                SkyDriveFolder root = new SkyDriveFolder(
+                  cxnClient, SkyDriveWellKnownFolder.Root);
 
-                LiveAuthClient authClient = new LiveAuthClient();
-                LiveLoginResult result = await authClient.LoginAsync(scopes);
+                // This *does* traverse the network and get those details.
+                await root.LoadAsync();
 
-                
-                if (result.Status == LiveConnectSessionStatus.Connected)
+                SkyDriveFolder subFolder = null;
+
+                try
                 {
-                    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-
-                    // Get hold of the root folder from SkyDrive. 
-                    // NB: this does not traverse the network and get the full folder details.
-                    SkyDriveFolder root = new SkyDriveFolder(
-                      cxnClient, SkyDriveWellKnownFolder.Root);
-
-                    // This *does* traverse the network and get those details.
-                    await root.LoadAsync();
-
-                    SkyDriveFolder subFolder = null;
-
-                    try
-                    {
-                        subFolder = await root.GetFolderAsync("Archive");
-                    }
-                    catch { }
-
-
-                    if (subFolder == null)
-                        subFolder = await root.CreateFolderAsync("Archive");
-
-
-                    using (IRandomAccessStream fileStream = await videoFile.OpenAsync(FileAccessMode.ReadWrite))
-                    {
-                        using (IOutputStream outStream = fileStream.GetOutputStreamAt(0))
-                        {
-                            DataWriter dw = new DataWriter(outStream);
-                            await dw.StoreAsync();
-                            dw.DetachStream();
-                            await outStream.FlushAsync();
-                        }
-                    }
-
-                    using (IRandomAccessStream rs = await videoFile.OpenAsync(FileAccessMode.Read))
-                    {
-                        BitmapImage image = new BitmapImage();
-                        rs.Seek(0);
-                        image.SetSource(rs);
-                    }
-
-                    // Get the first frame of the video 
-                    //IRandomAccessStream fs = await videoFile.OpenAsync(FileAccessMode.ReadWrite);
-                    //try
-                    //{
-                    //    BitmapDecoder bmpDecoder = await BitmapDecoder.CreateAsync(fs); 
-                    //    BitmapFrame frame = await bmpDecoder.GetFrameAsync(0);
-                    //}
-                    //catch (Exception ex)
-                    //{
-
-                    //}
-                    //BitmapImage video_image = new BitmapImage();
-                    //video_image.SetSource(fs); 
-                    
-                    try
-                    {
-
-                        SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoName == null ? videoName : videoFile.DateCreated.ToString(), OverwriteOption.Rename); 
-                    }
-                    catch
-                    {
-                        
-                    }
-                   
-
-                    #region Upload complete, put the controls to normal 
-                    uploadingPopUp.Visibility = Visibility.Collapsed;
-                    uploadingPopUp.IsOpen = false;
-                    backButton.Visibility = Visibility.Visible; ;
-                    ButtonsPanel.Visibility = Visibility.Visible;
-                    #endregion 
+                    subFolder = await root.GetFolderAsync("Archive");
                 }
+                catch { }
+
+
+                if (subFolder == null)
+                    subFolder = await root.CreateFolderAsync("Archive");
+
+     //           videoImage.UriSource = new Uri(new Uri(
+     //Windows.Storage.ApplicationData.Current.LocalFolder.Path + "\\" +
+     //Windows.Storage.ApplicationData.Current.LocalFolder.Name),
+     //"videoImage.jpg");
+                
+     //           Windows.Storage.StorageFile imageFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(videoImage.UriSource);
+     //           SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(imageFile, "videoImage.jpg", OverwriteOption.Overwrite);
             }
+            UploadVideoToSkyDrive();
+            //CaptureImage();
+            //Extract_Image_From_Video(videoFile);
+
+            #region Upload complete, put the controls to normal
+            uploadingPopUp.Visibility = Visibility.Collapsed;
+            uploadingPopUp.IsOpen = false;
+            backButton.Visibility = Visibility.Visible; ;
+            ButtonsPanel.Visibility = Visibility.Visible;
             #endregion 
 
+            
             #region Show success message
             var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
             output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
             Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
             await dialog.ShowAsync();
             #endregion 
+        }
+        #endregion
+
+        #region GetCurrentPhotoRotation
+        private Windows.Storage.FileProperties.PhotoOrientation GetCurrentPhotoRotation()
+        {
+            bool counterclockwiseRotation = m_bReversePreviewRotation;
+
+            if (m_bRotateVideoOnOrientationChange)
+            {
+                return PhotoRotationLookup(Windows.Graphics.Display.DisplayProperties.CurrentOrientation, counterclockwiseRotation);
+            }
+            else
+            {
+                return Windows.Storage.FileProperties.PhotoOrientation.Normal;
+            }
+        }
+        #endregion
+
+        #region Re-encode Photo 
+        private async Task<Windows.Storage.StorageFile> ReencodePhotoAsync(
+            Windows.Storage.StorageFile tempStorageFile,
+            Windows.Storage.FileProperties.PhotoOrientation photoRotation)
+        {
+            Windows.Storage.Streams.IRandomAccessStream inputStream = null;
+            Windows.Storage.Streams.IRandomAccessStream outputStream = null;
+            Windows.Storage.StorageFile photoStorage = null;
+
+            try
+            {
+                inputStream = await tempStorageFile.OpenAsync(Windows.Storage.FileAccessMode.Read);
+
+                var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(inputStream);
+
+                photoStorage = await Windows.Storage.KnownFolders.PicturesLibrary.CreateFileAsync(PHOTO_FILE_NAME, Windows.Storage.CreationCollisionOption.GenerateUniqueName);
+
+                outputStream = await photoStorage.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+
+                outputStream.Size = 0;
+
+                var encoder = await Windows.Graphics.Imaging.BitmapEncoder.CreateForTranscodingAsync(outputStream, decoder);
+
+                var properties = new Windows.Graphics.Imaging.BitmapPropertySet();
+                properties.Add("System.Photo.Orientation",
+                    new Windows.Graphics.Imaging.BitmapTypedValue(photoRotation, Windows.Foundation.PropertyType.UInt16));
+
+                await encoder.BitmapProperties.SetPropertiesAsync(properties);
+
+                await encoder.FlushAsync();
+            }
+            finally
+            {
+                if (inputStream != null)
+                {
+                    inputStream.Dispose();
+                }
+
+                if (outputStream != null)
+                {
+                    outputStream.Dispose();
+                }
+
+                var asyncAction = tempStorageFile.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+            }
+
+            return photoStorage;
+        }
+        #endregion
+
+        #region Photo Rotation Lookup
+        private Windows.Storage.FileProperties.PhotoOrientation PhotoRotationLookup(
+            Windows.Graphics.Display.DisplayOrientations displayOrientation,
+            bool counterclockwise)
+        {
+            switch (displayOrientation)
+            {
+                case Windows.Graphics.Display.DisplayOrientations.Landscape:
+                    return Windows.Storage.FileProperties.PhotoOrientation.Normal;
+
+                case Windows.Graphics.Display.DisplayOrientations.Portrait:
+                    return (counterclockwise) ? Windows.Storage.FileProperties.PhotoOrientation.Rotate270 :
+                        Windows.Storage.FileProperties.PhotoOrientation.Rotate90;
+
+                case Windows.Graphics.Display.DisplayOrientations.LandscapeFlipped:
+                    return Windows.Storage.FileProperties.PhotoOrientation.Rotate180;
+
+                case Windows.Graphics.Display.DisplayOrientations.PortraitFlipped:
+                    return (counterclockwise) ? Windows.Storage.FileProperties.PhotoOrientation.Rotate90 :
+                        Windows.Storage.FileProperties.PhotoOrientation.Rotate270;
+
+                default:
+                    return Windows.Storage.FileProperties.PhotoOrientation.Unspecified;
+            }
         }
         #endregion
 
@@ -481,5 +574,198 @@ namespace Archive
             videoFile = null;
         }
         #endregion 
+
+        #region Extract image from video 
+        /// <summary>
+        /// Extract the first frame of the video as a BitmapImage. 
+        /// This image will be the face of the video.
+        /// </summary>
+        /// <param name="video_file"></param>
+        /// <returns></returns>
+        public async void Extract_Image_From_Video(StorageFile video_file)
+        {
+   
+            BitmapImage image = new BitmapImage();
+
+            // Open the video file as a stream
+            IRandomAccessStream readStream = await video_file.OpenAsync(FileAccessMode.Read);
+            // Breaks here 
+            BitmapDecoder bmpDecoder = await BitmapDecoder.CreateAsync(readStream);
+            BitmapFrame frame = await bmpDecoder.GetFrameAsync(0);
+            BitmapTransform bmpTrans = new BitmapTransform();
+            bmpTrans.InterpolationMode = BitmapInterpolationMode.Cubic;
+            PixelDataProvider pixelDataProvider = await frame.GetPixelDataAsync(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Ignore, bmpTrans, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
+            byte[] pixelData = pixelDataProvider.DetachPixelData();
+            InMemoryRandomAccessStream ras = new InMemoryRandomAccessStream();
+            BitmapEncoder enc = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ras);
+            // write the pixel data to our stream
+            enc.SetPixelData(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Ignore, 200, 200, bmpDecoder.DpiX, bmpDecoder.DpiY, pixelData);
+            await enc.FlushAsync();
+
+            // this is critical and below does not work without it!
+            ras.Seek(0);
+
+            // Set to the image
+            BitmapImage gridImage = new BitmapImage();
+            gridImage.SetSource(ras);
+            PreviewImage.Source = gridImage;
+        }
+        #endregion 
+
+        #region Upload video to SkyDrive
+        public async void UploadVideoToSkyDrive()
+        {
+
+            #region Extract video metadata from metadata pop up
+            string videoName = null;
+            string videoDescription = descriptionTxtBox.Text;
+            string tags = tagTxtBox.Text;
+            DateTime dateCreated = DateTime.Now;
+
+            if (titleTxtBox.Text != "")
+                videoName = titleTxtBox.Text + ".mp4";
+            #endregion 
+
+            var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+
+            LiveAuthClient authClient = new LiveAuthClient();
+            LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+
+            if (result.Status == LiveConnectSessionStatus.Connected)
+            {
+                LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+
+                // Get hold of the root folder from SkyDrive. 
+                // NB: this does not traverse the network and get the full folder details.
+                SkyDriveFolder root = new SkyDriveFolder(
+                  cxnClient, SkyDriveWellKnownFolder.Root);
+
+                // This *does* traverse the network and get those details.
+                await root.LoadAsync();
+
+                SkyDriveFolder subFolder = null;
+
+                try
+                {
+                    subFolder = await root.GetFolderAsync("Archive");
+                }
+                catch { }
+
+
+                if (subFolder == null)
+                    subFolder = await root.CreateFolderAsync("Archive");
+
+
+                using (IRandomAccessStream fileStream = await videoFile.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    using (IOutputStream outStream = fileStream.GetOutputStreamAt(0))
+                    {
+                        DataWriter dw = new DataWriter(outStream);
+                        await dw.StoreAsync();
+                        dw.DetachStream();
+                        await outStream.FlushAsync();
+                    }
+                }
+
+
+
+
+                try
+                {
+
+                    SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoName == null ? videoName : videoFile.DateCreated.ToString(), OverwriteOption.Rename);
+                    
+                }
+                catch
+                {
+
+                }
+
+
+            }
+
+        }
+        #endregion
+
+        #region Capture an image
+        public async void CaptureImage()
+        {
+            try
+            {
+                //This is kind of a hack... 
+                //Using Windows.Media.Capture.CameraCaptureUI API to capture a photo
+                //CameraCaptureUI dialog = new CameraCaptureUI();
+                //dialog.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
+                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+
+                LiveAuthClient authClient = new LiveAuthClient();
+                LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+
+                if (result.Status == LiveConnectSessionStatus.Connected)
+                {
+                    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+
+                    // Get hold of the root folder from SkyDrive. 
+                    // NB: this does not traverse the network and get the full folder details.
+                    SkyDriveFolder root = new SkyDriveFolder(
+                      cxnClient, SkyDriveWellKnownFolder.Root);
+
+                    // This *does* traverse the network and get those details.
+                    await root.LoadAsync();
+
+                    SkyDriveFolder subFolder = null;
+
+                    try
+                    {
+                        subFolder = await root.GetFolderAsync("Archive");
+                    }
+                    catch { }
+
+
+                    if (subFolder == null)
+                        subFolder = await root.CreateFolderAsync("Archive");
+
+                    // Get media capture settings
+                    var settings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
+                    m_mediaCaptureMgr = new Windows.Media.Capture.MediaCapture();
+
+                    // Initialize media capture manager 
+                    await m_mediaCaptureMgr.InitializeAsync(settings);
+
+                    // Get the current rotation 
+                    var currentRotation = GetCurrentPhotoRotation();
+
+                    // Set the image properties to create a .jpeg image
+                    var imageProperties = ImageEncodingProperties.CreateJpeg();
+
+                    // Create a temporary storage file in the user's picture library 
+                    var tempPhotoStorageFile = await Windows.Storage.KnownFolders.PicturesLibrary.CreateFileAsync(TEMP_PHOTO_FILE_NAME, Windows.Storage.CreationCollisionOption.GenerateUniqueName);
+
+                    await m_mediaCaptureMgr.CapturePhotoToStorageFileAsync(imageProperties, tempPhotoStorageFile);
+                    var photoStorageFile = await ReencodePhotoAsync(tempPhotoStorageFile, currentRotation);
+                    await subFolder.UploadFileAsync(photoStorageFile);
+                    var photoStream = await photoStorageFile.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                    var bmpimg = new BitmapImage();
+                    bmpimg.SetSource(photoStream);
+                    PreviewImage.Source = bmpimg;
+                    await tempPhotoStorageFile.DeleteAsync();
+
+                    // Set the videoImage variable on this page to contain the image! 
+
+                }
+            }
+            catch
+            {
+
+            }
+        }
+        #endregion
+
+        private async void addTagsBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -18,6 +18,9 @@
             <RowDefinition Height="140"/> <!-- The buttons will go in this row -->
         </Grid.RowDefinitions>
 
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Image x:Name="PreviewImage" Height="50" Width="50" Margin="200,0,0,0"/>
+        </StackPanel>
         <Popup x:Name="uploadingPopUp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20,40,20,40" Width="300" Height="150" Visibility="Visible">
             <StackPanel Orientation="Vertical" Height="150" Width="300">
                 <TextBlock Text="Your video is being uploaded to SkyDrive. This may take several minutes. This dialog is here for testing purposes." FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="Gray"/>
@@ -37,6 +40,7 @@
             </Grid>
         </Grid>
 
+        <!-- Video Metadata Popup -->
         <Popup x:Name="video_metadataPopup" Visibility="Visible" AllowDrop="False" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="400" Height="Auto" Grid.Row="1">
             <Grid Height="Auto" Width="400" Background="White">
                 <StackPanel Orientation="Vertical">
@@ -50,7 +54,9 @@
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>
                         <Button x:Name="cancelUploadButton" Content="Cancel" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="cancelUploadButton_Click"/>
+                        <Button x:Name="addTagsBtn" Content="Add tags" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="addTagsBtn_Click"/>
                     </StackPanel>
+                    
                 </StackPanel>
             </Grid>
         </Popup>
