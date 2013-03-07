@@ -41,20 +41,26 @@
         </Grid>
 
         <!-- Video Metadata Popup -->
-        <Popup x:Name="video_metadataPopup" Visibility="Visible" AllowDrop="False" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="400" Height="Auto" Grid.Row="1">
+        <Popup x:Name="video_metadataPopup" Visibility="Visible" AllowDrop="False" HorizontalAlignment="Left" Margin="450,10,0,10" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2">
             <Grid Height="Auto" Width="400" Background="White">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Video Details" FontSize="28" HorizontalAlignment="Left" Margin="10,5,10,10" Foreground="Black"/>
                     <TextBlock Text="Title:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="47"  />
                     <TextBox x:Name="titleTxtBox" Width="381" Height="20" AcceptsReturn="False" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left"/>
                     <TextBlock Text="Description:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black" Height="24" Width="101"  />
-                    <TextBox x:Name="descriptionTxtBox" Width="380" Height="180" HorizontalAlignment="Center" AcceptsReturn="True" TextWrapping="Wrap" Foreground="Black" Background="Gray" Margin="10,0,10,5"/>
+                    <TextBox x:Name="descriptionTxtBox" Width="380" Height="180" HorizontalAlignment="Left" AcceptsReturn="True" TextWrapping="Wrap" Foreground="Black" Background="Gray" Margin="10,0,10,5"/>
                     <TextBlock Text="Tags (separate with commas):" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black"/>
-                    <TextBox x:Name="tagTxtBox" Height="40" Width="350" Foreground="Black" Margin="10,0,10,5" Background="Gray" HorizontalAlignment="Left" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="tagTxtBox" Height="40" Width="278" Foreground="Black" Margin="10,5,1,5" Background="Gray" HorizontalAlignment="Left" />
+                        <Button x:Name="addTagBtn" Content="Add tags" Height="35" Width="100" FontSize="16" Margin="1,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="addTagBtn_Click"/>
+                    </StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Disabled" Margin="10,0,10,8" MaxHeight="250">
+                        <TextBlock x:Name="tagsTxtBlock"  FontSize="14" Width="380" Foreground="Black" MaxHeight="250" TextWrapping="Wrap"/>
+                    </ScrollViewer>
+                    
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>
                         <Button x:Name="cancelUploadButton" Content="Cancel" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="cancelUploadButton_Click"/>
-                        <Button x:Name="addTagsBtn" Content="Add tags" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="addTagsBtn_Click"/>
                     </StackPanel>
                     
                 </StackPanel>

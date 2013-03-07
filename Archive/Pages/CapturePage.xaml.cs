@@ -48,45 +48,37 @@ namespace Archive
     public sealed partial class CapturePage : Archive.Common.LayoutAwarePage
     {
 
-        // NOTE: Maybe instead of trying to extract frames from a video, I can simply 
-        // capture an image of the person at the beginning of each video, save it temporarily, 
-        // then upload it with the video metadata if the video gets uploaded. 
+
         #region Variable declarations
-        // A pointer back to the main page.  This is needed if you want to call methods in MainPage such
-        // as NotifyUser()
-        private Windows.Foundation.Collections.IPropertySet appSettings;
-        private const String videoKey = "capturedVideo";
+        private const String videoKey = "capturedVideo";        
         private const String fileKey = "filePath";
-        private const String usernameKey = "Username";
+        private const String usernameKey = "Username";  
         private const String passwordKey = "Password";
         public BitmapImage videoImage;
         public static string filePath;
-        HttpClient httpClient;
         public StorageFile videoFile;
-        private Windows.Media.Capture.MediaCapture m_mediaCaptureMgr;
-        private readonly String TEMP_PHOTO_FILE_NAME = "photoTmp.jpg";
-        private bool m_bRotateVideoOnOrientationChange;
-        private bool m_bReversePreviewRotation;
-        private readonly String PHOTO_FILE_NAME = "photo.jpg";
-        private DeviceInformationCollection m_devInfoCollection;
+        private readonly String PHOTO_FILE_NAME = "Archive Temp Photo.jpg";
         string[] scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
         LiveAuthClient authClient;
         LiveConnectClient cxnClient;
-        SkyDriveFolder root;    // Root of SkyDrive directory 
-        SkyDriveFolder archiveSkyDriveFolder; 
+        SkyDriveFolder root;                        // Root of SkyDrive directory 
+        SkyDriveFolder archiveSkyDriveFolder;       // Archive folder in SkyDrive directory 
         private bool Is_SkyDrive_Enabled; 
         int VideoId; 
         #endregion 
 
         #region Constructor
+        /// <summary>
+        ///  Initialize some required variables. 
+        /// </summary>
         public CapturePage()
         {
             this.InitializeComponent();
             videoImage = new BitmapImage();
             VideoId = -1;
             authClient = new LiveAuthClient();
-            Is_SkyDrive_Enabled = false; 
-
+            Is_SkyDrive_Enabled = false;
+            Loaded += OnLoaded;             // Subscribe to the page Loaded event, run code in OnLoaded 
             
 
         }
@@ -97,40 +89,13 @@ namespace Archive
         /// Instead of using the capture button on this page, 
         /// we're assuming that this page is only navigated to from 
         /// the main page, whereby the user would be expecting to record a video of themselves. 
+        /// 
+        /// 
+        /// Open camera dialog so user is immediately able to record video. 
         /// </summary>
         /// <param name="e"></param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // See if we can connect to SkyDrive 
-            // If the user has given us permission to use SkyDrive... 
-            LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-            if (result.Status == LiveConnectSessionStatus.Connected)
-            {
-                Is_SkyDrive_Enabled = true; 
-                cxnClient = new LiveConnectClient(authClient.Session);
-
-                // Get hold of the root folder from SkyDrive. 
-                // NB: this does not traverse the network and get the full folder details.
-                root = new SkyDriveFolder(
-                  cxnClient, SkyDriveWellKnownFolder.Root);
-
-                // This *does* traverse the network and get those details.
-                await root.LoadAsync();
-
-                
-                // Try to open the Archive folder 
-                try
-                {
-                    archiveSkyDriveFolder = await root.GetFolderAsync("Archive");
-                }
-                catch { }
-
-
-                if (archiveSkyDriveFolder == null)
-                    archiveSkyDriveFolder = await root.CreateFolderAsync("Archive");
-            }
-
             try
             {
                 // Open up the camera 
@@ -155,19 +120,53 @@ namespace Archive
         }
         #endregion 
 
+        #region OnLoaded 
+        /// <summary>
+        /// This function takes care of a number of things including: 
+        ///  - Check if we've been given SkyDrive access
+        ///  - If yes, setup Archive folder for storing videos 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // See if we can connect to SkyDrive 
+            // If the user has given us permission to use SkyDrive... 
+            LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+            if (result.Status == LiveConnectSessionStatus.Connected)
+            {
+                Is_SkyDrive_Enabled = true;
+                cxnClient = new LiveConnectClient(authClient.Session);
+
+                // Get hold of the root folder from SkyDrive. 
+                // NB: this does not traverse the network and get the full folder details.
+                root = new SkyDriveFolder(
+                  cxnClient, SkyDriveWellKnownFolder.Root);
+
+                // This *does* traverse the network and get those details.
+                await root.LoadAsync();
+
+
+                // Try to open the Archive folder 
+                try
+                {
+                    archiveSkyDriveFolder = await root.GetFolderAsync("Archive");
+                }
+                catch { }
+
+
+                if (archiveSkyDriveFolder == null)
+                    archiveSkyDriveFolder = await root.CreateFolderAsync("Archive");
+            }
+
+        }
+        #endregion 
+
         #region Discard button click
         private async void discardButton_Click_1(object sender, RoutedEventArgs e)
         {
-            if (appSettings.ContainsKey(videoKey))
-            {
-                appSettings.Remove(videoKey);
-                CapturedVideo.Source = null;
-            }
-            else
-            {
-                //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("There is no video file to discard.");
-                //await dialog.ShowAsync();
-            }
+           
         }
         #endregion 
 
@@ -201,21 +200,7 @@ namespace Archive
         private async void playBtn_Click_1(object sender, RoutedEventArgs e)
         {
 
-            if (appSettings.ContainsKey(videoKey))
-            {
-                object filePath;
-                if (appSettings.TryGetValue(videoKey, out filePath) && filePath.ToString() != "")
-                {
-
-                    await ReloadVideo(filePath.ToString());
-
-                }
-            }
-            else
-            {
-                //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("There is no video file to play.");
-                //await dialog.ShowAsync();
-            }
+            
 
         }
         #endregion 
@@ -463,21 +448,7 @@ namespace Archive
         }
         #endregion
 
-        #region GetCurrentPhotoRotation
-        private Windows.Storage.FileProperties.PhotoOrientation GetCurrentPhotoRotation()
-        {
-            bool counterclockwiseRotation = m_bReversePreviewRotation;
-
-            if (m_bRotateVideoOnOrientationChange)
-            {
-                return PhotoRotationLookup(Windows.Graphics.Display.DisplayProperties.CurrentOrientation, counterclockwiseRotation);
-            }
-            else
-            {
-                return Windows.Storage.FileProperties.PhotoOrientation.Normal;
-            }
-        }
-        #endregion
+    
 
         #region Re-encode Photo 
         private async Task<Windows.Storage.StorageFile> ReencodePhotoAsync(
@@ -529,32 +500,6 @@ namespace Archive
         }
         #endregion
 
-        #region Photo Rotation Lookup
-        private Windows.Storage.FileProperties.PhotoOrientation PhotoRotationLookup(
-            Windows.Graphics.Display.DisplayOrientations displayOrientation,
-            bool counterclockwise)
-        {
-            switch (displayOrientation)
-            {
-                case Windows.Graphics.Display.DisplayOrientations.Landscape:
-                    return Windows.Storage.FileProperties.PhotoOrientation.Normal;
-
-                case Windows.Graphics.Display.DisplayOrientations.Portrait:
-                    return (counterclockwise) ? Windows.Storage.FileProperties.PhotoOrientation.Rotate270 :
-                        Windows.Storage.FileProperties.PhotoOrientation.Rotate90;
-
-                case Windows.Graphics.Display.DisplayOrientations.LandscapeFlipped:
-                    return Windows.Storage.FileProperties.PhotoOrientation.Rotate180;
-
-                case Windows.Graphics.Display.DisplayOrientations.PortraitFlipped:
-                    return (counterclockwise) ? Windows.Storage.FileProperties.PhotoOrientation.Rotate90 :
-                        Windows.Storage.FileProperties.PhotoOrientation.Rotate270;
-
-                default:
-                    return Windows.Storage.FileProperties.PhotoOrientation.Unspecified;
-            }
-        }
-        #endregion
 
         #region ShowMetaDataPopUp
         public async Task ShowMetaDataPopUp()
@@ -580,47 +525,9 @@ namespace Archive
         }
         #endregion 
 
-        #region Extract image from video 
-        /// <summary>
-        /// Extract the first frame of the video as a BitmapImage. 
-        /// This image will be the face of the video.
-        /// </summary>
-        /// <param name="video_file"></param>
-        /// <returns></returns>
-        public async void Extract_Image_From_Video(StorageFile video_file)
-        {
-   
-            BitmapImage image = new BitmapImage();
-
-            // Open the video file as a stream
-            IRandomAccessStream readStream = await video_file.OpenAsync(FileAccessMode.Read);
-            // Breaks here 
-            BitmapDecoder bmpDecoder = await BitmapDecoder.CreateAsync(readStream);
-            BitmapFrame frame = await bmpDecoder.GetFrameAsync(0);
-            BitmapTransform bmpTrans = new BitmapTransform();
-            bmpTrans.InterpolationMode = BitmapInterpolationMode.Cubic;
-            PixelDataProvider pixelDataProvider = await frame.GetPixelDataAsync(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Ignore, bmpTrans, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
-            byte[] pixelData = pixelDataProvider.DetachPixelData();
-            InMemoryRandomAccessStream ras = new InMemoryRandomAccessStream();
-            BitmapEncoder enc = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ras);
-            // write the pixel data to our stream
-            enc.SetPixelData(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Ignore, 200, 200, bmpDecoder.DpiX, bmpDecoder.DpiY, pixelData);
-            await enc.FlushAsync();
-
-            // this is critical and below does not work without it!
-            ras.Seek(0);
-
-            // Set to the image
-            BitmapImage gridImage = new BitmapImage();
-            gridImage.SetSource(ras);
-            PreviewImage.Source = gridImage;
-        }
-        #endregion 
-
         #region Upload video to SkyDrive
         public async void UploadVideoToSkyDrive()
         {
-
             #region Extract video metadata from metadata pop up
             string videoName = null;
             string videoDescription = descriptionTxtBox.Text;
@@ -631,21 +538,16 @@ namespace Archive
                 videoName = titleTxtBox.Text + ".mp4";
             #endregion 
 
-           
             if (authClient == null)
                 authClient = new LiveAuthClient(); 
 
             LiveLoginResult result = await authClient.LoginAsync(scopes);
-
 
             if (Is_SkyDrive_Enabled)
             {
                 
                 // This *does* traverse the network and get details of files held in root directory. 
                 await root.LoadAsync();
-
-               
-
 
                 using (IRandomAccessStream fileStream = await videoFile.OpenAsync(FileAccessMode.ReadWrite))
                 {
@@ -657,19 +559,14 @@ namespace Archive
                         await outStream.FlushAsync();
                     }
                 }
-
-
-
-
+                
                 try
                 {
-
                     SkyDriveFile skyDriveFile = await archiveSkyDriveFolder.UploadFileAsync(videoFile, videoName == null ? videoName : videoFile.DateCreated.ToString(), OverwriteOption.Rename);
-                    
                 }
                 catch
                 {
-
+                    // File upload failed... Do something!
                 }
 
 
@@ -678,12 +575,15 @@ namespace Archive
         }
         #endregion
 
-      
-
-        private async void addTagsBtn_Click(object sender, RoutedEventArgs e)
+        #region Add tag button clicked
+        private void addTagBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            tagsTxtBlock.Text += "#" + tagTxtBox.Text + " ";
+            tagTxtBox.Text = "";
+            tagTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard); 
+            
         }
+        #endregion
 
         #region Get thumbnail from video file, save the thumbnail as a .jpg image in the Local folder
         public async void GetThumbnail()
