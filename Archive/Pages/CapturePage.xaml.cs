@@ -35,7 +35,8 @@ using Windows.Graphics.Imaging;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Media.MediaProperties;        // ImageProperties
-using Windows.Devices.Enumeration; 
+using Windows.Devices.Enumeration;
+using Windows.Storage.FileProperties; 
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -400,11 +401,11 @@ namespace Archive
             var stream = await file.OpenReadAsync();
             StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
             streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            streamContent.Headers.ContentDisposition.Name = "\"file\"";
+            streamContent.Headers.ContentDisposition.Name = "\"File\"";
             streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(videoFile.Path) + "\"";
             streamContent.Headers.ContentType = new MediaTypeHeaderValue("video/mp4");
-            form.Add(new StringContent(VideoId.ToString()), "\"videoId\"");
-            form.Add(streamContent, "file");
+            form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
+            form.Add(streamContent, "File");
 
             string address = "http://trout.wadec.com/API/uploadvideofile";
             try
@@ -419,17 +420,11 @@ namespace Archive
 
             #endregion 
 
-            // Get thumbnail of the video file 
-            var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
-            
-            var bmpimg = new BitmapImage();
-            bmpimg.SetSource(thumb);
-            videoImage.SetSource(thumb); 
-            PreviewImage.Source = bmpimg;
+            // Get a thumbnail image from the video file and upload it to the Archive API (linked via VideoId)
+            GetThumbnail(); 
 
+            // Upload the video file to SkyDrive 
             UploadVideoToSkyDrive();
-            //CaptureImage();
-            //Extract_Image_From_Video(videoFile);
 
             #region Upload complete, put the controls to normal
             uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -437,7 +432,6 @@ namespace Archive
             backButton.Visibility = Visibility.Visible; ;
             ButtonsPanel.Visibility = Visibility.Visible;
             #endregion 
-
             
             #region Show success message
             var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
@@ -446,9 +440,7 @@ namespace Archive
             await dialog.ShowAsync();
             #endregion 
         }
-        #endregion
-
-    
+        #endregion  
 
         #region Re-encode Photo 
         private async Task<Windows.Storage.StorageFile> ReencodePhotoAsync(
@@ -499,7 +491,6 @@ namespace Archive
             return photoStorage;
         }
         #endregion
-
 
         #region ShowMetaDataPopUp
         public async Task ShowMetaDataPopUp()
@@ -586,9 +577,42 @@ namespace Archive
         #endregion
 
         #region Get thumbnail from video file, save the thumbnail as a .jpg image in the Local folder
+        /// <summary>
+        /// Get the thumbnail of videoFile (the StorageFile defined within the scope of this page), 
+        /// save it as a .jpg image in the Local folder
+        /// then upload the file to the Archive API
+        /// </summary>
         public async void GetThumbnail()
         {
+            // Get thumbnail of the video file 
+            var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
+            
+            // Create a Buffer object to hold raw picture data
+            var buffer = new Windows.Storage.Streams.Buffer(Convert.ToUInt32(thumb.Size));
 
+            // Read the raw picture data into the Buffer object 
+            await thumb.ReadAsync(buffer, Convert.ToUInt32(thumb.Size), InputStreamOptions.None);
+
+            // Open LocalFolder
+            var folder = ApplicationData.Current.LocalFolder;
+
+            // Create (or open if one exists) a folder called temp images
+            folder = await folder.CreateFolderAsync("temp images", CreationCollisionOption.OpenIfExists);
+
+            // Create a StorageFile 
+            var thumbFile = await folder.CreateFileAsync(PHOTO_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+
+            // Write picture data to the file 
+            await FileIO.WriteBufferAsync(thumbFile, buffer);
+
+            // Preview the image
+            var bmpimg = new BitmapImage();
+            bmpimg.SetSource(thumb);
+            PreviewImage.Source = bmpimg;
+
+            // Upload the image to the Archive API
+            UploadImageToAPI(thumbFile);
+  
         }
         #endregion 
 
@@ -604,13 +628,13 @@ namespace Archive
             var stream = await imageFile.OpenReadAsync();
             StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
             streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            streamContent.Headers.ContentDisposition.Name = "\"file\"";
-            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(videoFile.Path) + "\"";
-            streamContent.Headers.ContentType = new MediaTypeHeaderValue("video/jpg");
-            form.Add(new StringContent(VideoId.ToString()), "\"videoId\"");
-            form.Add(streamContent, "file");
+            streamContent.Headers.ContentDisposition.Name = "\"File\"";
+            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(imageFile.Path) + "\"";
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
+            form.Add(streamContent, "File");
 
-            string address = "http://trout.wadec.com/API/uploadvideofile";
+            string address = "http://trout.wadec.com/API/uploadvideoimage";
             try
             {
                 HttpContent response_content = client.PostAsync(address, form).Result.Content;
