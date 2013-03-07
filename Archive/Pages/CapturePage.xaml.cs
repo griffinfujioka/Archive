@@ -70,13 +70,23 @@ namespace Archive
         private readonly String PHOTO_FILE_NAME = "photo.jpg";
         private DeviceInformationCollection m_devInfoCollection;
         string[] scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+        LiveAuthClient authClient;
+        LiveConnectClient cxnClient;
+        SkyDriveFolder root;    // Root of SkyDrive directory 
+        SkyDriveFolder archiveSkyDriveFolder; 
+        private bool Is_SkyDrive_Enabled; 
+        int VideoId; 
         #endregion 
 
         #region Constructor
         public CapturePage()
         {
             this.InitializeComponent();
-            videoImage = new BitmapImage(); 
+            videoImage = new BitmapImage();
+            VideoId = -1;
+            authClient = new LiveAuthClient();
+            Is_SkyDrive_Enabled = false; 
+
             
 
         }
@@ -91,6 +101,36 @@ namespace Archive
         /// <param name="e"></param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            // See if we can connect to SkyDrive 
+            // If the user has given us permission to use SkyDrive... 
+            LiveLoginResult result = await authClient.LoginAsync(scopes);
+
+            if (result.Status == LiveConnectSessionStatus.Connected)
+            {
+                Is_SkyDrive_Enabled = true; 
+                cxnClient = new LiveConnectClient(authClient.Session);
+
+                // Get hold of the root folder from SkyDrive. 
+                // NB: this does not traverse the network and get the full folder details.
+                root = new SkyDriveFolder(
+                  cxnClient, SkyDriveWellKnownFolder.Root);
+
+                // This *does* traverse the network and get those details.
+                await root.LoadAsync();
+
+                
+                // Try to open the Archive folder 
+                try
+                {
+                    archiveSkyDriveFolder = await root.GetFolderAsync("Archive");
+                }
+                catch { }
+
+
+                if (archiveSkyDriveFolder == null)
+                    archiveSkyDriveFolder = await root.CreateFolderAsync("Archive");
+            }
+
             try
             {
                 // Open up the camera 
@@ -111,6 +151,7 @@ namespace Archive
             {
                 // Do something here!!!
             }
+
         }
         #endregion 
 
@@ -221,7 +262,7 @@ namespace Archive
             CreateVideoResponse API_response;       // A simple object with only one attribute: VideoId 
             HttpClient httpClient = new HttpClient();
             HttpMessageHandler handler = new HttpClientHandler();
-            int VideoId = -1;
+            
             #endregion 
 
             // Close the metadata popup 
@@ -401,42 +442,6 @@ namespace Archive
             videoImage.SetSource(thumb); 
             PreviewImage.Source = bmpimg;
 
-            LiveAuthClient authClient = new LiveAuthClient();
-            LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-
-            if (result.Status == LiveConnectSessionStatus.Connected)
-            {
-                LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-
-                // Get hold of the root folder from SkyDrive. 
-                // NB: this does not traverse the network and get the full folder details.
-                SkyDriveFolder root = new SkyDriveFolder(
-                  cxnClient, SkyDriveWellKnownFolder.Root);
-
-                // This *does* traverse the network and get those details.
-                await root.LoadAsync();
-
-                SkyDriveFolder subFolder = null;
-
-                try
-                {
-                    subFolder = await root.GetFolderAsync("Archive");
-                }
-                catch { }
-
-
-                if (subFolder == null)
-                    subFolder = await root.CreateFolderAsync("Archive");
-
-     //           videoImage.UriSource = new Uri(new Uri(
-     //Windows.Storage.ApplicationData.Current.LocalFolder.Path + "\\" +
-     //Windows.Storage.ApplicationData.Current.LocalFolder.Name),
-     //"videoImage.jpg");
-                
-     //           Windows.Storage.StorageFile imageFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(videoImage.UriSource);
-     //           SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(imageFile, "videoImage.jpg", OverwriteOption.Overwrite);
-            }
             UploadVideoToSkyDrive();
             //CaptureImage();
             //Extract_Image_From_Video(videoFile);
@@ -626,35 +631,20 @@ namespace Archive
                 videoName = titleTxtBox.Text + ".mp4";
             #endregion 
 
-            var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+           
+            if (authClient == null)
+                authClient = new LiveAuthClient(); 
 
-            LiveAuthClient authClient = new LiveAuthClient();
             LiveLoginResult result = await authClient.LoginAsync(scopes);
 
 
-            if (result.Status == LiveConnectSessionStatus.Connected)
+            if (Is_SkyDrive_Enabled)
             {
-                LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-
-                // Get hold of the root folder from SkyDrive. 
-                // NB: this does not traverse the network and get the full folder details.
-                SkyDriveFolder root = new SkyDriveFolder(
-                  cxnClient, SkyDriveWellKnownFolder.Root);
-
-                // This *does* traverse the network and get those details.
+                
+                // This *does* traverse the network and get details of files held in root directory. 
                 await root.LoadAsync();
 
-                SkyDriveFolder subFolder = null;
-
-                try
-                {
-                    subFolder = await root.GetFolderAsync("Archive");
-                }
-                catch { }
-
-
-                if (subFolder == null)
-                    subFolder = await root.CreateFolderAsync("Archive");
+               
 
 
                 using (IRandomAccessStream fileStream = await videoFile.OpenAsync(FileAccessMode.ReadWrite))
@@ -674,7 +664,7 @@ namespace Archive
                 try
                 {
 
-                    SkyDriveFile skyDriveFile = await subFolder.UploadFileAsync(videoFile, videoName == null ? videoName : videoFile.DateCreated.ToString(), OverwriteOption.Rename);
+                    SkyDriveFile skyDriveFile = await archiveSkyDriveFolder.UploadFileAsync(videoFile, videoName == null ? videoName : videoFile.DateCreated.ToString(), OverwriteOption.Rename);
                     
                 }
                 catch
@@ -688,84 +678,48 @@ namespace Archive
         }
         #endregion
 
-        #region Capture an image
-        public async void CaptureImage()
-        {
-            try
-            {
-                //This is kind of a hack... 
-                //Using Windows.Media.Capture.CameraCaptureUI API to capture a photo
-                //CameraCaptureUI dialog = new CameraCaptureUI();
-                //dialog.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
-                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
-
-                LiveAuthClient authClient = new LiveAuthClient();
-                LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-
-                if (result.Status == LiveConnectSessionStatus.Connected)
-                {
-                    LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-
-                    // Get hold of the root folder from SkyDrive. 
-                    // NB: this does not traverse the network and get the full folder details.
-                    SkyDriveFolder root = new SkyDriveFolder(
-                      cxnClient, SkyDriveWellKnownFolder.Root);
-
-                    // This *does* traverse the network and get those details.
-                    await root.LoadAsync();
-
-                    SkyDriveFolder subFolder = null;
-
-                    try
-                    {
-                        subFolder = await root.GetFolderAsync("Archive");
-                    }
-                    catch { }
-
-
-                    if (subFolder == null)
-                        subFolder = await root.CreateFolderAsync("Archive");
-
-                    // Get media capture settings
-                    var settings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
-                    m_mediaCaptureMgr = new Windows.Media.Capture.MediaCapture();
-
-                    // Initialize media capture manager 
-                    await m_mediaCaptureMgr.InitializeAsync(settings);
-
-                    // Get the current rotation 
-                    var currentRotation = GetCurrentPhotoRotation();
-
-                    // Set the image properties to create a .jpeg image
-                    var imageProperties = ImageEncodingProperties.CreateJpeg();
-
-                    // Create a temporary storage file in the user's picture library 
-                    var tempPhotoStorageFile = await Windows.Storage.KnownFolders.PicturesLibrary.CreateFileAsync(TEMP_PHOTO_FILE_NAME, Windows.Storage.CreationCollisionOption.GenerateUniqueName);
-
-                    await m_mediaCaptureMgr.CapturePhotoToStorageFileAsync(imageProperties, tempPhotoStorageFile);
-                    var photoStorageFile = await ReencodePhotoAsync(tempPhotoStorageFile, currentRotation);
-                    await subFolder.UploadFileAsync(photoStorageFile);
-                    var photoStream = await photoStorageFile.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                    var bmpimg = new BitmapImage();
-                    bmpimg.SetSource(photoStream);
-                    PreviewImage.Source = bmpimg;
-                    await tempPhotoStorageFile.DeleteAsync();
-
-                    // Set the videoImage variable on this page to contain the image! 
-
-                }
-            }
-            catch
-            {
-
-            }
-        }
-        #endregion
+      
 
         private async void addTagsBtn_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
+        #region Get thumbnail from video file, save the thumbnail as a .jpg image in the Local folder
+        public async void GetThumbnail()
+        {
+
+        }
+        #endregion 
+
+        #region Upload video image to Archive URL
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageFile">The .jpg imageFile stored in Local folder to be uploaded</param>
+        public async void UploadImageToAPI(StorageFile imageFile)
+        {
+            HttpClient client = new HttpClient();
+            MultipartFormDataContent form = new MultipartFormDataContent();
+            var stream = await imageFile.OpenReadAsync();
+            StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
+            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            streamContent.Headers.ContentDisposition.Name = "\"file\"";
+            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(videoFile.Path) + "\"";
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("video/jpg");
+            form.Add(new StringContent(VideoId.ToString()), "\"videoId\"");
+            form.Add(streamContent, "file");
+
+            string address = "http://trout.wadec.com/API/uploadvideofile";
+            try
+            {
+                HttpContent response_content = client.PostAsync(address, form).Result.Content;
+            }
+            catch
+            {
+                // Do something here!!!
+            }
+        }
+        #endregion 
     }
 }
