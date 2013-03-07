@@ -107,11 +107,15 @@
   <ItemGroup>
     <Compile Include="API Helpers\CreateVideoResponse.cs" />
     <Compile Include="API Helpers\LoginRequest.cs" />
+    <Compile Include="API Helpers\VideoFeedFunctions.cs" />
     <Compile Include="API Helpers\VideoMetadata.cs" />
+    <Compile Include="API Helpers\VideoModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="API Helpers\User.cs" />
+    <Compile Include="JSON\JsonConverter.cs" />
+    <Compile Include="JSON\JSON_VideoModel_Converter.cs" />
     <Compile Include="Pages\CapturePage.xaml.cs">
       <DependentUpon>CapturePage.xaml</DependentUpon>
     </Compile>
@@ -232,12 +236,6 @@
     <SDKReference Include="LiveSDKXAML, Version=5.0">
       <Name>Live SDK</Name>
     </SDKReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ThumbnailLibrary\ThumbnailLibrary.csproj">
-      <Project>{2c164463-d56d-43e6-96c4-a4e52013b75e}</Project>
-      <Name>ThumbnailLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

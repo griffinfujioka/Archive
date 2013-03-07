@@ -65,7 +65,8 @@ namespace Archive
         SkyDriveFolder root;                        // Root of SkyDrive directory 
         SkyDriveFolder archiveSkyDriveFolder;       // Archive folder in SkyDrive directory 
         private bool Is_SkyDrive_Enabled; 
-        int VideoId; 
+        int VideoId;
+        public string[] tags; 
         #endregion 
 
         #region Constructor
@@ -79,6 +80,7 @@ namespace Archive
             VideoId = -1;
             authClient = new LiveAuthClient();
             Is_SkyDrive_Enabled = false;
+            tags = new string[] { };        // Initialize the tags array - it is an array of strings
             Loaded += OnLoaded;             // Subscribe to the page Loaded event, run code in OnLoaded 
             
 

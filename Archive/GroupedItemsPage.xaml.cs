@@ -24,7 +24,9 @@ using Archive.API_Helpers;
 using Microsoft.Live;
 using SkyDriveHelper;           // Wrapper for accessing SkyDrive 
 using System.Runtime.Serialization.Json;    // JSON Serialization
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
+using Archive.JSON; 
+
 
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
@@ -47,13 +49,16 @@ namespace Archive
         #endregion 
 
         #region Constructor
+        /// <summary>
+        /// Page constructor
+        /// </summary>
         public GroupedItemsPage()
         {
             this.InitializeComponent();
             Loaded += OnLoaded;
 
             appSettings = ApplicationData.Current.LocalSettings.Values;
-
+           
             var bounds = Window.Current.Bounds;
             var height = bounds.Height;
             var width = bounds.Width;
@@ -81,11 +86,18 @@ namespace Archive
                     var userJSON = appSettings[User];
                     App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
                 }
-                catch { }
+                catch 
+                {
+                    // Do something here!
+                }
             }
         }
         #endregion 
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            LoadUsersVideos(); 
+        }
         #region LoadState
         /// <summary>
         /// Populates the page with content passed during navigation.  Any saved state is also
@@ -386,8 +398,54 @@ namespace Archive
         /// <summary>
         /// Load a user's video feed (don't actually download the videos)
         /// </summary>
-        public void LoadUsersVideos()
+        public async void LoadUsersVideos()
         {
+            if (App.LoggedInUser == null)
+                return;
+
+            WebResponse response;                   // Response from createvideo URL 
+            Stream responseStream;                  // Stream data from responding URL
+            StreamReader reader;                    // Read data in stream 
+            string responseJSON;                    // The JSON string returned to us by the Archive API 
+            List<VideoModel> myVideos = new List<VideoModel>();
+            var url = "http://trout.wadec.com/API/videos/feed?userId=" + App.LoggedInUser.UserId;
+            string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
+            // Initiate HttpWebRequest with Archive API
+            HttpWebRequest request = HttpWebRequest.CreateHttp(url);
+            // Set the method to GET
+            request.Method = "GET";
+
+            // Add headers 
+            request.Headers["X-ApiKey"] = "123456";
+            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+
+
+            try
+            {
+                // Get response from URL
+                response = await request.GetResponseAsync();
+
+                using (responseStream = response.GetResponseStream())
+                {
+                    reader = new StreamReader(responseStream);
+
+                    // Read a string of JSON into responseJSON
+                    responseJSON = reader.ReadToEnd();
+
+
+                    // Deserialize all of the ideas in the file into a list of ideas
+                    List<VideoModel> deserialized = JsonConvert.DeserializeObject<List<VideoModel>>(responseJSON,
+      new JSON_VideoModel_Converter());
+
+                    myVideos = deserialized;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Do something here!!!
+            }
         }
         #endregion
     }
