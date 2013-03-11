@@ -156,7 +156,7 @@ namespace Archive
                     var userJSON = appSettings[User];
                     App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
                     // Load user's video from Archive API
-                    await LoadUsersVideos();
+                    //await LoadUsersVideos();
                 }
                 catch
                 {
@@ -312,6 +312,7 @@ namespace Archive
             if (App.LoggedInUser == null)
                 return;
 
+            ArchiveVideos = new VideosDataSource(); 
             WebResponse response;                   // Response from createvideo URL 
             Stream responseStream;                  // Stream data from responding URL
             StreamReader reader;                    // Read data in stream 

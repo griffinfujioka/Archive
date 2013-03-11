@@ -379,6 +379,17 @@ namespace Archive.DataModel
             }
         }
 
+        public VideoModel GetVideo(int videoId)
+        {
+            foreach (var video in App.ArchiveVideos.AllVideosGroup.Items)
+            {
+                if (video.VideoId == videoId)
+                    return video; 
+            }
+
+            return null; 
+        }
+
     }
     #endregion
 }

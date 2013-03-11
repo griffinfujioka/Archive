@@ -127,31 +127,17 @@ namespace Archive
         /// </param>
         /// <param name="pageState">A dictionary of state preserved by this page during an earlier
         /// session.  This will be null the first time a page is visited.</param>
-        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            //var videoDataGroups = VideosDataSource.GetGroups((string)navigationParameter);
-            //this.DefaultViewModel["Groups"] = videoDataGroups; 
-            // If the user is not logged in 
-            //if (appSettings.ContainsKey(usernameKey) || appSettings.ContainsKey(passwordKey))
-            //{
-            //    try
-            //    {
-
-            //        var userJSON = appSettings[User];
-            //        App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
-            //        // Load user's video from Archive API
-            //        App.LoadUsersVideos();
-            //    }
-            //    catch
-            //    {
-            //        // Do something here!
-            //        return; 
-            //    }
-            //}
-            //var videos = VideosDataSource.GetVideos(); 
-            //this.DefaultViewModel["Groups"] = videos;
-            
+            // Load user's video from Archive API
+            if (App.LoggedInUser != null)
+            {
+                await App.LoadUsersVideos();
+                IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
+                if (ArchiveGroup != null)
+                    this.DefaultViewModel["Groups"] = ArchiveGroup;
+            }
         }
         #endregion 
 

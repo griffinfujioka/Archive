@@ -13,7 +13,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Archive.DataModel; 
+using Archive.DataModel;
+using Archive.API_Helpers;      // VideoModel
 
 // The Item Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
 
@@ -28,6 +29,7 @@ namespace Archive
         public ItemDetailPage()
         {
             this.InitializeComponent();
+            
         }
 
         /// <summary>
@@ -49,9 +51,10 @@ namespace Archive
 
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var item = SampleDataSource.GetItem((String)navigationParameter);
-            var item = VideosDataSource.GetItem((String)navigationParameter); 
-            //this.DefaultViewModel["Group"] = item.Group;
-            //this.DefaultViewModel["Items"] = item.Group.Items;
+            this.pageTitle.Text = (App.ArchiveVideos.GetVideo(Convert.ToInt32(navigationParameter))).Title; 
+            var item = VideosDataSource.GetItem(navigationParameter.ToString());
+            this.DefaultViewModel["Group"] = "AllVideosGroup";      // HARDCODE!
+            this.DefaultViewModel["Items"] = App.ArchiveVideos.AllVideosGroup.Items; 
             this.flipView.SelectedItem = item;
         }
 
@@ -63,9 +66,9 @@ namespace Archive
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
-            var selectedItem = (SampleDataItem)this.flipView.SelectedItem;
+            var selectedItem = (VideoModel)this.flipView.SelectedItem;
             //var selectedItem = (VideoDataItem)this.flipView.SelectedItem;
-            pageState["SelectedItem"] = selectedItem.UniqueId;
+            //pageState["SelectedItem"] = selectedItem.VideoId;
             //pageState["SelectedItem"] = selectedItem.VideoId;
         }
     }

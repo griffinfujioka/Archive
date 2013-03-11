@@ -330,13 +330,17 @@ namespace Archive
             #endregion 
 
             #region Extract video metadata from metadata pop up 
-            string videoName = null;
+            string videoName = "Untitled";
+            string archive_videoName = videoName; 
             string videoDescription = descriptionTxtBox.Text;
             string tags = tagTxtBox.Text;
             DateTime dateCreated = DateTime.Now;
 
             if (titleTxtBox.Text != "")
+            {
+                archive_videoName = titleTxtBox.Text; 
                 videoName = titleTxtBox.Text + ".mp4";
+            }
             #endregion 
            
             #region Send metadata 
@@ -345,7 +349,7 @@ namespace Archive
             HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
 
             // Create a VideoMetadata object 
-            VideoMetadata md = new VideoMetadata(VideoId, "Test name", videoDescription, "ACM HQ", dateCreated.ToUniversalTime());
+            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, "ACM HQ", dateCreated.ToUniversalTime());
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);
