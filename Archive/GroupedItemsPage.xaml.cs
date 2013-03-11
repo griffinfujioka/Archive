@@ -91,13 +91,32 @@ namespace Archive
                     // Do something here!
                 }
             }
+
+            //if (appSettings.ContainsKey(usernameKey) || appSettings.ContainsKey(passwordKey))
+            //{
+            //    try
+            //    {
+
+            //        var userJSON = appSettings[User];
+            //        App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
+            //        // Load user's video from Archive API
+            //        App.LoadUsersVideos();
+            //        IEnumerable<VideoModel> videos = null; 
+            //        videos = VideosDataSource.GetVideos();
+            //        if(videos != null)
+            //            this.DefaultViewModel["Groups"] = videos;
+            //    }
+            //    catch
+            //    {
+            //        // Do something here!
+            //        return;
+            //    }
+            //}
+            
         }
         #endregion 
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            LoadUsersVideos(); 
-        }
+ 
         #region LoadState
         /// <summary>
         /// Populates the page with content passed during navigation.  Any saved state is also
@@ -113,8 +132,26 @@ namespace Archive
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var videoDataGroups = VideosDataSource.GetGroups((string)navigationParameter);
             //this.DefaultViewModel["Groups"] = videoDataGroups; 
-            var sampleDataGroups = SampleDataSource.GetGroups((String)navigationParameter);
-            this.DefaultViewModel["Groups"] = sampleDataGroups;
+            // If the user is not logged in 
+            //if (appSettings.ContainsKey(usernameKey) || appSettings.ContainsKey(passwordKey))
+            //{
+            //    try
+            //    {
+
+            //        var userJSON = appSettings[User];
+            //        App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
+            //        // Load user's video from Archive API
+            //        App.LoadUsersVideos();
+            //    }
+            //    catch
+            //    {
+            //        // Do something here!
+            //        return; 
+            //    }
+            //}
+            //var videos = VideosDataSource.GetVideos(); 
+            //this.DefaultViewModel["Groups"] = videos;
+            
         }
         #endregion 
 
@@ -241,40 +278,11 @@ namespace Archive
         #region Sync button 
         private async void syncButton_Click_1(object sender, RoutedEventArgs e)
         {
-            // Define permissions we have with SkyDrive: SignIn, Access, Update
-            var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
-
-            // Create client for authenticating Live ID, login with the permissions defined above in scopes[]
-            LiveAuthClient authClient = new LiveAuthClient();
-            LiveLoginResult result = await authClient.LoginAsync(scopes);
-
-            if (result.Status == LiveConnectSessionStatus.Connected)    // If we're connected to SkyDrive 
-            {
-                LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
-                SkyDriveFolder subFolder = null;
-                // Get hold of the root folder from SkyDrive. 
-                // NB: this does not traverse the network and get the full folder details.
-                SkyDriveFolder root = new SkyDriveFolder(
-                  cxnClient, SkyDriveWellKnownFolder.Root);
-
-                // This *does* traverse the network and get those details.
-                await root.LoadAsync();
-                // Try to open the Archive folder 
-                try
-                {
-                    subFolder = await root.GetFolderAsync("Archive");
-                }
-                catch { }
-
-                if (subFolder != null)
-                {
-                    var files = await subFolder.GetFilesAsync(); 
-
-                    var file = await subFolder.GetFileAsync("video000.mp4");
-                    //CapturedVideo.SetSource(file as StorageFile, "video/mp4"); 
-
-                }
-            }
+            // Load user's video from Archive API
+            await App.LoadUsersVideos();
+            IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
+            if (ArchiveGroup != null)
+                this.DefaultViewModel["Groups"] = ArchiveGroup;
         }
         #endregion 
 
@@ -347,8 +355,12 @@ namespace Archive
                 loginBtn.Visibility = Visibility.Collapsed;
                 usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
 
+                //App.LoadUsersVideos();
+                var sampleDataGroups = VideosDataSource.GetGroups("AllGroups");
+                var ArchiveGroups = App.ArchiveVideos.AllVideos;
+                this.DefaultViewModel["Groups"] = ArchiveGroups;
                 //App.LoggedInUser = new User(loggedInUser.UserId, loggedInUser.Username, loggedInUser.Email, loggedInUser.Created);
-
+                
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
                 await dialog.ShowAsync();
                  
@@ -394,59 +406,6 @@ namespace Archive
         }
         #endregion
 
-        #region Load a user's video feed
-        /// <summary>
-        /// Load a user's video feed (don't actually download the videos)
-        /// </summary>
-        public async void LoadUsersVideos()
-        {
-            if (App.LoggedInUser == null)
-                return;
-
-            WebResponse response;                   // Response from createvideo URL 
-            Stream responseStream;                  // Stream data from responding URL
-            StreamReader reader;                    // Read data in stream 
-            string responseJSON;                    // The JSON string returned to us by the Archive API 
-            List<VideoModel> myVideos = new List<VideoModel>();
-            var url = "http://trout.wadec.com/API/videos/feed?userId=" + App.LoggedInUser.UserId;
-            string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
-            // Initiate HttpWebRequest with Archive API
-            HttpWebRequest request = HttpWebRequest.CreateHttp(url);
-            // Set the method to GET
-            request.Method = "GET";
-
-            // Add headers 
-            request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
-
-
-            try
-            {
-                // Get response from URL
-                response = await request.GetResponseAsync();
-
-                using (responseStream = response.GetResponseStream())
-                {
-                    reader = new StreamReader(responseStream);
-
-                    // Read a string of JSON into responseJSON
-                    responseJSON = reader.ReadToEnd();
-
-
-                    // Deserialize all of the ideas in the file into a list of ideas
-                    List<VideoModel> deserialized = JsonConvert.DeserializeObject<List<VideoModel>>(responseJSON,
-      new JSON_VideoModel_Converter());
-
-                    myVideos = deserialized;
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                // Do something here!!!
-            }
-        }
-        #endregion
+        
     }
 }

@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="c93334e8-0687-4ebd-8d62-92421daf39c0" name="VideoData Class Diagram" linkedPackageId="591879e3-d4c5-40e2-9887-f2a1a3637913" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="119bc0ca-b70d-4bff-8376-2b21a8eef7a8">
+      <profileInstance Id="f714d48c-81ff-4ac8-b198-3beba917318c" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="8c49ef23-9155-4cdc-a18d-b5e2c1547591">
+      <profileInstance Id="51edf3c1-0297-4f8e-8861-520b24473c49" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="39470d19-d9f9-487b-8a2f-26f311f79e04" name="VideoDataCommon" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="bebfad7a-6970-4f0f-94a7-e5574d4078de" />
+        <generalsInternal>
+          <generalization Id="ad76b9f8-4a8e-46ac-9d78-fcd1011b9366" isSubstitutable="false">
+            <classMoniker Id="8bde2a8c-d0b9-4a9f-b5f5-24b5bcad12f3" LastKnownName="VideoDataGroup" />
+            <elementDefinition Id="964f8ace-3d7b-4119-aed0-6dcb1754b3de" />
+          </generalization>
+          <generalization Id="4443f356-4880-4f59-834c-3035b7d6e426" isSubstitutable="false">
+            <classMoniker Id="d30092c5-8ca5-463f-be86-d8b7f72f01a9" LastKnownName="VideoDataItem" />
+            <elementDefinition Id="df28816a-6f01-4f0f-a36f-6bf9b95cd920" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="8ffe3586-cf9d-4c8d-b6ac-57fe9a2b0d7e" name="VideoId" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="fa85cb5c-65cb-4dae-9421-ec84009117b1" />
+          </property>
+          <property Id="79722fd3-ea69-4967-bd8d-7767a4525203" name="Title" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="9f8f12d4-ed4d-4201-9f4a-f15e7df7c930" />
+          </property>
+          <property Id="a68310c0-03d7-4298-9c51-adf4caf35d4e" name="Subtitle" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="24842928-499d-4ce6-ba40-be1c728c8ac2" />
+          </property>
+          <property Id="078ee4cc-648a-4ab5-99c1-4afeedeff3f3" name="Description" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="0ca61a19-0e7d-40b1-8454-005adcb720f3" />
+          </property>
+          <property Id="cf9c76d5-0837-474b-bf79-e2217bd94b4f" name="Image" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="4d14a6c5-4a18-4853-8847-ca8cae07d55b" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="3214cc38-b797-4de4-8993-b18f9a8c57fa" name="SetImage" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="1effcf87-ef6b-461a-9393-934e30ef796f" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="fb1841eb-aef0-4711-9ca7-6198476e7095" name="string path" direction="In" isUnique="false">
+                  <elementDefinition Id="70a370cd-58fd-477d-860d-d0605f25c72a" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d30092c5-8ca5-463f-be86-d8b7f72f01a9" name="VideoDataItem" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="462f08b2-30c5-4c9c-8bd4-f5d1802d1173" />
+        <ownedAttributesInternal>
+          <property Id="af9f5328-3078-4111-99ff-304e45bdfc9a" name="VideoDataGroup group" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="b770e5f1-3486-48f9-9b37-f6f10765011e" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="8bde2a8c-d0b9-4a9f-b5f5-24b5bcad12f3" name="VideoDataGroup" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="cdeedf1c-1234-47d3-a2b9-01029a571132" />
+        <ownedAttributesInternal>
+          <property Id="eb7cb336-f523-4bdf-a685-cbaff960f129" name="ObservableCollection&lt;VideoDataItems&gt; Items" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="49b72b3d-ee72-4391-a587-6756e979f5d3" />
+          </property>
+          <property Id="5f54aefa-2ab2-4e8f-a3b3-43e1b7e0868e" name="ObservableCollection&lt;VideoDataItem&gt; TopItems" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="7c1d951f-3e7b-4d7f-903a-3d6555701249" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="1fa2e446-caea-4e7c-87a3-e54cf819cd13" name="ItemsCollectionsChanged" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="be015885-f27d-4117-ba8f-8614c8e02ce2" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="dd2352e8-edca-4da7-beb1-09ad58fc1d43" name="VideosDataSource" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="0e282e2d-f680-4310-94a2-d94fce0db37a" />
+        <ownedAttributesInternal>
+          <property Id="c636a457-b82e-46d3-989d-c3dbe595891a" name="ObservableCollection&lt;VideoDataGroup&gt; AllGroups" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="a0d67b30-4c4d-4470-a70b-af49a83cc025" />
+          </property>
+          <property Id="21562bf2-1a81-4fb1-953c-752d9858dd6d" name="static VideosDataSource _videosDataSource" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="da93b1a2-c4ac-4b23-8d52-1502b75cd2fd" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="aac9507d-ff0f-4f6f-a914-72d7020d7e50" name="GetGroups" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="2b5078bc-68cf-431e-9fb4-75366d4b10bb" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="a0c3dba5-51d4-4813-b4f8-705bcc7aa281" name="string uniqueId" direction="In" isUnique="false">
+                  <elementDefinition Id="f98c403c-c8c4-48d4-af32-518753fdc125" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="7f7197a6-0b34-4413-92d7-5a61ca0c5c88" name="GetGroup" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="abc2de33-4b59-443e-89eb-fcf6887ac909" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="21c2612a-7a90-4c44-bdff-8721057ec773" name="string uniqueId" direction="In" isUnique="false">
+                  <elementDefinition Id="5b70e767-2b31-4b5d-8727-393d600b3a5e" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="ecff8161-89c2-4e3d-a240-c5031b0cd59d" name="GetItem" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="18ca1a57-5422-491d-9d62-cf7fe51769ee" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="3b32549a-250e-4f06-9c30-ad2465763115" name="string uniqieId" direction="In" isUnique="false">
+                  <elementDefinition Id="40da61c1-8adf-45f7-b98c-7523de98e43f" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="67584060-b50c-4b62-998f-38ceae45feba" name="Unload" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="9475fd60-3d29-43ad-8110-75cf861956ec" />
+          </operation>
+          <operation Id="aa6a1c27-499c-4283-b2ab-99b08094a82b" name="Load" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="b5e7fd36-e60f-4400-90dc-f48ff35965eb" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="591879e3-d4c5-40e2-9887-f2a1a3637913" name="Archive UML models">
+    <elementDefinition Id="f0a92da0-2f5b-4839-91bd-8152ef111819" />
+  </package>
+</logicalClassDesignerModel>

@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archive", "Archive\Archive.csproj", "{0E13581E-02CE-4E81-8F5C-96672E0E1B89}"
 EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "Archive UML models", "Archive UML models\Archive UML models.modelproj", "{71EAA5C6-984E-4E9E-810D-61EA5F416069}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,16 @@ Global
 		{0E13581E-02CE-4E81-8F5C-96672E0E1B89}.Release|x86.ActiveCfg = Release|x86
 		{0E13581E-02CE-4E81-8F5C-96672E0E1B89}.Release|x86.Build.0 = Release|x86
 		{0E13581E-02CE-4E81-8F5C-96672E0E1B89}.Release|x86.Deploy.0 = Release|x86
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Release|ARM.ActiveCfg = Release|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Release|x64.ActiveCfg = Release|Any CPU
+		{71EAA5C6-984E-4E9E-810D-61EA5F416069}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

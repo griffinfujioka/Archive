@@ -25,8 +25,12 @@ using Archive.DataModel;
 using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
 using Windows.Networking.Connectivity;      // Check for internet connectivity 
-using Archive.Common;
-using Archive.API_Helpers; 
+using Archive.API_Helpers;
+using Archive.JSON;
+using Newtonsoft.Json;
+using System.Net;
+using Windows.Storage;
+using System.Threading.Tasks; 
 
 // The Grid App template is documented at http://go.microsoft.com/fwlink/?LinkId=234226
 
@@ -37,16 +41,24 @@ namespace Archive
     /// </summary>
     sealed partial class App : Application
     {
-
+        #region Variable Declarations
         public static bool SynchronizeVideosToSkydrive = true;
         public static bool API_Authenticated = false;
         public static bool HasNetworkConnection = false;
+        public static VideosDataSource videodatasource;
 
         private static User _loggedinuser;      // Maintain information about a User if one is logged in 
         public static User LoggedInUser
         {
             get { return _loggedinuser; }
             set { _loggedinuser = value; }
+        }
+
+        private static VideosDataSource _archiveVideos;
+        public static VideosDataSource ArchiveVideos
+        {
+            get { return _archiveVideos; }
+            set { _archiveVideos = value; }
         }
         
 
@@ -56,8 +68,16 @@ namespace Archive
             get { return _skydriveVideos; }
             set { _skydriveVideos = value; }
         }
- 
 
+        private static ObservableCollection<VideoModel> _myVideos;
+        public static ObservableCollection<VideoModel> MyVideos
+        {
+            get { return _myVideos; }
+            set { _myVideos = value; }
+        }
+        #endregion
+
+        #region App constructor
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -67,7 +87,9 @@ namespace Archive
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+        #endregion 
 
+        #region OnLaunched
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used when the application is launched to open a specific file, to display
@@ -77,12 +99,13 @@ namespace Archive
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
             Frame rootFrame = Window.Current.Content as Frame;
-
-
+            Windows.Foundation.Collections.IPropertySet appSettings = ApplicationData.Current.LocalSettings.Values;
+            String usernameKey = "Username";
+            String passwordKey = "Password";
+            String User = "User"; 
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
@@ -104,10 +127,6 @@ namespace Archive
                     }
                 }
 
-
-
-                //var VideosDataSource = new VideosDataSource();
-                //await VideosDataSource.Load(); 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
@@ -126,6 +145,27 @@ namespace Archive
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            ArchiveVideos = new VideosDataSource(); 
+            // If the user is not logged in 
+            if (appSettings.ContainsKey(usernameKey) || appSettings.ContainsKey(passwordKey))
+            {
+                try
+                {
+
+                    var userJSON = appSettings[User];
+                    App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
+                    // Load user's video from Archive API
+                    await LoadUsersVideos();
+                }
+                catch
+                {
+                    // Do something here!
+                }
+            }
+
+
+            
 
             ConnectionProfile connectionProfile = NetworkInformation.GetInternetConnectionProfile();
             var interfaceType = connectionProfile.NetworkAdapter.IanaInterfaceType;
@@ -183,9 +223,9 @@ namespace Archive
                         if (subFolder == null)
                             subFolder = await root.CreateFolderAsync("Archive");
 
-                        VideosDataSource data = new VideosDataSource();
+                        //VideosDataSource data = new VideosDataSource();
                         //data.Completed += Data_Completed;
-                        await data.Load();
+                        //await data.Load();
 
                     }
                 }
@@ -195,7 +235,9 @@ namespace Archive
             #endregion
 
         }
+        #endregion 
 
+        #region OnSuspending
         /// <summary>
         /// Invoked when application execution is being suspended.  Application state is saved
         /// without knowing whether the application will be terminated or resumed with the contents
@@ -209,7 +251,9 @@ namespace Archive
             await SuspensionManager.SaveAsync();
             deferral.Complete();
         }
+        #endregion
 
+        #region Settings Commands Requested
         /// <summary>
         /// Define Settings Pages for the application once the OnCommandsRequested event is raised.
         /// </summary>
@@ -257,5 +301,74 @@ namespace Archive
             //args.Request.ApplicationCommands.Add(Settings);
             args.Request.ApplicationCommands.Add(PrivacyPolicy); 
         }
+        #endregion
+
+        #region Load a user's video feed
+        /// <summary>
+        /// Load a user's video feed (don't actually download the videos)
+        /// </summary>
+        public static async Task LoadUsersVideos()
+        {
+            if (App.LoggedInUser == null)
+                return;
+
+            WebResponse response;                   // Response from createvideo URL 
+            Stream responseStream;                  // Stream data from responding URL
+            StreamReader reader;                    // Read data in stream 
+            string responseJSON;                    // The JSON string returned to us by the Archive API 
+            List<VideoModel> myVideos = new List<VideoModel>();
+            var url = "http://trout.wadec.com/API/videos/feed?userId=" + App.LoggedInUser.UserId;
+            string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
+            // Initiate HttpWebRequest with Archive API
+            HttpWebRequest request = HttpWebRequest.CreateHttp(url);
+            // Set the method to GET
+            request.Method = "GET";
+
+            // Add headers 
+            request.Headers["X-ApiKey"] = "123456";
+            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+
+
+            try
+            {
+                // Get response from URL
+                response = await request.GetResponseAsync();
+
+                using (responseStream = response.GetResponseStream())
+                {
+                    reader = new StreamReader(responseStream);
+
+                    // Read a string of JSON into responseJSON
+                    responseJSON = reader.ReadToEnd();
+
+
+                    // Deserialize all of the ideas in the file into a list of ideas
+                    List<VideoModel> deserialized = JsonConvert.DeserializeObject<List<VideoModel>>(responseJSON,
+      new JSON_VideoModel_Converter());
+
+                    myVideos = deserialized;
+                    MyVideos = new ObservableCollection<VideoModel>(myVideos); 
+                    
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Do something here!!!
+            }
+
+            // Convert the list of VideoModels into a VideosDataSource 
+            foreach (var video in MyVideos)
+            {
+                // Convert string from API (i.e., Upload/25.jpg) to url path (i.e., http://trout.wadec.com/upload/videoimage/25.jpg)
+                var imageURLfromAPI = video.VideoImage;
+                video.VideoImage = "http://trout.wadec.com/" + imageURLfromAPI; 
+                ArchiveVideos.AddItem(video); 
+            }
+        }
+        #endregion
+
+
     }
 }
