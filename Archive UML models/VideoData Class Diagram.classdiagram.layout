@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<logicalClassDesignerDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="VideoData Class Diagram">
+<logicalClassDesignerDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11.125, 9.75" name="VideoData Class Diagram">
   <logicalClassDesignerModelMoniker Id="c93334e8-0687-4ebd-8d62-92421daf39c0" />
   <nestedChildShapes>
     <classShape Id="01cdbf9f-0a26-49e0-92a0-37d6df5e5ca0" absoluteBounds="4.5, 0.75, 2.375, 1.8632812052965169" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
@@ -31,7 +31,7 @@
         <OperationElementListCompartment Id="fd59fc8e-ae19-4224-9c1e-eee63137c36e" absoluteBounds="6.015, 4.421484357615312, 3.5949999999999998, 0.36132811258236563" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <generalizationConnector edgePoints="[(5.6875 : 2.61328120529652); (5.6875 : 3.10416666666667); (7.8125 : 3.10416666666667); (7.8125 : 3.5)]" manuallyRouted="true" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="113, 111, 110">
+    <generalizationConnector edgePoints="[(5.6875 : 2.61328120529652); (5.6875 : 3.10416666666667); (7.8125 : 3.10416666666667); (7.8125 : 3.5)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed" customColor="113, 111, 110">
       <generalizationMoniker Id="ad76b9f8-4a8e-46ac-9d78-fcd1011b9366" />
       <relativeChildShapes />
       <nodes>
@@ -39,12 +39,23 @@
         <classShapeMoniker Id="6d88f0b8-afe6-49fd-b8c4-54b91c9f6732" />
       </nodes>
     </generalizationConnector>
-    <classShape Id="24298da0-bf74-4cdf-a6bd-b3ea4e1a7605" absoluteBounds="3.25, 5.875, 3, 2.0234374503294621" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
+    <classShape Id="24298da0-bf74-4cdf-a6bd-b3ea4e1a7605" absoluteBounds="1, 5.875, 3, 2.0234374503294621" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
       <classMoniker Id="dd2352e8-edca-4da7-beb1-09ad58fc1d43" LastKnownName="VideosDataSource" />
       <nestedChildShapes>
-        <AttributeElementListCompartment Id="91422afb-b87a-4e57-b9bf-939bba6ffaaf" absoluteBounds="3.265, 6.265, 2.9699999999999998, 0.52148435761531187" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
-        <OperationElementListCompartment Id="ff48df22-7857-49ed-a4ee-48245e7011c0" absoluteBounds="3.265, 6.796484357615312, 2.9699999999999998, 1.0019530927141507" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <AttributeElementListCompartment Id="91422afb-b87a-4e57-b9bf-939bba6ffaaf" absoluteBounds="1.0150000000000001, 6.265, 2.9699999999999998, 0.52148435761531187" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="ff48df22-7857-49ed-a4ee-48245e7011c0" absoluteBounds="1.0150000000000001, 6.796484357615312, 2.9699999999999998, 1.0019530927141507" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="39616460-97e5-48e5-8824-4b679f42242f" absoluteBounds="6.375, 5.875, 3, 3.6249999006589242" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
+      <classMoniker Id="2992f925-d384-4d2e-9d93-ff9b085a3903" LastKnownName="VideoDataModel" />
+      <nestedChildShapes>
+        <AttributeElementListCompartment Id="7381dbd4-d066-40c0-a685-8c8ea35b2125" absoluteBounds="6.39, 6.265, 2.9699999999999998, 2.9238280331095057" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="ab78b767-6142-4212-986b-093c2b7b4f12" absoluteBounds="6.39, 9.1988280331095051, 2.9699999999999998, 0.20117186754941985" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <commentShape Id="3db1dcf7-7118-4b09-bf90-2869eabea1d8" absoluteBounds="9.625, 6.25, 1.25, 1.125" customColor="251, 247, 200">
+      <commentMoniker Id="1b66b8f8-420b-4cb8-9c5c-379dcec8cab8" />
+      <relativeChildShapes />
+    </commentShape>
   </nestedChildShapes>
 </logicalClassDesignerDiagram>

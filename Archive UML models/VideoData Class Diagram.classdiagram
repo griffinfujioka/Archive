@@ -1,19 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="c93334e8-0687-4ebd-8d62-92421daf39c0" name="VideoData Class Diagram" linkedPackageId="591879e3-d4c5-40e2-9887-f2a1a3637913" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
-  <profileInstances>
-    <packageHasProfileInstances Id="119bc0ca-b70d-4bff-8376-2b21a8eef7a8">
-      <profileInstance Id="f714d48c-81ff-4ac8-b198-3beba917318c" name="StandardProfileL2">
-        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
-      </profileInstance>
-      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
-    </packageHasProfileInstances>
-    <packageHasProfileInstances Id="8c49ef23-9155-4cdc-a18d-b5e2c1547591">
-      <profileInstance Id="51edf3c1-0297-4f8e-8861-520b24473c49" name="StandardProfileL3">
-        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
-      </profileInstance>
-      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
-    </packageHasProfileInstances>
-  </profileInstances>
+  <ownedCommentsInternal>
+    <comment Id="1b66b8f8-420b-4cb8-9c5c-379dcec8cab8">
+      <elementDefinition Id="e86eadf4-39d3-4e2d-be23-4b29f03e529b" />
+      <body>The VideoDateModel is special because it's the type of object being sent from the Archive API - thus, it is somewhat out of our control. </body>
+    </comment>
+  </ownedCommentsInternal>
   <packagedElements>
     <logicalClassDesignerModelHasTypes>
       <class Id="39470d19-d9f9-487b-8a2f-26f311f79e04" name="VideoDataCommon" isAbstract="false" isLeaf="false" isActiveClass="false">
@@ -138,8 +130,80 @@
         </ownedOperationsInternal>
       </class>
     </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="2992f925-d384-4d2e-9d93-ff9b085a3903" name="VideoDataModel" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="fcaa4900-153d-468c-a3ad-5b22a2b6d5d1" />
+        <ownedAttributesInternal>
+          <property Id="b6fdf76e-4660-4b3a-9b88-4b7c5dd810bd" name="int VideoId" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1e34163c-4f88-4bd8-8d00-7efea78200bf" />
+          </property>
+          <property Id="545d0037-1f2d-4e8a-85f2-de42d6c0c607" name="int UserId" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="8761a825-10d3-4eb3-9f7d-75de8f309ed8" />
+          </property>
+          <property Id="807decc2-7a62-4db2-a84a-d37601e8682c" name="string Email" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="59357812-4a9f-49a9-86ad-227fcad57276" />
+          </property>
+          <property Id="8313b096-8175-44cc-8f81-bee969b1b85f" name="DateTime Created" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="f3f5962b-db8b-4145-b0c9-a7ff0f8556a1" />
+          </property>
+          <property Id="9c6bb1d7-74cc-4805-af3b-8d7200291b7b" name="bool Public" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="b37f8528-7694-4ec2-85e6-82cca42d8335" />
+          </property>
+          <property Id="bc12cc70-504d-49fc-9003-47809851b1e3" name="string Title" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="7b3d0e7e-3630-4321-a573-3fd708266654" />
+          </property>
+          <property Id="9051acbf-20d1-4cd7-a30b-f83657068a74" name="string Description" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="bbd2f20c-8db8-49f5-a30e-9ef82acc4a72" />
+          </property>
+          <property Id="79fff21d-8bc5-4696-aefd-eea043226685" name="string Location" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="27be7c54-2e98-4346-8d47-bbf30e28ffd4" />
+          </property>
+          <property Id="796abd0b-425c-479f-b216-fb6fb70dd8c1" name="string[] Tags" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="3f6951df-59e0-434a-b125-ea241d95de65" />
+          </property>
+          <property Id="5b936563-0df3-43af-92fe-5df97318ac7c" name="DateTime Taken" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="f9b1f36a-3e5d-4f93-bfee-6879e131aec0" />
+          </property>
+          <property Id="51e0df57-8cf7-402c-9731-66f316e49218" name="DateTime Taken" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="f6526a06-29f0-477c-8fcb-ef25613c9743" />
+          </property>
+          <property Id="9b394bda-b85e-48fb-b693-88d6ab5d14b7" name="string VideoImage" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="0fa98d43-d6c1-4e6f-b530-5f3dc3b4c2b5" />
+          </property>
+          <property Id="b1cb4c97-cb93-4d2f-9dbc-6ec33fb9622c" name="int ImageSize" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="28e8c294-a3d8-4792-93e3-5f35f031c295" />
+          </property>
+          <property Id="81ac896c-c2d7-437f-8afa-1caf7bf1f3b3" name="string ImageMimeType" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="dbf8182f-3f00-4fe7-9741-62ad052be397" />
+          </property>
+          <property Id="4be14777-50bc-4dde-96c2-7a9387a3168a" name="string VideoFile" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="b662f921-f7d2-4825-a08e-2815735b22f3" />
+          </property>
+          <property Id="bccb2cbe-cff6-4d36-91d7-f102ac34b669" name="int VideoSize" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="7c2bf2e5-5780-42e6-a03a-ea19b9afcf1f" />
+          </property>
+          <property Id="4e1ca3d9-4775-4431-80c9-81288ea98a68" name="string VideoMimetype" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="48f8bd46-b194-4385-8e02-44ec47ac7654" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
   </packagedElements>
   <package Id="591879e3-d4c5-40e2-9887-f2a1a3637913" name="Archive UML models">
     <elementDefinition Id="f0a92da0-2f5b-4839-91bd-8152ef111819" />
+    <profileInstances>
+      <packageHasProfileInstances Id="119bc0ca-b70d-4bff-8376-2b21a8eef7a8">
+        <profileInstance Id="f714d48c-81ff-4ac8-b198-3beba917318c" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="8c49ef23-9155-4cdc-a18d-b5e2c1547591">
+        <profileInstance Id="51edf3c1-0297-4f8e-8861-520b24473c49" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
   </package>
 </logicalClassDesignerModel>

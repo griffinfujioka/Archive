@@ -168,8 +168,8 @@ namespace Archive
 
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            //this.Frame.Navigate(typeof(GroupDetailPage), ((VideoDataGroup)group).VideoId);
-            this.Frame.Navigate(typeof(GroupDetailPage), ((SampleDataGroup)group).UniqueId);
+            this.Frame.Navigate(typeof(GroupDetailPage), ((VideoDataGroup)group).VideoId);
+            //this.Frame.Navigate(typeof(GroupDetailPage), ((SampleDataGroup)group).UniqueId);
         }
         #endregion 
 
@@ -184,8 +184,8 @@ namespace Archive
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            //var itemId = ((VideoDataItem)e.ClickedItem).VideoId;
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
+            var itemId = ((VideoModel)e.ClickedItem).VideoId;
+            //var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
             this.Frame.Navigate(typeof(ItemDetailPage), itemId);
         }
         #endregion 
