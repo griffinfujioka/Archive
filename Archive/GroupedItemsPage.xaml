@@ -139,6 +139,7 @@
             </StackPanel>
             <Button x:Name="logoutBtn" Content="Log out" Click="signOutButton_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
             <Button x:Name="loginBtn" Content="Login" Click="loginBtn_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+            <Button x:Name="signUpBtn" Content="Sign Up" Click="signUpBtn_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
         </StackPanel>
         <Grid x:Name="lowerButtonsGrid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,-12,0,15">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

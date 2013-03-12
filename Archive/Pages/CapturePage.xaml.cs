@@ -427,10 +427,10 @@ namespace Archive
             #endregion 
 
             // Get a thumbnail image from the video file and upload it to the Archive API (linked via VideoId)
-            GetThumbnail(); 
+            await GetThumbnail(); 
 
             // Upload the video file to SkyDrive 
-            UploadVideoToSkyDrive();
+            await UploadVideoToSkyDrive();
 
             #region Upload complete, put the controls to normal
             uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -440,10 +440,10 @@ namespace Archive
             #endregion 
             
             #region Show success message
-            var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
-            output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
-            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-            await dialog.ShowAsync();
+            //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
+            //output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
+            //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+            //await dialog.ShowAsync();
             #endregion 
         }
         #endregion  
@@ -523,7 +523,7 @@ namespace Archive
         #endregion 
 
         #region Upload video to SkyDrive
-        public async void UploadVideoToSkyDrive()
+        public async Task UploadVideoToSkyDrive()
         {
             #region Extract video metadata from metadata pop up
             string videoName = null;
@@ -588,7 +588,7 @@ namespace Archive
         /// save it as a .jpg image in the Local folder
         /// then upload the file to the Archive API
         /// </summary>
-        public async void GetThumbnail()
+        public async Task GetThumbnail()
         {
             // Get thumbnail of the video file 
             var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);

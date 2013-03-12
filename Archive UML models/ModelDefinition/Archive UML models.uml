@@ -496,6 +496,341 @@
         </ownedAttributesInternal>
       </class>
     </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="471c23b6-f0e6-4c7e-bd9e-c8d6aba8eca2"
+        name="VideoDataCommon"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <generalsInternal>
+          <generalization
+            Id="7c7716e3-0427-4d63-b80a-ee8c2801dc0d"
+            isSubstitutable="false">
+            <classMoniker
+              Id="36ea94fc-b442-47da-94e9-99fbff66ccf1"
+              LastKnownName="VideoDataGroup"
+              LastKnownLocation="Archive UML models.uml" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property
+            Id="b73f7016-f544-452e-bc34-0aba82aae19b"
+            name="string VideoId"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="d7697289-3894-4e6a-a272-0a609486eec7"
+            name="string Title"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="8d8a8035-44a7-46d7-92f6-26f761b3487e"
+            name="string Subtitle"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="92312ba2-ef57-4c62-a01d-2557d7e2825f"
+            name="string Description"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="9c9b0e1e-beb6-49f6-ba0b-287ea6f0a424"
+            name="ImageSource Image"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="0fa86cb1-f83d-44aa-82e5-0220d84838aa"
+            name="SetImage"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="4b5600d4-4a93-4a1e-a025-9be1fa993863"
+                  name="string path"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="83ec14f8-7290-4b5f-98be-2eadaf97ccec"
+            name="string ToString"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="36ea94fc-b442-47da-94e9-99fbff66ccf1"
+        name="VideoDataGroup"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedAttributesInternal>
+          <property
+            Id="fa7a6ec7-7f41-4db8-ba8b-a6c19cefe71c"
+            name="ObservableCollection&lt;VideoDataItems&gt; Items"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="e8d8ab26-d2d5-4510-87df-69145da00317"
+            name="ObservableCollection&lt;VideoDataItem&gt; TopItems"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="92199083-1b0b-4e07-b164-1080c39c5436"
+            name="ItemsCollectionsChanged"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="b54a7073-f10b-4ba1-83b3-f5f61e8e33ca"
+                  name="object sender"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="01a8f686-4d81-43c6-a383-ff5151f6aa77"
+                  name="NotifyCollectionChangedEventArgs e)"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="48b47e83-0a4c-419c-a653-6b9b55a1477c"
+        name="VideosDataSource"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedAttributesInternal>
+          <property
+            Id="a420e670-2030-48ff-a1c3-64168a1da1b9"
+            name="ObservableCollection&lt;VideoDataGroup&gt; AllGroups"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="b67442e4-ab62-478f-a089-c6cb41193ea6"
+            name="static VideosDataSource _videosDataSource"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="ac416ea8-5987-4496-b9c0-e7894f3cc69a"
+            name="bool DataLoaded"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="ffcd4e26-b6f2-4d8e-b782-e5940945eb9e"
+            name="VideoDataGroup AllVideosGroup"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="ebd36f4d-fb75-494a-941d-dae176ceb6a0"
+            name="IEnumerable&lt;VideoDataGroup&gt; GetGroups"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="9c52f68c-5448-4d17-ae21-772dd660335a"
+                  name="string uniqueId"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="51858c10-4244-472b-a324-6f89bce5ef8d"
+            name="IEnumerable&lt;VideoDataGroup&gt; GetGroup"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="48ad4262-f749-4cbb-ba6c-331c20c61a2f"
+                  name="string uniqueId"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="10c76977-8fe0-4d86-8a43-83d9c14ef61f"
+            name="VideoModel GetItem"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="c30956a1-cf3c-4a68-b51a-aca73c6018d1"
+                  name="string uniqueId"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="fb1905cb-ab4b-4b6a-b751-4676b53cb3d9"
+            name="Unload"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="bd283ab8-c816-41b7-b6d4-bde57d740b13"
+            name="Load"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="e327d45f-3b17-4ae6-9229-5a676d828289"
+            name="IEnumerable&lt;VideoModel&gt; GetVideos"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="7aa1eed0-b4a2-4ae0-8e9d-70c52f7e6ee0"
+            name="AddItem"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="f99ef71e-5ba2-48b9-a0b0-b2d9bb6c5b1f"
+                  name="VideoModel item"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="95c25e46-e20c-411a-80b1-acd51296799a"
+            name="VideoModel GetVideo"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="161dd263-7800-46cb-b0d4-ac4c528820ce"
+                  name="int videoId"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
   </packagedElements>
   <primitiveType
     Id="220a3521-e091-4221-bae9-3ef9018e845c"

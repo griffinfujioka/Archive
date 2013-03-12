@@ -25,7 +25,8 @@ using Microsoft.Live;
 using SkyDriveHelper;           // Wrapper for accessing SkyDrive 
 using System.Runtime.Serialization.Json;    // JSON Serialization
 using Newtonsoft.Json;
-using Archive.JSON; 
+using Archive.JSON;
+using Archive.Pages; 
 
 
 
@@ -73,13 +74,15 @@ namespace Archive
                 usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Collapsed;
-                loginBtn.Visibility = Visibility.Visible; 
+                loginBtn.Visibility = Visibility.Visible;
+                signUpBtn.Visibility = Visibility.Visible; 
             }
             else
             {
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed;
+                signUpBtn.Visibility = Visibility.Collapsed; 
                 try
                 {
 
@@ -91,27 +94,6 @@ namespace Archive
                     // Do something here!
                 }
             }
-
-            //if (appSettings.ContainsKey(usernameKey) || appSettings.ContainsKey(passwordKey))
-            //{
-            //    try
-            //    {
-
-            //        var userJSON = appSettings[User];
-            //        App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
-            //        // Load user's video from Archive API
-            //        App.LoadUsersVideos();
-            //        IEnumerable<VideoModel> videos = null; 
-            //        videos = VideosDataSource.GetVideos();
-            //        if(videos != null)
-            //            this.DefaultViewModel["Groups"] = videos;
-            //    }
-            //    catch
-            //    {
-            //        // Do something here!
-            //        return;
-            //    }
-            //}
             
         }
         #endregion 
@@ -137,6 +119,10 @@ namespace Archive
                 IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
                 if (ArchiveGroup != null)
                     this.DefaultViewModel["Groups"] = ArchiveGroup;
+            }
+            else
+            {
+                this.DefaultViewModel["Groups"] = null; 
             }
         }
         #endregion 
@@ -201,11 +187,15 @@ namespace Archive
             Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("You are now logged out.");
             await dialog.ShowAsync();
             loginBtn.Visibility = Visibility.Visible;
+            signUpBtn.Visibility = Visibility.Visible;
             logoutBtn.Visibility = Visibility.Collapsed;
 
             // Clear the username and password textboxes
             usernameTxtBox.Text = "";
-            passwordTxtBox.Password = ""; 
+            passwordTxtBox.Password = "";
+
+            this.DefaultViewModel["Groups"] = null; 
+            App.ArchiveVideos = null; 
 
         }
         #endregion 
@@ -223,7 +213,8 @@ namespace Archive
 
             }
             loginPopUp.Visibility = Visibility.Visible;
-            loginBtn.Visibility = Visibility.Collapsed; 
+            loginBtn.Visibility = Visibility.Collapsed;
+            signUpBtn.Visibility = Visibility.Visible; 
             usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
             //this.Frame.Navigate(typeof(GroupedItemsPage)); 
         }
@@ -335,17 +326,21 @@ namespace Archive
                 App.LoggedInUser = loggedInUser;        // Store the User's data in the global variable
                 appSettings[usernameKey] = username;
                 appSettings[passwordKey] = password;
-                appSettings[User] = JsonConvert.SerializeObject(loggedInUser); 
+                appSettings[User] = JsonConvert.SerializeObject(loggedInUser);
+
+                #region Adjust UI controls 
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed;
+                signUpBtn.Visibility = Visibility.Collapsed; 
                 usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
+                #endregion
 
-                //App.LoadUsersVideos();
-                var sampleDataGroups = VideosDataSource.GetGroups("AllGroups");
-                var ArchiveGroups = App.ArchiveVideos.AllVideos;
-                this.DefaultViewModel["Groups"] = ArchiveGroups;
-                //App.LoggedInUser = new User(loggedInUser.UserId, loggedInUser.Username, loggedInUser.Email, loggedInUser.Created);
+                
+                await App.LoadUsersVideos();
+                IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
+                if (ArchiveGroup != null)
+                    this.DefaultViewModel["Groups"] = ArchiveGroup;
                 
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
                 await dialog.ShowAsync();
@@ -369,6 +364,7 @@ namespace Archive
             await dialog.ShowAsync();
             loginPopUp.Visibility = Visibility.Visible;
             loginBtn.Visibility = Visibility.Collapsed;
+            signUpBtn.Visibility = Visibility.Visible; 
         }
         #endregion 
 
@@ -391,6 +387,11 @@ namespace Archive
             }
         }
         #endregion
+
+        private void signUpBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(SignUpPage)); 
+        }
 
         
     }
