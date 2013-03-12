@@ -53,7 +53,7 @@
                     <PasswordBox x:Name="passwordTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,8,5,8"/>
                     <TextBlock Text="Confirm password:" FontSize="18" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <PasswordBox x:Name="confirmPasswordTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,8,5,8"/>
-                
+                    <Button x:Name="submitInfoBtn" Content="Submit" Height="50" Width="200" Click="submitInfoBtn_Click_1"/>
                 </StackPanel>
             </Grid>
             

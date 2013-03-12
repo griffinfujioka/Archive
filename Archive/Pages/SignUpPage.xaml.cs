@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Archive.API_Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Newtonsoft.Json;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
@@ -55,6 +57,27 @@ namespace Archive.Pages
         {
             emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
             base.OnNavigatedTo(e);
+        }
+
+        private async void submitInfoBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            var emailAddress = emailAddressTxtBox.Text;
+            var username = usernameTxtBox.Text;
+            var password = passwordTxtBox.Password;
+            var confirmPassword = confirmPasswordTxtBox.Password;
+
+            if (password != confirmPassword)
+            {
+                var output = string.Format("Passwords must match.");
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                await dialog.ShowAsync();
+                return; 
+            }
+
+            var accountCreator = new AccountCreationObject() { EmailAddress = emailAddress, Username = username, Password = password };
+            var JSONaccountCreator = JsonConvert.SerializeObject(accountCreator); 
+            
+           
         }
     }
 }

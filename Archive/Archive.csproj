@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="API Helpers\CreateVideoResponse.cs" />
     <Compile Include="API Helpers\LoginRequest.cs" />
+    <Compile Include="API Helpers\AccountCreationObject.cs" />
     <Compile Include="API Helpers\VideoFeedFunctions.cs" />
     <Compile Include="API Helpers\VideoMetadata.cs" />
     <Compile Include="API Helpers\VideoModel.cs" />
