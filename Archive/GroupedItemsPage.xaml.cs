@@ -75,14 +75,16 @@ namespace Archive
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Collapsed;
                 loginBtn.Visibility = Visibility.Visible;
-                signUpBtn.Visibility = Visibility.Visible; 
+                signUpBtn.Visibility = Visibility.Visible;
+                lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
             }
             else
             {
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed;
-                signUpBtn.Visibility = Visibility.Collapsed; 
+                signUpBtn.Visibility = Visibility.Collapsed;
+                lowerButtonsStackPanel.Visibility = Visibility.Visible;
                 try
                 {
 
@@ -189,6 +191,7 @@ namespace Archive
             loginBtn.Visibility = Visibility.Visible;
             signUpBtn.Visibility = Visibility.Visible;
             logoutBtn.Visibility = Visibility.Collapsed;
+            lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
 
             // Clear the username and password textboxes
             usernameTxtBox.Text = "";
@@ -352,7 +355,7 @@ namespace Archive
                 InvalidLoginCredentials();
             }
 
-            
+            lowerButtonsStackPanel.Visibility = Visibility.Visible;
 
         }
         #endregion 
@@ -364,7 +367,8 @@ namespace Archive
             await dialog.ShowAsync();
             loginPopUp.Visibility = Visibility.Visible;
             loginBtn.Visibility = Visibility.Collapsed;
-            signUpBtn.Visibility = Visibility.Visible; 
+            signUpBtn.Visibility = Visibility.Visible;
+            lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
         }
         #endregion 
 

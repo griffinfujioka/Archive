@@ -43,12 +43,17 @@
             </Grid.ColumnDefinitions>
             <Grid x:Name="ContentGrid" Margin="50,10,10,10">
                 <StackPanel Orientation="Vertical" Grid.Column="0">
-                    <TextBlock Text="E-mail address: " FontSize="20" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox x:Name="emailAddressTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5"/>
-                    <TextBlock Text="Username:" FontSize="20" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox x:Name="usernameTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5"/>
-                    <TextBlock Text="Password:" FontSize="20" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox x:Name="passwordTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5"/>
+                    <TextBlock Text="E-mail address: " FontSize="18" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBox x:Name="emailAddressTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,8,5,8"/>
+                    <TextBlock Text="Username:" FontSize="18" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBox x:Name="usernameTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,8,5,8"/>
+
+
+                    <TextBlock Text="Password:" FontSize="18" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <PasswordBox x:Name="passwordTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,8,5,8"/>
+                    <TextBlock Text="Confirm password:" FontSize="18" FontFamily="Segoe UI" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <PasswordBox x:Name="confirmPasswordTxtBox" Height="30" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,8,5,8"/>
+                
                 </StackPanel>
             </Grid>
             

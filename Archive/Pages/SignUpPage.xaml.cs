@@ -24,6 +24,7 @@ namespace Archive.Pages
         public SignUpPage()
         {
             this.InitializeComponent();
+            emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
         }
 
         /// <summary>
@@ -37,6 +38,7 @@ namespace Archive.Pages
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
+            emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
         }
 
         /// <summary>
@@ -47,6 +49,12 @@ namespace Archive.Pages
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
+            base.OnNavigatedTo(e);
         }
     }
 }

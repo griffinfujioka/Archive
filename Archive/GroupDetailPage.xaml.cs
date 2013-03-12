@@ -1,5 +1,6 @@
-﻿using Archive.Data;
-
+﻿using Archive.API_Helpers;
+using Archive.Data;
+using Archive.DataModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,7 @@ namespace Archive
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var group = SampleDataSource.GetGroup((String)navigationParameter);
+            var group = App.ArchiveVideos.GetGroup((String)navigationParameter);
             this.DefaultViewModel["Group"] = group;
             this.DefaultViewModel["Items"] = group.Items;
         }
@@ -56,8 +57,8 @@ namespace Archive
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            this.Frame.Navigate(typeof(ItemDetailPage), itemId);
+            var VideoId = ((VideoModel)e.ClickedItem).VideoId;
+            this.Frame.Navigate(typeof(ItemDetailPage), VideoId);
         }
     }
 }

@@ -183,56 +183,56 @@ namespace Archive
             // Settings
             SettingsPane.GetForCurrentView().CommandsRequested += Settings_CommandsRequested;
 
-            #region Synchronize with Skydrive
-            if (SynchronizeVideosToSkydrive)
-            {
-                var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
+            //#region Synchronize with Skydrive
+            //if (SynchronizeVideosToSkydrive)
+            //{
+            //    var scopes = new string[] { "wl.signin", "wl.skydrive", "wl.skydrive_update" };
 
-                if (App.HasNetworkConnection)
-                {
-                    LiveAuthClient authClient = new LiveAuthClient();
-                    LiveLoginResult result = await authClient.LoginAsync(scopes);
+            //    if (App.HasNetworkConnection)
+            //    {
+            //        LiveAuthClient authClient = new LiveAuthClient();
+            //        LiveLoginResult result = await authClient.LoginAsync(scopes);
 
-                    if (result.Status == LiveConnectSessionStatus.Connected)
-                    {
-                        LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
+            //        if (result.Status == LiveConnectSessionStatus.Connected)
+            //        {
+            //            LiveConnectClient cxnClient = new LiveConnectClient(authClient.Session);
 
-                        // Get hold of the root folder from SkyDrive. 
-                        // NB: this does not traverse the network and get the full folder details.
-                        SkyDriveFolder root = new SkyDriveFolder(
-                          cxnClient, SkyDriveWellKnownFolder.Root);
+            //            // Get hold of the root folder from SkyDrive. 
+            //            // NB: this does not traverse the network and get the full folder details.
+            //            SkyDriveFolder root = new SkyDriveFolder(
+            //              cxnClient, SkyDriveWellKnownFolder.Root);
 
-                        // This *does* traverse the network and get those details.
-                        await root.LoadAsync();
+            //            // This *does* traverse the network and get those details.
+            //            await root.LoadAsync();
 
-                        string id = root.Name;
-                        string desc = root.Description;
-                        DateTimeOffset update = root.UpdatedTime;
-                        uint count = root.Count;
-                        Uri linkLocation = root.LinkLocation;
-                        Uri uploadLocation = root.UploadLocation;
-                        SkyDriveFolder subFolder = null;
+            //            string id = root.Name;
+            //            string desc = root.Description;
+            //            DateTimeOffset update = root.UpdatedTime;
+            //            uint count = root.Count;
+            //            Uri linkLocation = root.LinkLocation;
+            //            Uri uploadLocation = root.UploadLocation;
+            //            SkyDriveFolder subFolder = null;
 
-                        try
-                        {
-                            subFolder = await root.GetFolderAsync("Archive");
-                        }
-                        catch { }
-
-
-                        if (subFolder == null)
-                            subFolder = await root.CreateFolderAsync("Archive");
-
-                        //VideosDataSource data = new VideosDataSource();
-                        //data.Completed += Data_Completed;
-                        //await data.Load();
-
-                    }
-                }
+            //            try
+            //            {
+            //                subFolder = await root.GetFolderAsync("Archive");
+            //            }
+            //            catch { }
 
 
-            }
-            #endregion
+            //            if (subFolder == null)
+            //                subFolder = await root.CreateFolderAsync("Archive");
+
+            //            //VideosDataSource data = new VideosDataSource();
+            //            //data.Completed += Data_Completed;
+            //            //await data.Load();
+
+            //        }
+            //    }
+
+
+            //}
+            //#endregion
 
         }
         #endregion 

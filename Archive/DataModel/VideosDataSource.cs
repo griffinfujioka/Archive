@@ -254,12 +254,9 @@ namespace Archive.DataModel
             return _videosDataSource.AllGroups;
         }
 
-        public static VideoDataGroup GetGroup(string uniqueId)
+        public VideoDataGroup GetGroup(string uniqueId)
         {
-            // Simple linear search is acceptable for small data sets
-            var matches = _videosDataSource.AllGroups.Where((group) => group.VideoId.Equals(uniqueId));
-            if (matches.Count() == 1) return matches.First();
-            return null;
+            return this.AllVideosGroup; 
         }
 
         public static VideoModel GetItem(string uniqueId)
