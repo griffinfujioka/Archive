@@ -61,11 +61,13 @@ namespace Archive.Pages
 
         private async void submitInfoBtn_Click_1(object sender, RoutedEventArgs e)
         {
+            // Get all of the information from the text fields
             var emailAddress = emailAddressTxtBox.Text;
             var username = usernameTxtBox.Text;
             var password = passwordTxtBox.Password;
             var confirmPassword = confirmPasswordTxtBox.Password;
 
+            // Make sure the passwords match 
             if (password != confirmPassword)
             {
                 var output = string.Format("Passwords must match.");
@@ -74,8 +76,13 @@ namespace Archive.Pages
                 return; 
             }
 
+            // Create an AccountCreationObject out of the information 
             var accountCreator = new AccountCreationObject() { EmailAddress = emailAddress, Username = username, Password = password };
+
+            // Serialize the AccountCreationObject into a JSON string 
             var JSONaccountCreator = JsonConvert.SerializeObject(accountCreator); 
+
+            // Send JSON string to Archive API
             
            
         }

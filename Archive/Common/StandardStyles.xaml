@@ -598,7 +598,7 @@
     </Style>
     <Style x:Key="PeopleAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="PeopleAppBarButton"/>
-        <Setter Property="AutomationProperties.Name" Value="People"/>
+        <Setter Property="AutomationProperties.Name" Value="Share"/>
         <Setter Property="Content" Value="&#xE125;"/>
     </Style>
     <Style x:Key="ClosePaneAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">

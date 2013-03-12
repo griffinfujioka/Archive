@@ -51,7 +51,7 @@ namespace Archive
 
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var item = SampleDataSource.GetItem((String)navigationParameter);
-            this.pageTitle.Text = (App.ArchiveVideos.GetVideo(Convert.ToInt32(navigationParameter))).Title; 
+            //this.pageTitle.Text = (App.ArchiveVideos.GetVideo(Convert.ToInt32(navigationParameter))).Title; 
             var item = VideosDataSource.GetItem(navigationParameter.ToString());
             this.DefaultViewModel["Group"] = "AllVideosGroup";      // HARDCODE!
             this.DefaultViewModel["Items"] = App.ArchiveVideos.AllVideosGroup.Items; 
