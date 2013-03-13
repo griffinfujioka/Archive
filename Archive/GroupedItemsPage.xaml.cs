@@ -24,7 +24,7 @@ using Archive.API_Helpers;
 using Microsoft.Live;
 using SkyDriveHelper;           // Wrapper for accessing SkyDrive 
 using System.Runtime.Serialization.Json;    // JSON Serialization
-using Newtonsoft.Json;
+using Newtonsoft.Json;              // JSONConvert
 using Archive.JSON;
 using Archive.Pages; 
 
@@ -288,7 +288,7 @@ namespace Archive
 
             // Add headers 
             request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+            request.Headers["X-AccessToken"] = "LIQFRVAwOmbxgVTd83B6a+emGd8= ";
 
             // Set the ContentType property of the WebRequest
             request.ContentType = "application/json";
@@ -347,6 +347,7 @@ namespace Archive
                 
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
                 await dialog.ShowAsync();
+                lowerButtonsStackPanel.Visibility = Visibility.Visible;
                  
             }
             catch (Exception ex)
@@ -355,7 +356,7 @@ namespace Archive
                 InvalidLoginCredentials();
             }
 
-            lowerButtonsStackPanel.Visibility = Visibility.Visible;
+            
 
         }
         #endregion 
@@ -363,7 +364,8 @@ namespace Archive
         #region InvalidLoginCredentials
         private async void InvalidLoginCredentials()
         {
-            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid login credentials.");
+            var output = "Invalid login credentials. Please try again.";
+            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
             await dialog.ShowAsync();
             loginPopUp.Visibility = Visibility.Visible;
             loginBtn.Visibility = Visibility.Collapsed;
@@ -382,15 +384,9 @@ namespace Archive
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
                 await dialog.ShowAsync();
             }
-            else
-            {
-                //var output = string.Format("You can internet.");
-                //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-                //await dialog.ShowAsync();
-
-            }
         }
         #endregion
+
 
         private void signUpBtn_Click_1(object sender, RoutedEventArgs e)
         {

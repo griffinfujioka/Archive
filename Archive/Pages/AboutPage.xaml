@@ -11,7 +11,7 @@
     
     <Grid>
         <StackPanel>
-            <TextBlock Text="The completely redesigned video blogging service brought to you by a senior design team at Washington State University." FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,10,10,10"/>
+            <TextBlock Text="This completely redesigned video blogging service brought to you by a senior design team at Washington State University." FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,10,10,10"/>
             <TextBlock Text="Contributors: " FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,20,10,10"/>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden">
                 <StackPanel>

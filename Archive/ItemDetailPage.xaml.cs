@@ -68,7 +68,7 @@ namespace Archive
         {
             var selectedItem = (VideoModel)this.flipView.SelectedItem;
             //var selectedItem = (VideoDataItem)this.flipView.SelectedItem;
-            //pageState["SelectedItem"] = selectedItem.VideoId;
+            pageState["SelectedItem"] = selectedItem.VideoId;
             //pageState["SelectedItem"] = selectedItem.VideoId;
         }
     }
