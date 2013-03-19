@@ -11,7 +11,7 @@
 
     <Grid Background="White">
         <StackPanel>
-            <TextBlock FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="16" TextWrapping="Wrap" Margin="10,10,10,10" Foreground="Black"
+            <TextBlock FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,10,10,10" Foreground="Black"
                        Text="Archive requires access to your Microsoft Live ID for the purposes of accessing your pre-arranged SkyDrive cloud storage. Archive does not transmit or share any of your information. "/>
         </StackPanel>
     </Grid>

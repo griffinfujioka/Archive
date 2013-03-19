@@ -129,17 +129,18 @@
                                     <VisualState x:Name="Snapped">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="richTextColumns" Storyboard.TargetProperty="Margin">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="17,0,17,57"/>
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="17,-50,17,57"/>
                                             </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="scrollViewer" Storyboard.TargetProperty="Style">
+                                            <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="scrollViewer" Storyboard.TargetProperty="Style">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource VerticalScrollViewerStyle}"/>
-                                            </ObjectAnimationUsingKeyFrames>
+                                            </ObjectAnimationUsingKeyFrames>-->
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="richTextBlock" Storyboard.TargetProperty="Width">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="280"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="image" Storyboard.TargetProperty="MaxHeight">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="160"/>
                                             </ObjectAnimationUsingKeyFrames>
+                                            
                                         </Storyboard>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -162,8 +163,9 @@
         
         <Grid x:Name="buttonsGrid" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Click="playBtn_Click"/>
             <Button x:Name="shareBtn" Style="{StaticResource PeopleAppBarButtonStyle}" Tag="Share" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button x:Name="editBtn" Style="{StaticResource EditAppBarButtonStyle}" Tag="Edit" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
 
@@ -189,8 +191,8 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="pageTitle" Storyboard.TargetProperty="Style">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedPageHeaderTextStyle}"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="60,20,60,-50"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

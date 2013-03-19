@@ -72,9 +72,9 @@
 
         <StackPanel x:Name="ButtonsPanel" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.ColumnSpan="2">
             <Button x:Name="newvideoBtn" Style="{StaticResource VideoAppBarButtonStyle}" Tag="Video" HorizontalAlignment="Center" Click="Capture_Button_Click"/>
-            <Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" Click="playBtn_Click_1" />
+            <!--<Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" Click="playBtn_Click_1" />
             <Button x:Name="stopBtn" Style="{StaticResource StopAppBarButtonStyle}" Tag="Stop" HorizontalAlignment="Center" Click="stopBtn_Click_1"/>
-            <Button x:Name="discardButton" Style="{StaticResource DiscardAppBarButtonStyle}" Tag="Discard" HorizontalAlignment="Center" Click="discardButton_Click_1" />
+            <Button x:Name="discardButton" Style="{StaticResource DiscardAppBarButtonStyle}" Tag="Discard" HorizontalAlignment="Center" Click="discardButton_Click_1" />-->
         </StackPanel>
         
         <TextBlock x:Name="CapturePageSnappedTextBlock" FontFamily="Segoe UI" FontSize="18" FontWeight="Black" Text="This page does not support snap view." TextWrapping="Wrap" Margin="10,20,10,20" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="Collapsed" 
@@ -106,9 +106,7 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="stopBtn" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
+                       
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="CapturedVideo">
                             <DiscreteObjectKeyFrame KeyTime="0">
                                 <DiscreteObjectKeyFrame.Value>

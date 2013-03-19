@@ -77,6 +77,7 @@ namespace Archive
                 loginBtn.Visibility = Visibility.Visible;
                 signUpBtn.Visibility = Visibility.Visible;
                 lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
+               
             }
             else
             {
@@ -90,6 +91,7 @@ namespace Archive
 
                     var userJSON = appSettings[User];
                     App.LoggedInUser = JsonConvert.DeserializeObject<User>(appSettings[User].ToString());
+                   
                 }
                 catch 
                 {
@@ -288,7 +290,7 @@ namespace Archive
 
             // Add headers 
             request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "LIQFRVAwOmbxgVTd83B6a+emGd8= ";
+            request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";         // HARDCODED!
 
             // Set the ContentType property of the WebRequest
             request.ContentType = "application/json";

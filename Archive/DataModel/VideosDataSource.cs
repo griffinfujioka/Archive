@@ -376,7 +376,7 @@ namespace Archive.DataModel
             }
         }
 
-        public VideoModel GetVideo(int videoId)
+        public static VideoModel GetVideo(int videoId)
         {
             foreach (var video in App.ArchiveVideos.AllVideosGroup.Items)
             {

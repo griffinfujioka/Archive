@@ -285,7 +285,7 @@ namespace Archive
 
             // Add headers 
             request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+            request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";          // HARDCODED!
 
             // Set the ContentType property of the WebRequest
             request.ContentType = "application/json";
@@ -359,7 +359,7 @@ namespace Archive
 
             // Add headers 
             metadata_request.Headers["X-ApiKey"] = "123456";
-            metadata_request.Headers["X-AccessToken"] = "UqYONgdB/aCCtF855bp8CSxmuHo=";
+            metadata_request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";        // HARDCODED!
 
             // Set the ContentType property of the WebRequest
             metadata_request.ContentType = "application/json";
