@@ -103,7 +103,6 @@ namespace Archive
             
         }
         #endregion 
-
  
         #region LoadState
         /// <summary>
@@ -117,7 +116,7 @@ namespace Archive
         /// session.  This will be null the first time a page is visited.</param>
         protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
+            
             // Load user's video from Archive API
             if (App.LoggedInUser != null)
             {
@@ -147,7 +146,6 @@ namespace Archive
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
             this.Frame.Navigate(typeof(GroupDetailPage), ((VideoDataGroup)group).VideoId);
-            //this.Frame.Navigate(typeof(GroupDetailPage), ((SampleDataGroup)group).UniqueId);
         }
         #endregion 
 
@@ -163,7 +161,6 @@ namespace Archive
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
             var itemId = ((VideoModel)e.ClickedItem).VideoId;
-            //var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
             this.Frame.Navigate(typeof(ItemDetailPage), itemId);
         }
         #endregion 
@@ -404,7 +401,7 @@ namespace Archive
         #region Profile button clicked
         private void profileBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(ProfilePage)); 
+            this.Frame.Navigate(typeof(ProfilePage),App.LoggedInUser.UserId); 
         }
         #endregion
 

@@ -103,16 +103,8 @@ namespace Archive.DataModel
         public VideoDataItem(String videoId, String title, String subtitle, String imagePath, String description, String content, VideoDataGroup group)
             : base(videoId, title, subtitle, imagePath, description)
         {
-            //this._content = content;
             this._group = group;
         }
-
-        //private string _content = string.Empty;
-        //public string Content
-        //{
-        //    get { return this._content; }
-        //    set { this.SetProperty(ref this._content, value); }
-        //}
 
         private VideoDataGroup _group;
         public VideoDataGroup Group
@@ -275,64 +267,9 @@ namespace Archive.DataModel
                 "",
                 "");
 
-
-            //String ITEM_CONTENT = String.Format("Item Content: {0}\n\n{0}\n\n{0}\n\n{0}\n\n{0}\n\n{0}\n\n{0}",
-            //            "Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat");
-
-            //var AllVideosGroup = new VideoDataGroup("AllVideosGroup",
-            //    "All Videos",
-            //    "All user videos",
-            //    "",
-            //    "");
-            //var SkyDriveGroup = new VideoDataGroup("SkyDriveGroup",
-            //    "SkyDriveGroup",
-            //    "Videos from SkyDrive",
-            //    "",
-            //    "Group Description: Videos synchronized with SkyDrive are stored in this group");
-
-            //var RecentVideosGroup = new VideoDataGroup("RecentVideosGroup",
-            //    "Recent",
-            //    "Recent videos",
-            //    "",
-            //    "Group Description: Recent videos are stored in this group");
-
-            //RecentVideosGroup.Items.Add(new VideoDataItem("Group-1-Item-1",
-            //        "Here is my first video",
-            //        "Just trying this new service out",
-            //        "Assets/Person1.jpg",
-            //        "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
-            //        ITEM_CONTENT,
-            //        RecentVideosGroup));
-            //RecentVideosGroup.Items.Add(new VideoDataItem("Group-1-Item-2",
-            //        "I'm having so much fun!",
-            //        "This new service is actually prety sweet. Whoever made it must have known what they were doing.",
-            //        "Assets/Person2.jpg",
-            //        "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
-            //        ITEM_CONTENT,
-            //        RecentVideosGroup));
-            //RecentVideosGroup.Items.Add(new VideoDataItem("Group-1-Item-3",
-            //        "This is title 3",
-            //        "Item Subtitle: 3",
-            //        "Assets/Person3.jpg",
-            //        "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
-            //        ITEM_CONTENT,
-            //        RecentVideosGroup));
-            //RecentVideosGroup.Items.Add(new VideoDataItem("Group-1-Item-4",
-            //        "Item Title: 4",
-            //        "Item Subtitle: 4",
-            //        "Assets/Person4.jpg",
-            //        "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
-            //        ITEM_CONTENT,
-            //        RecentVideosGroup));
-            //RecentVideosGroup.Items.Add(new VideoDataItem("Group-1-Item-5",
-            //        "Item Title: 5",
-            //        "Item Subtitle: 5",
-            //        "Assets/Person5.jpg",
-            //        "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
-            //        ITEM_CONTENT,
-            //        RecentVideosGroup));
             this.AllGroups.Add(AllVideosGroup);
         }
+
         // Create a VideosDataSource object from a list of videos 
         public VideosDataSource(ObservableCollection<VideoModel> videoList)
         {

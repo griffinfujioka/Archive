@@ -23,6 +23,9 @@ namespace Archive.API_Helpers
         [DataMember(Name = "Created")] 
         public DateTime Created { get; set; }
 
+        [DataMember(Name = "Avatar")] 
+        public string Avatar { get; set; }
+
         public User()
         {
             Username = "";

@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Archive.API_Helpers;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -21,9 +25,15 @@ namespace Archive.Pages
     /// </summary>
     public sealed partial class ProfilePage : Archive.Common.LayoutAwarePage
     {
+        public int userID; 
+
         public ProfilePage()
         {
+            if (App.LoggedInUser == null)
+                return;
+
             this.InitializeComponent();
+            
         }
 
         /// <summary>
@@ -52,6 +62,62 @@ namespace Archive.Pages
         private void followBtn_Click_1(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            WebResponse response;                   // Response from createvideo URL 
+            Stream responseStream;                  // Stream data from responding URL
+            StreamReader reader;                    // Read data in stream 
+            string responseJSON;                    // The JSON string returned to us by the Archive API 
+            Profile responseProfile;                 
+            // Get the videoID of the video you want to stream 
+            userID = Convert.ToInt32(e.Parameter);
+
+            string profileURL = "http://trout.wadec.com/api/user/profile?userId=" + userID.ToString();
+
+            // Initiate HttpWebRequest with Archive API
+            HttpWebRequest request = HttpWebRequest.CreateHttp(profileURL);
+
+            // Set the method to POST
+            request.Method = "GET";
+
+            // Add headers 
+            request.Headers["X-ApiKey"] = "123456";
+            request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";          // HARDCODED!
+
+            // Set the ContentType property of the WebRequest
+            request.ContentType = "application/json";
+
+            try
+            {
+                // Get response from URL
+                response = await request.GetResponseAsync();
+
+                using (responseStream = response.GetResponseStream())
+                {
+                    reader = new StreamReader(responseStream);
+
+                    // Read a string of JSON into responseJSON
+                    responseJSON = reader.ReadToEnd();
+
+                    // Deserialize the JSON into a User object (using JSON.NET third party library)
+                    responseProfile = JsonConvert.DeserializeObject<Profile>(responseJSON);
+
+                    profilePicture.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(responseProfile.User.Avatar, UriKind.Absolute));
+                    usernameTxtBlock.Text = responseProfile.User.Username;
+                    emailTxtBlock.Text = responseProfile.User.Email;
+                    dateJoinedTxtBlock.Text = responseProfile.User.Created.Date.ToString();
+                    numberOfVideosTxtBox.Text = responseProfile.Videos.Count.ToString();
+                    numberOfFollowersTxtBox.Text = responseProfile.Followers.Count.ToString();
+                    numberOfFollowingTxtBox.Text = responseProfile.Following.Count.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            base.OnNavigatedTo(e);
         }
     }
 }

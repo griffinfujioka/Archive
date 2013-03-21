@@ -26,18 +26,22 @@ namespace Archive.Pages
     /// </summary>
     public sealed partial class SignUpPage : Archive.Common.LayoutAwarePage
     {
+        #region Variable declarations
         private Windows.Foundation.Collections.IPropertySet appSettings;
         private const String usernameKey = "Username";
         private const String passwordKey = "Password";
-        public const String User = "User"; 
+        public const String User = "User";
+        #endregion
 
+        #region Constructor
         public SignUpPage()
         {
             this.InitializeComponent();
-            emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
             appSettings = ApplicationData.Current.LocalSettings.Values;
         }
+        #endregion
 
+        #region LoadState
         /// <summary>
         /// Populates the page with content passed during navigation.  Any saved state is also
         /// provided when recreating a page from a prior session.
@@ -49,9 +53,10 @@ namespace Archive.Pages
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
         }
+        #endregion
 
+        #region Save state
         /// <summary>
         /// Preserves state associated with this page in case the application is suspended or the
         /// page is discarded from the navigation cache.  Values must conform to the serialization
@@ -61,6 +66,7 @@ namespace Archive.Pages
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
         }
+        #endregion
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
