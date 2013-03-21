@@ -19,6 +19,7 @@
             <!-- Application-specific resources -->
 
             <x:String x:Key="AppName">Archive</x:String>
+            <x:String x:Key="BingMapsApiKey">AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh</x:String>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

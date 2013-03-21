@@ -36,7 +36,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Media.MediaProperties;        // ImageProperties
 using Windows.Devices.Enumeration;
-using Windows.Storage.FileProperties; 
+using Windows.Storage.FileProperties;
+using System.Threading; 
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -427,10 +428,52 @@ namespace Archive
             #endregion 
 
             // Get a thumbnail image from the video file and upload it to the Archive API (linked via VideoId)
-            await GetThumbnail(); 
+            //await GetThumbnail(); 
+            // Get thumbnail of the video file 
+            var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
 
+            // Create a Buffer object to hold raw picture data
+            var buffer = new Windows.Storage.Streams.Buffer(Convert.ToUInt32(thumb.Size));
+
+            // Read the raw picture data into the Buffer object 
+            await thumb.ReadAsync(buffer, Convert.ToUInt32(thumb.Size), InputStreamOptions.None);
+
+            // Open LocalFolder
+            var folder = ApplicationData.Current.LocalFolder;
+
+            // Create (or open if one exists) a folder called temp images
+            folder = await folder.CreateFolderAsync("temp images", CreationCollisionOption.OpenIfExists);
+
+            // Create a StorageFile 
+            var thumbFile = await folder.CreateFileAsync(PHOTO_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+
+            // Write picture data to the file 
+            await FileIO.WriteBufferAsync(thumbFile, buffer);
+
+            // Preview the image
+            var bmpimg = new BitmapImage();
+            bmpimg.SetSource(thumb);
+            PreviewImage.Source = bmpimg;
+
+            client = new HttpClient();
+            form = new MultipartFormDataContent();
+            stream = await thumbFile.OpenReadAsync();
+            streamContent = new StreamContent(stream.AsStream(), 1024);
+            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            streamContent.Headers.ContentDisposition.Name = "\"File\"";
+            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(thumbFile.Path) + "\"";
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
+            form.Add(streamContent, "File");
+
+            address = "http://trout.wadec.com/API/uploadvideoimage";
+
+            await client.PostAsync(address, form); 
+
+            // Upload the image to the Archive API
+            //await UploadImageToAPI(thumbFile);
             // Upload the video file to SkyDrive 
-            await UploadVideoToSkyDrive();
+            //await UploadVideoToSkyDrive();
 
             #region Upload complete, put the controls to normal
             uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -590,34 +633,34 @@ namespace Archive
         /// </summary>
         public async Task GetThumbnail()
         {
-            // Get thumbnail of the video file 
-            var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
+            //// Get thumbnail of the video file 
+            //var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
             
-            // Create a Buffer object to hold raw picture data
-            var buffer = new Windows.Storage.Streams.Buffer(Convert.ToUInt32(thumb.Size));
+            //// Create a Buffer object to hold raw picture data
+            //var buffer = new Windows.Storage.Streams.Buffer(Convert.ToUInt32(thumb.Size));
 
-            // Read the raw picture data into the Buffer object 
-            await thumb.ReadAsync(buffer, Convert.ToUInt32(thumb.Size), InputStreamOptions.None);
+            //// Read the raw picture data into the Buffer object 
+            //await thumb.ReadAsync(buffer, Convert.ToUInt32(thumb.Size), InputStreamOptions.None);
 
-            // Open LocalFolder
-            var folder = ApplicationData.Current.LocalFolder;
+            //// Open LocalFolder
+            //var folder = ApplicationData.Current.LocalFolder;
 
-            // Create (or open if one exists) a folder called temp images
-            folder = await folder.CreateFolderAsync("temp images", CreationCollisionOption.OpenIfExists);
+            //// Create (or open if one exists) a folder called temp images
+            //folder = await folder.CreateFolderAsync("temp images", CreationCollisionOption.OpenIfExists);
 
-            // Create a StorageFile 
-            var thumbFile = await folder.CreateFileAsync(PHOTO_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+            //// Create a StorageFile 
+            //var thumbFile = await folder.CreateFileAsync(PHOTO_FILE_NAME, CreationCollisionOption.ReplaceExisting);
 
-            // Write picture data to the file 
-            await FileIO.WriteBufferAsync(thumbFile, buffer);
+            //// Write picture data to the file 
+            //await FileIO.WriteBufferAsync(thumbFile, buffer);
 
-            // Preview the image
-            var bmpimg = new BitmapImage();
-            bmpimg.SetSource(thumb);
-            PreviewImage.Source = bmpimg;
+            //// Preview the image
+            //var bmpimg = new BitmapImage();
+            //bmpimg.SetSource(thumb);
+            //PreviewImage.Source = bmpimg;
 
-            // Upload the image to the Archive API
-            UploadImageToAPI(thumbFile);
+            //// Upload the image to the Archive API
+            //await UploadImageToAPI(thumbFile);
   
         }
         #endregion 
@@ -627,8 +670,9 @@ namespace Archive
         /// 
         /// </summary>
         /// <param name="imageFile">The .jpg imageFile stored in Local folder to be uploaded</param>
-        public async void UploadImageToAPI(StorageFile imageFile)
+        public async Task UploadImageToAPI(StorageFile imageFile)
         {
+           
             HttpClient client = new HttpClient();
             MultipartFormDataContent form = new MultipartFormDataContent();
             var stream = await imageFile.OpenReadAsync();
@@ -641,14 +685,24 @@ namespace Archive
             form.Add(streamContent, "File");
 
             string address = "http://trout.wadec.com/API/uploadvideoimage";
-            try
-            {
-                HttpContent response_content = client.PostAsync(address, form).Result.Content;
-            }
-            catch
-            {
-                // Do something here!!!
-            }
+
+            await client.PostAsync(address, form); 
+
+            //try
+            //{
+            //    //var response = await client.PostAsync(address, form);
+            //    await client.PostAsync(address, form);
+            //    //var responsecontent = response.Result.Content; 
+            //    //var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+            //    //HttpContent response_content = client.PostAsync(address, form, timeout.Token).Result.Content;
+            //}
+            //catch (AggregateException e)
+            //{
+            //    // Do something here!!!
+
+            //}
+
+            
         }
         #endregion 
     }

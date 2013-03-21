@@ -74,6 +74,7 @@ namespace Archive
                 usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Collapsed;
+                profileBtn.Visibility = Visibility.Collapsed; 
                 loginBtn.Visibility = Visibility.Visible;
                 signUpBtn.Visibility = Visibility.Visible;
                 lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
@@ -83,6 +84,7 @@ namespace Archive
             {
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
+                profileBtn.Visibility = Visibility.Visible; 
                 loginBtn.Visibility = Visibility.Collapsed;
                 signUpBtn.Visibility = Visibility.Collapsed;
                 lowerButtonsStackPanel.Visibility = Visibility.Visible;
@@ -193,6 +195,7 @@ namespace Archive
             loginBtn.Visibility = Visibility.Visible;
             signUpBtn.Visibility = Visibility.Visible;
             logoutBtn.Visibility = Visibility.Collapsed;
+            profileBtn.Visibility = Visibility.Collapsed; 
             lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
 
             // Clear the username and password textboxes
@@ -336,6 +339,7 @@ namespace Archive
                 #region Adjust UI controls 
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
+                profileBtn.Visibility = Visibility.Visible;
                 loginBtn.Visibility = Visibility.Collapsed;
                 signUpBtn.Visibility = Visibility.Collapsed; 
                 usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
@@ -369,6 +373,7 @@ namespace Archive
             var output = "Invalid login credentials. Please try again.";
             Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
             await dialog.ShowAsync();
+            profileBtn.Visibility = Visibility.Collapsed; 
             loginPopUp.Visibility = Visibility.Visible;
             loginBtn.Visibility = Visibility.Collapsed;
             signUpBtn.Visibility = Visibility.Visible;
@@ -389,12 +394,20 @@ namespace Archive
         }
         #endregion
 
-
+        #region Sign up button clicked
         private void signUpBtn_Click_1(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(SignUpPage)); 
         }
+        #endregion
 
-        
+        #region Profile button clicked
+        private void profileBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ProfilePage)); 
+        }
+        #endregion
+
+
     }
 }

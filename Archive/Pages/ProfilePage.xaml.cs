@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -20,28 +19,11 @@ namespace Archive.Pages
     /// <summary>
     /// A basic page that provides characteristics common to most applications.
     /// </summary>
-    public sealed partial class StreamVideoPage : Archive.Common.LayoutAwarePage
+    public sealed partial class ProfilePage : Archive.Common.LayoutAwarePage
     {
-        public StreamVideoPage()
+        public ProfilePage()
         {
             this.InitializeComponent();
-            var bounds = Window.Current.Bounds;
-            var height = bounds.Height;
-            var width = bounds.Width-140;
-            MainWebView.Height = height;
-            MainWebView.Width = width;
-            Loaded += OnLoaded;
-
-
-        }
-
-
-        private async void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            HttpClient http = new HttpClient();
-            HttpResponseMessage response = await http.GetAsync("http://trout.wadec.com");
-            var content = await response.Content.ReadAsStringAsync();
-            MainWebView.NavigateToString(content);
         }
 
         /// <summary>
@@ -65,6 +47,11 @@ namespace Archive.Pages
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
+        }
+
+        private void followBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

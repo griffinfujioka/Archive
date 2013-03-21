@@ -133,7 +133,7 @@
 
         </StackPanel>
         <StackPanel x:Name="loginStackPanel" Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-            
+           
             <StackPanel x:Name="loginPopUp" Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
                 
                 <TextBlock x:Name="usernameTxtBlock" Text="Username:" FontSize="16" FontFamily="Segoe UI" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,5,10,5" Foreground="White"/>
@@ -143,6 +143,7 @@
                 <Button x:Name="submitLoginBtn" Content="Sign in" Height="35" Width="78" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="submitLoginBtn_Click_1" IsTabStop="True" Foreground="White" IsHitTestVisible="True"/>
             
             </StackPanel>
+            <Button x:Name="profileBtn" Content="Profile" Click="profileBtn_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
             <Button x:Name="logoutBtn" Content="Log out" Click="signOutButton_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
             <Button x:Name="loginBtn" Content="Login" Click="loginBtn_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
             <Button x:Name="signUpBtn" Content="Sign Up" Click="signUpBtn_Click_1" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
