@@ -37,7 +37,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Media.MediaProperties;        // ImageProperties
 using Windows.Devices.Enumeration;
 using Windows.Storage.FileProperties;
-using System.Threading; 
+using System.Threading;
+using Windows.Devices.Geolocation; 
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -344,13 +345,21 @@ namespace Archive
             }
             #endregion 
            
-            #region Send metadata 
+            #region Get current location
+            Geolocator gl = new Geolocator();
+            Geoposition gp = await gl.GetGeopositionAsync();
+            // Here I've got the coordinates, but can't figure out the city name
+            
+
+            #endregion 
+
+            #region Send metadata
             // Send metadata first 
             var VideoMetadataURI = "http://trout.wadec.com/API/uploadvideometadata";
             HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
 
             // Create a VideoMetadata object 
-            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, "ACM HQ", dateCreated.ToUniversalTime());
+            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, gp.Coordinate.Longitude.ToString() + ", " + gp.Coordinate.Longitude.ToString() + ", " + gp.CivicAddress.Country, dateCreated.ToUniversalTime());
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);

@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Newtonsoft.Json;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
@@ -22,6 +23,8 @@ namespace Archive.Pages
     /// </summary>
     public sealed partial class StreamVideoPage : Archive.Common.LayoutAwarePage
     {
+        public static int streamVideoID;
+        public const string videoStreamURL = "http://trout.wadec.com/api/videos/view?videoId="; 
         public StreamVideoPage()
         {
             this.InitializeComponent();
@@ -31,6 +34,7 @@ namespace Archive.Pages
             MainWebView.Height = height;
             MainWebView.Width = width;
             Loaded += OnLoaded;
+            
 
 
         }
@@ -39,9 +43,11 @@ namespace Archive.Pages
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             HttpClient http = new HttpClient();
-            HttpResponseMessage response = await http.GetAsync("http://trout.wadec.com");
+            HttpResponseMessage response = await http.GetAsync(videoStreamURL + streamVideoID.ToString());
+            
             var content = await response.Content.ReadAsStringAsync();
-            MainWebView.NavigateToString(content);
+            var desContent = JsonConvert.DeserializeObject<string>(content);
+            MainWebView.NavigateToString(desContent);
         }
 
         /// <summary>
@@ -65,6 +71,13 @@ namespace Archive.Pages
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            // Get the videoID of the video you want to stream 
+            streamVideoID = Convert.ToInt32(e.Parameter);
+            base.OnNavigatedTo(e);
         }
     }
 }

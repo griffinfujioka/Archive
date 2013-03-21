@@ -27,6 +27,7 @@ namespace Archive
     /// </summary>
     public sealed partial class ItemDetailPage : Archive.Common.LayoutAwarePage
     {
+        int selectedVideoID = -1; 
         public ItemDetailPage()
         {
             this.InitializeComponent();
@@ -44,19 +45,30 @@ namespace Archive
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            // Allow saved page state to override the initial item to display
-            if (pageState != null && pageState.ContainsKey("SelectedItem"))
-            {
-                navigationParameter = pageState["SelectedItem"];
-            }
+            
 
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            //var item = SampleDataSource.GetItem((String)navigationParameter);
-            //this.pageTitle.Text = (App.ArchiveVideos.GetVideo(Convert.ToInt32(navigationParameter))).Title; 
-            var item = VideosDataSource.GetVideo(Convert.ToInt32(navigationParameter.ToString()));
-            this.DefaultViewModel["Group"] = "AllVideosGroup";      // HARDCODE!
-            this.DefaultViewModel["Items"] = App.ArchiveVideos.AllVideosGroup.Items; 
-            this.flipView.SelectedItem = item;
+            try
+            {
+                // Allow saved page state to override the initial item to display
+                if (pageState != null && pageState.ContainsKey("SelectedItem"))
+                {
+                    navigationParameter = pageState["SelectedItem"];
+                }
+                // TODO: Create an appropriate data model for your problem domain to replace the sample data
+                //var item = SampleDataSource.GetItem((String)navigationParameter);
+                //this.pageTitle.Text = (App.ArchiveVideos.GetVideo(Convert.ToInt32(navigationParameter))).Title; 
+                var item = VideosDataSource.GetVideo(Convert.ToInt32(navigationParameter.ToString()));
+                this.DefaultViewModel["Group"] = "AllVideosGroup";      // HARDCODE!
+                this.DefaultViewModel["Items"] = App.ArchiveVideos.AllVideosGroup.Items;
+                this.flipView.SelectedItem = item;
+                selectedVideoID = item.VideoId;
+            }
+            catch
+            {
+                this.Frame.Navigate(typeof(GroupedItemsPage)); 
+            }
+            
+
         }
 
         /// <summary>
@@ -67,15 +79,18 @@ namespace Archive
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
-            //var selectedItem = (VideoModel)this.flipView.SelectedItem;
-            //var selectedItem = (VideoDataItem)this.flipView.SelectedItem;
-            //pageState["SelectedItem"] = selectedItem.VideoId;
-            //pageState["SelectedItem"] = selectedItem.VideoId;
+            var selectedItem = (VideoModel)this.flipView.SelectedItem;
+            pageState["SelectedItem"] = selectedItem.VideoId;
         }
 
         private void playBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(StreamVideoPage)); 
+            if (selectedVideoID >= 0)
+            {
+                this.Frame.Navigate(typeof(StreamVideoPage), selectedVideoID);
+            }
         }
+
+        
     }
 }
