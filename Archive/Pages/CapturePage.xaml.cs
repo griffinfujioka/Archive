@@ -40,6 +40,7 @@ using Windows.Storage.FileProperties;
 using System.Threading;
 using Windows.Devices.Geolocation;
 using Bing.Maps;
+using Windows.UI.Notifications;
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -302,10 +303,10 @@ namespace Archive
             video_metadataPopup.IsOpen = false;
 
             #region Adjust some controls while the video is being uploaded
-            uploadingPopUp.Visibility = Visibility.Visible;
-            uploadingPopUp.IsOpen = true;
-            backButton.Visibility = Visibility.Collapsed;
-            ButtonsPanel.Visibility = Visibility.Collapsed;
+            //uploadingPopUp.Visibility = Visibility.Visible;
+            //uploadingPopUp.IsOpen = true;
+            //backButton.Visibility = Visibility.Collapsed;
+            //ButtonsPanel.Visibility = Visibility.Collapsed;
             #endregion 
 
             #region Send out CreateVideo request to Archive API, which will return a new VideoId
@@ -542,11 +543,26 @@ namespace Archive
 
 
             #region Upload complete, put the controls to normal
-            uploadingPopUp.Visibility = Visibility.Collapsed;
-            uploadingPopUp.IsOpen = false;
+            //uploadingPopUp.Visibility = Visibility.Collapsed;
+            //uploadingPopUp.IsOpen = false;
             backButton.Visibility = Visibility.Visible; ;
             ButtonsPanel.Visibility = Visibility.Visible;
             #endregion 
+            var notifier = ToastNotificationManager.CreateToastNotifier();
+            if (notifier.Setting == NotificationSetting.Enabled)
+            {
+                
+                var template = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+
+                var title = template.GetElementsByTagName("text")[0];
+                title.AppendChild(template.CreateTextNode("Upload successful.")); 
+                var message = template.GetElementsByTagName("text")[1];
+                message.AppendChild(template.CreateTextNode("Your video " + archive_videoName + " has been uploaded successfully."));
+                
+
+                var toast = new ToastNotification(template);
+                notifier.Show(toast); 
+            }
             
             #region Show success message
             //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
