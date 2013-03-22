@@ -105,6 +105,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API Helpers\Bing Maps Helpers\MapHelper.cs" />
     <Compile Include="API Helpers\CreateVideoResponse.cs" />
     <Compile Include="API Helpers\LoginRequest.cs" />
     <Compile Include="API Helpers\AccountCreationObject.cs" />

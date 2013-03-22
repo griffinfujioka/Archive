@@ -8,6 +8,7 @@
     xmlns:common="using:Archive.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:m="using:Bing.Maps"
     mc:Ignorable="d">
 
 
@@ -59,6 +60,16 @@
                             <TextBlock x:Name="tagsTxtBlock"  FontSize="14" Width="380" Foreground="Black" TextWrapping="Wrap"/>
                         </ScrollViewer>
                     </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox x:Name="privacyComboBox" HorizontalAlignment="Left" Margin="10,5,10,5" Width="250" SelectionChanged="privacyComboBox_SelectionChanged_1">
+                            <ComboBoxItem>Private (default)</ComboBoxItem>
+                            <ComboBoxItem>Public</ComboBoxItem>
+                        </ComboBox>
+                        
+                    </StackPanel>
+
+                    <TextBlock x:Name="locationTxtBlock" FontFamily="Segoe UI" FontSize="14" Foreground="Black" Width="380" HorizontalAlignment="Left" Height="30" Margin="20,5,10,5"/>
 
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="submit_videoBtn" Content="Upload" Height="35" Width="100" FontSize="16" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="submit_videoBtn_Click_1"/>

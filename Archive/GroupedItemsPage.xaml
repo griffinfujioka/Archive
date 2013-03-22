@@ -84,6 +84,8 @@
                             <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0"/>
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
+                    
+                    
                 </GroupStyle>
             </GridView.GroupStyle>
         </GridView>

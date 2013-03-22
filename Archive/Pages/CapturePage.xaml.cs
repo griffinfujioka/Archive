@@ -38,7 +38,8 @@ using Windows.Media.MediaProperties;        // ImageProperties
 using Windows.Devices.Enumeration;
 using Windows.Storage.FileProperties;
 using System.Threading;
-using Windows.Devices.Geolocation; 
+using Windows.Devices.Geolocation;
+using Bing.Maps;
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -84,7 +85,7 @@ namespace Archive
             Is_SkyDrive_Enabled = false;
             tags = new string[] { };        // Initialize the tags array - it is an array of strings
             Loaded += OnLoaded;             // Subscribe to the page Loaded event, run code in OnLoaded 
-            
+            privacyComboBox.SelectedIndex = 0; 
 
         }
         #endregion 
@@ -114,6 +115,27 @@ namespace Archive
                 if (file != null)
                 {
                     video_metadataPopup.IsOpen = true;
+
+                    #region Get current location and reverse geocode coordinates into city name
+                    string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+                    Geolocator gl = new Geolocator();
+                    gl.PositionChanged += (s, args) => { /* empty */ };
+
+                    Geoposition gp = await gl.GetGeopositionAsync();
+                    var latitude = gp.Coordinate.Latitude;
+                    var longitude = gp.Coordinate.Longitude;
+                    var helper = new MapHelper(bing_maps_key);
+                    var location = await helper.FindLocationByPointAsync(latitude, longitude);
+                    var address = location.First().address;
+
+                    var location_string = string.Format("{0}, {1}",
+                address.locality, address.adminDistrict);
+                    locationTxtBlock.Text = location_string; 
+                    // Here I've got the coordinates, but can't figure out the city name
+
+
+                    #endregion 
+
                     videoFile = file;
                 }
             }
@@ -231,6 +253,27 @@ namespace Archive
                 if (file != null)
                 {
                     video_metadataPopup.IsOpen = true;
+
+                    #region Get current location and reverse geocode coordinates into city name
+                    string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+                    Geolocator gl = new Geolocator();
+                    gl.PositionChanged += (s, args) => { /* empty */ };
+
+                    Geoposition gp = await gl.GetGeopositionAsync();
+                    var latitude = gp.Coordinate.Latitude;
+                    var longitude = gp.Coordinate.Longitude;
+                    var helper = new MapHelper(bing_maps_key);
+                    var location = await helper.FindLocationByPointAsync(latitude, longitude);
+                    var address = location.First().address;
+
+                    var location_string = string.Format("{0}, {1}",
+                address.locality, address.adminDistrict);
+                    locationTxtBlock.Text = location_string;
+                    // Here I've got the coordinates, but can't figure out the city name
+
+
+                    #endregion 
+
                     videoFile = file;
                 }
             }
@@ -345,10 +388,28 @@ namespace Archive
             }
             #endregion 
            
-            #region Get current location
-            Geolocator gl = new Geolocator();
-            Geoposition gp = await gl.GetGeopositionAsync();
-            // Here I've got the coordinates, but can't figure out the city name
+            #region Get current location and reverse geocode coordinates into city name
+            string location_string = ""; 
+            try
+            {
+                string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+                Geolocator gl = new Geolocator();
+                gl.PositionChanged += (s, args) => { /* empty */ };
+
+                Geoposition gp = await gl.GetGeopositionAsync();
+                var latitude = gp.Coordinate.Latitude;
+                var longitude = gp.Coordinate.Longitude;
+                var helper = new MapHelper(bing_maps_key);
+                var location = await helper.FindLocationByPointAsync(latitude, longitude);
+                var my_address = location.First().address;
+
+                 location_string = string.Format("{0}, {1}",
+                    my_address.locality, my_address.adminDistrict);
+            }
+            catch(Exception ex)
+            {
+                // Do something here... 
+            }
             
 
             #endregion 
@@ -359,7 +420,7 @@ namespace Archive
             HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
 
             // Create a VideoMetadata object 
-            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, gp.Coordinate.Longitude.ToString() + ", " + gp.Coordinate.Longitude.ToString() + ", " + gp.CivicAddress.Country, dateCreated.ToUniversalTime());
+            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime());
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);
@@ -479,10 +540,6 @@ namespace Archive
 
             await client.PostAsync(address, form); 
 
-            // Upload the image to the Archive API
-            //await UploadImageToAPI(thumbFile);
-            // Upload the video file to SkyDrive 
-            //await UploadVideoToSkyDrive();
 
             #region Upload complete, put the controls to normal
             uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -714,5 +771,10 @@ namespace Archive
             
         }
         #endregion 
+
+        private void privacyComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

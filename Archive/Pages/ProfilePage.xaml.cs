@@ -126,9 +126,9 @@ namespace Archive.Pages
                         video.VideoImage = "http://trout.wadec.com/" + imageURLfromAPI;
                     }
 
-                    videosListView.ItemsSource = responseProfile.Videos;
-                    followersListView.ItemsSource = responseProfile.Followers;
-                    followingListView.ItemsSource = responseProfile.Following;
+                    videosGridView.ItemsSource = responseProfile.Videos;
+                    followersGridView.ItemsSource = responseProfile.Followers;
+                    followingGridView.ItemsSource = responseProfile.Following;
                 }
             }
             catch (Exception ex)
@@ -138,9 +138,19 @@ namespace Archive.Pages
             base.OnNavigatedTo(e);
         }
 
-        private void followersListView_ItemClick_1(object sender, ItemClickEventArgs e)
+        private void videosGridView_ItemClick_1(object sender, ItemClickEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ItemDetailPage), (e.ClickedItem as VideoModel).VideoId); 
+        }
+
+        private void followersGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId); 
+        }
+
+        private void followingGridView_ItemClick_1(object sender, ItemClickEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId);
         }
     }
 }
