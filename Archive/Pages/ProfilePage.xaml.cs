@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -104,20 +105,42 @@ namespace Archive.Pages
                     // Deserialize the JSON into a User object (using JSON.NET third party library)
                     responseProfile = JsonConvert.DeserializeObject<Profile>(responseJSON);
 
+                    DateTimeFormatter dtFormatter = new DateTimeFormatter("shortdate");
+                    var signedUpDateShort = dtFormatter.Format(responseProfile.User.Created);
+
                     profilePicture.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(responseProfile.User.Avatar, UriKind.Absolute));
                     usernameTxtBlock.Text = responseProfile.User.Username;
                     emailTxtBlock.Text = responseProfile.User.Email;
-                    dateJoinedTxtBlock.Text = responseProfile.User.Created.Date.ToString();
+                    dateJoinedTxtBlock.Text = "Date joined: " + signedUpDateShort;
                     numberOfVideosTxtBox.Text = responseProfile.Videos.Count.ToString();
                     numberOfFollowersTxtBox.Text = responseProfile.Followers.Count.ToString();
                     numberOfFollowingTxtBox.Text = responseProfile.Following.Count.ToString();
+
+
+                  
+
+                    foreach (VideoModel video in responseProfile.Videos)
+                    {
+                        // Convert string from API (i.e., Upload/25.jpg) to url path (i.e., http://trout.wadec.com/upload/videoimage/25.jpg)
+                        var imageURLfromAPI = video.VideoImage;
+                        video.VideoImage = "http://trout.wadec.com/" + imageURLfromAPI;
+                    }
+
+                    videosListView.ItemsSource = responseProfile.Videos;
+                    followersListView.ItemsSource = responseProfile.Followers;
+                    followingListView.ItemsSource = responseProfile.Following;
                 }
             }
             catch (Exception ex)
             {
-
+                // Do something here!!
             }
             base.OnNavigatedTo(e);
+        }
+
+        private void followersListView_ItemClick_1(object sender, ItemClickEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId); 
         }
     }
 }

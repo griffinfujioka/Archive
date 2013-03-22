@@ -20,6 +20,26 @@
 
             <x:String x:Key="AppName">Archive</x:String>
             <x:String x:Key="BingMapsApiKey">AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh</x:String>
+            
+            <!-- Templates for Profile page -->
+            <DataTemplate x:Key="ProfileVideoItemTemplate">
+                <Grid HorizontalAlignment="Left">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding VideoImage}" Height="150" Width="150" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Title}" Width="140" HorizontalAlignment="Left" Margin="5,5,5,5"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="FollowerItemTemplate">
+                <Grid HorizontalAlignment="Left">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding Avatar}" Height="150" Width="150" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Username}" HorizontalAlignment="Left" Margin="5,5,5,5"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>
