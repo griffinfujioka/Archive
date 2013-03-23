@@ -381,6 +381,12 @@ namespace Archive
             string videoDescription = descriptionTxtBox.Text;
             string tags = tagTxtBox.Text;
             DateTime dateCreated = DateTime.Now;
+            bool isPublic = false;
+
+            if (privacyComboBox.SelectedIndex == 0)
+                isPublic = false;
+            else if (privacyComboBox.SelectedIndex == 1)
+                isPublic = true; 
 
             if (titleTxtBox.Text != "")
             {
@@ -421,7 +427,7 @@ namespace Archive
             HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
 
             // Create a VideoMetadata object 
-            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime());
+            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);
