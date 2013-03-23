@@ -168,16 +168,24 @@ namespace Archive
             
 
             ConnectionProfile connectionProfile = NetworkInformation.GetInternetConnectionProfile();
-            var interfaceType = connectionProfile.NetworkAdapter.IanaInterfaceType;
-            // 71 is WiFi & 6 is Ethernet (Ethernet is throwing a false-positive)
-            if (interfaceType == 71 || interfaceType == 6)
+            if (connectionProfile == null)
             {
-                App.HasNetworkConnection = true;
+                App.HasNetworkConnection = false;
             }
             else
             {
-                App.HasNetworkConnection = false; 
+                var interfaceType = connectionProfile.NetworkAdapter.IanaInterfaceType;
+                // 71 is WiFi & 6 is Ethernet (Ethernet is throwing a false-positive)
+                if (interfaceType == 71 || interfaceType == 6)
+                {
+                    App.HasNetworkConnection = true;
+                }
+                else
+                {
+                    App.HasNetworkConnection = false;
+                }
             }
+        
 
 
             // Settings

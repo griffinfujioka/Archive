@@ -118,7 +118,7 @@ namespace Archive
         {
             
             // Load user's video from Archive API
-            if (App.LoggedInUser != null)
+            if (App.LoggedInUser != null && App.HasNetworkConnection)
             {
                 await App.LoadUsersVideos();
                 IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
@@ -215,6 +215,7 @@ namespace Archive
                 output += "\nSome features may be unavailable until network connectivity is restored.";
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
                 await dialog.ShowAsync();
+                return;
 
             }
             loginPopUp.Visibility = Visibility.Visible;
@@ -279,7 +280,13 @@ namespace Archive
             DataContractJsonSerializer des = new DataContractJsonSerializer(typeof(User));
 
             HttpClient client = new HttpClient();
-            
+
+            if (!App.HasNetworkConnection)
+            {
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("An network connection is needed to login.");
+                await dialog.ShowAsync();
+                return;
+            }
 
             // Create HttpWebRequest
             var loginAuthenticationURL = ArchiveAPIuri + "/login";
@@ -392,8 +399,15 @@ namespace Archive
         #endregion
 
         #region Sign up button clicked
-        private void signUpBtn_Click_1(object sender, RoutedEventArgs e)
+        private async void signUpBtn_Click_1(object sender, RoutedEventArgs e)
         {
+            if (!App.HasNetworkConnection)
+            {
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("An network connection is needed to sign up.");
+                await dialog.ShowAsync();
+                return;
+            }
+
             this.Frame.Navigate(typeof(SignUpPage)); 
         }
         #endregion
