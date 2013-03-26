@@ -26,7 +26,8 @@ using SkyDriveHelper;           // Wrapper for accessing SkyDrive
 using System.Runtime.Serialization.Json;    // JSON Serialization
 using Newtonsoft.Json;              // JSONConvert
 using Archive.JSON;
-using Archive.Pages; 
+using Archive.Pages;
+using Windows.UI.Popups; 
 
 
 
@@ -118,12 +119,20 @@ namespace Archive
         {
             
             // Load user's video from Archive API
-            if (App.LoggedInUser != null && App.HasNetworkConnection)
+            if (App.LoggedInUser != null)
             {
-                await App.LoadUsersVideos();
-                IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
-                if (ArchiveGroup != null)
-                    this.DefaultViewModel["Groups"] = ArchiveGroup;
+                try
+                {
+
+                    await App.LoadUsersVideos();
+                    IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
+                    if (ArchiveGroup != null)
+                        this.DefaultViewModel["Groups"] = ArchiveGroup;
+                }
+                catch
+                {
+                    // Do something here
+                }
             }
             else
             {
@@ -222,7 +231,7 @@ namespace Archive
             loginBtn.Visibility = Visibility.Collapsed;
             signUpBtn.Visibility = Visibility.Visible; 
             usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
-            //this.Frame.Navigate(typeof(GroupedItemsPage)); 
+             
         }
         #endregion 
 
@@ -272,14 +281,6 @@ namespace Archive
         #region Authenticate user 
         public async void Authenticate_User(string username, string password)
         {
-            WebResponse response;       // Reponse from URL
-            Stream responseStream;     // Stream data from responding URL
-            StreamReader reader;        // Read data in stream 
-            string responseJSON;        // The JSON string returned to us by the Archive API 
-            User loggedInUser;          // The user that is now logged in
-            DataContractJsonSerializer des = new DataContractJsonSerializer(typeof(User));
-
-            HttpClient client = new HttpClient();
 
             if (!App.HasNetworkConnection)
             {
@@ -288,57 +289,19 @@ namespace Archive
                 return;
             }
 
-            // Create HttpWebRequest
-            var loginAuthenticationURL = ArchiveAPIuri + "/login";
-            HttpWebRequest request = HttpWebRequest.CreateHttp(loginAuthenticationURL); 
-
-            // Set the method to POST
-            request.Method = "POST";
-
-            // Add headers 
-            request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";         // HARDCODED!
-
-            // Set the ContentType property of the WebRequest
-            request.ContentType = "application/json";
-
-            // Create a new LoginRequest object 
-            LoginRequest login_request = new LoginRequest(username, password);
-
-            // Serialize the LoginRequest object into JSON
-            var login_request_JSON = JsonConvert.SerializeObject(login_request); 
-
-            // Create POST data and convert it to a byte array
-            byte[] byteArray = Encoding.UTF8.GetBytes(login_request_JSON); 
-
-            // Create a stream request
-            Stream dataStream = await request.GetRequestStreamAsync();
-
-            // Write the data to the stream
-            dataStream.Write(byteArray, 0, byteArray.Length);
             
 
             try
             {
-                // Get response from URL, whether user credentials are valid 
-                response = await request.GetResponseAsync();
-               
-                
-                using (responseStream = response.GetResponseStream())
-                {
-                    reader = new StreamReader(responseStream); 
+                var loginRequest = new ApiRequest("login");
+                loginRequest.Authenticated = true;
+                loginRequest.AddJsonContent(new { Username = username, Password = password});
+                App.LoggedInUser = await loginRequest.ExecuteAsync<User>();
 
-                    // Read a string of JSON into responseJSON
-                    responseJSON = reader.ReadToEnd();
-
-                    // Deserialize the JSON into a User object (using JSON.NET third party library)
-                    loggedInUser = JsonConvert.DeserializeObject<User>(responseJSON);
-                }
-
-                App.LoggedInUser = loggedInUser;        // Store the User's data in the global variable
+    
                 appSettings[usernameKey] = username;
                 appSettings[passwordKey] = password;
-                appSettings[User] = JsonConvert.SerializeObject(loggedInUser);
+                appSettings[User] = JsonConvert.SerializeObject(App.LoggedInUser);
 
                 #region Adjust UI controls 
                 loginPopUp.Visibility = Visibility.Collapsed; 
@@ -359,6 +322,11 @@ namespace Archive
                 await dialog.ShowAsync();
                 lowerButtonsStackPanel.Visibility = Visibility.Visible;
                  
+            }
+            catch (ApiException ex)
+            {
+                // api returned something other than 200
+                InvalidLoginCredentials();
             }
             catch (Exception ex)
             {
@@ -418,6 +386,37 @@ namespace Archive
             this.Frame.Navigate(typeof(ProfilePage),App.LoggedInUser.UserId); 
         }
         #endregion
+
+        private void passwordTxtBox_PasswordChanged_1(object sender, RoutedEventArgs e)
+        {
+
+            if (passwordTxtBox.Password.Length < 1)
+                return;
+
+            if (passwordTxtBox.Password[passwordTxtBox.Password.Length - 1] == ((char)13))
+            {
+                string username = usernameTxtBox.Text;
+                string password = passwordTxtBox.Password;
+                
+                Authenticate_User(username, password);
+            }
+                
+        }
+
+        private void passwordTxtBox_KeyDown_1(object sender, KeyRoutedEventArgs e)
+        {
+            if (passwordTxtBox.Password.Length < 1)
+                return;
+
+            if (passwordTxtBox.Password[passwordTxtBox.Password.Length - 1] == ((char)13))
+            {
+                string username = usernameTxtBox.Text;
+                string password = passwordTxtBox.Password;
+
+                Authenticate_User(username, password);
+            }
+               
+        }
 
 
     }

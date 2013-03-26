@@ -299,19 +299,21 @@ namespace Archive
             
             #endregion 
 
-            // Close the metadata popup 
-            video_metadataPopup.IsOpen = false;
 
             #region Adjust some controls while the video is being uploaded
-            //uploadingPopUp.Visibility = Visibility.Visible;
-            //uploadingPopUp.IsOpen = true;
-            //backButton.Visibility = Visibility.Collapsed;
-            //ButtonsPanel.Visibility = Visibility.Collapsed;
+            // Close the metadata popup 
+            video_metadataPopup.IsOpen = false;
+            uploadingPopUp.Visibility = Visibility.Visible;
+            uploadingPopUp.IsOpen = true;
+            backButton.Visibility = Visibility.Collapsed;
+            ButtonsPanel.Visibility = Visibility.Collapsed;
+
             #endregion 
 
             #region Send out CreateVideo request to Archive API, which will return a new VideoId
             // Get VideoId from API first 
             var VideoUploadURI = "http://trout.wadec.com/API/createvideo";
+
             // Initiate HttpWebRequest with Archive API
             HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
 
@@ -323,8 +325,8 @@ namespace Archive
                 await error_dialog.ShowAsync();
                 return; 
             }
+
             string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
-            //string UserID_JSON = JsonConvert.SerializeObject(new { UserId = 1 });
 
             // Set the method to POST
             request.Method = "POST";
@@ -339,13 +341,11 @@ namespace Archive
             // Create POST data and convert it to a byte array
             byte[] byteArray = Encoding.UTF8.GetBytes(UserID_JSON);
 
-
             // Create a stream request
             Stream dataStream = await request.GetRequestStreamAsync();
 
             // Write the data to the stream
             dataStream.Write(byteArray, 0, byteArray.Length);
-
 
 
             try
@@ -393,9 +393,10 @@ namespace Archive
                 archive_videoName = titleTxtBox.Text; 
                 videoName = titleTxtBox.Text + ".mp4";
             }
-            #endregion 
-           
+            #endregion  
+
             #region Get current location and reverse geocode coordinates into city name
+            progressTxtBlock.Text = "Getting current location..."; 
             string location_string = ""; 
             try
             {
@@ -422,8 +423,12 @@ namespace Archive
             #endregion 
 
             #region Send metadata
+            progressTxtBlock.Text = "Uploading video metadata..."; 
+
             // Send metadata first 
             var VideoMetadataURI = "http://trout.wadec.com/API/uploadvideometadata";
+
+            // Create an HttpWebRequest to send to the Archive API
             HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
 
             // Create a VideoMetadata object 
@@ -465,8 +470,6 @@ namespace Archive
                     // Read a string of JSON into responseJSON
                     responseJSON = reader.ReadToEnd();
 
-
-
                     // Deserialize the JSON into a User object (using JSON.NET third party library)
                     API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
                 }
@@ -478,7 +481,10 @@ namespace Archive
             }
             #endregion 
 
+            
+
             #region Upload video to Archive API
+            progressTxtBlock.Text = "Uploading video..."; 
             HttpClient client = new HttpClient(); 
             MultipartFormDataContent form = new MultipartFormDataContent();
             StorageFile file = await StorageFile.GetFileFromPathAsync(videoFile.Path);
@@ -494,9 +500,39 @@ namespace Archive
             string address = "http://trout.wadec.com/API/uploadvideofile";
             try
             {
-                HttpContent response_content = client.PostAsync(address, form).Result.Content;
+                var video_upload_response = client.PostAsync(address, form);
+                HttpContent response_content = video_upload_response.Result.Content;
+
+                if ((int)video_upload_response.Result.StatusCode != 200)
+                {
+                    var output = string.Format("Something went wrong when uploading your video. Please try again.\n\n\nError message: " + video_upload_response.Result.ReasonPhrase);
+                    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                    dialog.Title = "We're sorry!";
+                    // Add commands and set their callbacks
+                    dialog.Commands.Add(new UICommand("Try again", (command) =>
+                    {
+                        // Implement handler here
+                        submit_videoBtn_Click_1(sender, e); 
+                        
+                    }));
+
+                    dialog.Commands.Add(new UICommand("Discard", (command) =>
+                    {
+                        // Implement handler here
+                        uploadingPopUp.Visibility = Visibility.Collapsed;
+                        uploadingPopUp.IsOpen = false;
+                        backButton.Visibility = Visibility.Visible; ;
+                        ButtonsPanel.Visibility = Visibility.Visible;
+
+                    }));
+                    await dialog.ShowAsync();
+                    
+
+                     
+                    return;
+                }
             }
-            catch
+            catch(Exception ex)
             {
                 // Do something here!!!
             }
@@ -505,7 +541,6 @@ namespace Archive
             #endregion 
 
             // Get a thumbnail image from the video file and upload it to the Archive API (linked via VideoId)
-            //await GetThumbnail(); 
             // Get thumbnail of the video file 
             var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
 
@@ -549,11 +584,12 @@ namespace Archive
 
 
             #region Upload complete, put the controls to normal
-            //uploadingPopUp.Visibility = Visibility.Collapsed;
-            //uploadingPopUp.IsOpen = false;
+            uploadingPopUp.Visibility = Visibility.Collapsed;
+            uploadingPopUp.IsOpen = false;
             backButton.Visibility = Visibility.Visible; ;
             ButtonsPanel.Visibility = Visibility.Visible;
             #endregion 
+
             var notifier = ToastNotificationManager.CreateToastNotifier();
             if (notifier.Setting == NotificationSetting.Enabled)
             {

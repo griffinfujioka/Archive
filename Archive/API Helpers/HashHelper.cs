@@ -34,21 +34,5 @@ namespace Archive.API_Helpers
 
         }
 
-
-
-
-        //public static string MD5(string str)
-        //{
-
-        //    var data = Encoding.UTF8.GetBytes(str);
-
-        //    MD5 sha = new MD5CryptoServiceProvider();
-
-        //    // This is one implementation of the abstract class SHA1.
-
-        //    return Convert.ToBase64String(sha.ComputeHash(data));
-
-        //}
-
     }
 }

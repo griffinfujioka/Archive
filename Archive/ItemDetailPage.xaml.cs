@@ -96,6 +96,12 @@ namespace Archive
             base.OnNavigatedTo(e);
         }
 
+        private void flipView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = (VideoModel)this.flipView.SelectedItem;
+            selectedVideoID = selectedItem.VideoId;
+        }
+
         
     }
 }

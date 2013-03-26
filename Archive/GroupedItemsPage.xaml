@@ -141,7 +141,7 @@
                 <TextBlock x:Name="usernameTxtBlock" Text="Username:" FontSize="16" FontFamily="Segoe UI" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,5,10,5" Foreground="White"/>
                 <TextBox x:Name="usernameTxtBox" Width="230" Height="20" Margin="10,5,10,5" IsTabStop="True" Background="Gray" HorizontalAlignment="Right" VerticalAlignment="Top"/>
                 <TextBlock Text="Password: " FontSize="16" HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="10,5,10,5" Foreground="White"/>
-                <PasswordBox x:Name="passwordTxtBox" Width="232" Height="20" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,5,10,5" IsTabStop="True" Background="Gray"/>
+                <PasswordBox x:Name="passwordTxtBox" Width="232" Height="20" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,5,10,5" IsTabStop="True" KeyDown="passwordTxtBox_KeyDown_1" Background="Gray" PasswordChanged="passwordTxtBox_PasswordChanged_1"/>
                 <Button x:Name="submitLoginBtn" Content="Sign in" Height="35" Width="78" Margin="10,5,10,5" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="submitLoginBtn_Click_1" IsTabStop="True" Foreground="White" IsHitTestVisible="True"/>
             
             </StackPanel>

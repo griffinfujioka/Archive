@@ -54,6 +54,7 @@
             Grid.Row="0"
             Grid.ColumnSpan="2"
             ScrollViewer.HorizontalScrollMode="Disabled"
+          SelectionChanged="flipView_SelectionChanged_1"
             
             >
 
