@@ -296,7 +296,7 @@ namespace Archive
             CreateVideoResponse API_response;       // A simple object with only one attribute: VideoId 
             HttpClient httpClient = new HttpClient();
             HttpMessageHandler handler = new HttpClientHandler();
-            
+            int SavedVideoId = -1; 
             #endregion 
 
 
@@ -307,71 +307,75 @@ namespace Archive
             uploadingPopUp.IsOpen = true;
             backButton.Visibility = Visibility.Collapsed;
             ButtonsPanel.Visibility = Visibility.Collapsed;
-
             #endregion 
 
-            #region Send out CreateVideo request to Archive API, which will return a new VideoId
-            // Get VideoId from API first 
-            var VideoUploadURI = "http://trout.wadec.com/API/createvideo";
-
-            // Initiate HttpWebRequest with Archive API
-            HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
-
+            #region Make sure the user is logged in
             // Serialize a simple UserId object and send it to the Archive API
             if (App.LoggedInUser == null)
             {
                 var error_output = string.Format("You are not currently logged in.");
                 Windows.UI.Popups.MessageDialog error_dialog = new Windows.UI.Popups.MessageDialog(error_output);
                 await error_dialog.ShowAsync();
-                return; 
+                return;
             }
+            #endregion
 
+            #region Upload video
             string UserID_JSON = JsonConvert.SerializeObject(new { UserId = App.LoggedInUser.UserId });
 
-            // Set the method to POST
-            request.Method = "POST";
-
-            // Add headers 
-            request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";          // HARDCODED!
-
-            // Set the ContentType property of the WebRequest
-            request.ContentType = "application/json";
-
-            // Create POST data and convert it to a byte array
-            byte[] byteArray = Encoding.UTF8.GetBytes(UserID_JSON);
-
-            // Create a stream request
-            Stream dataStream = await request.GetRequestStreamAsync();
-
-            // Write the data to the stream
-            dataStream.Write(byteArray, 0, byteArray.Length);
-
+            progressTxtBlock.Text = "Uploading video..."; 
 
             try
             {
-                // Get response from URL
-                response = await request.GetResponseAsync();
 
-                using (responseStream = response.GetResponseStream())
-                {
-                    reader = new StreamReader(responseStream);
+                var createVideoRequest = new ApiRequest("createvideo");
+                createVideoRequest.Authenticated = true;
+                await createVideoRequest.AddJsonContentAsync(new { UserId = App.LoggedInUser.UserId });
+                var videoId = await createVideoRequest.ExecuteAsync<VideoIdModel>();
+                SavedVideoId = videoId.VideoId;
 
-                    // Read a string of JSON into responseJSON
-                    responseJSON = reader.ReadToEnd();
+                var videoUploadRequest = new ApiRequest("uploadvideofile");
+                videoUploadRequest.Authenticated = true;
+                videoUploadRequest.Parameters.Add("VideoId", videoId.VideoId.ToString());
+                await videoUploadRequest.AddFileContentAsync(videoFile.Path);
 
-                    // Deserialize the JSON into a User object (using JSON.NET third party library)
-                    API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
-
-                    // Get the VideoId
-                    VideoId = API_response.VideoId;
-                }
-
+                var result = await videoUploadRequest.ExecuteAsync();
+                
+            }
+            catch (ApiException ex)
+            {
+                // api returned something other than 200
             }
             catch (Exception ex)
             {
-                // Do something here!!!
+                // something bad happened, hopefully not api related
             }
+            #endregion
+
+            #region Get current location and reverse geocode coordinates into city name
+            progressTxtBlock.Text = "Getting current location...";
+            string location_string = "";
+            try
+            {
+                string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+                Geolocator gl = new Geolocator();
+                gl.PositionChanged += (s, args) => { /* empty */ };
+
+                Geoposition gp = await gl.GetGeopositionAsync();
+                var latitude = gp.Coordinate.Latitude;
+                var longitude = gp.Coordinate.Longitude;
+                var helper = new MapHelper(bing_maps_key);
+                var location = await helper.FindLocationByPointAsync(latitude, longitude);
+                var my_address = location.First().address;
+
+                location_string = string.Format("{0}, {1}",
+                   my_address.locality, my_address.adminDistrict);
+            }
+            catch (Exception ex)
+            {
+                // Do something here... 
+            }
+
 
             #endregion 
 
@@ -393,154 +397,36 @@ namespace Archive
                 archive_videoName = titleTxtBox.Text; 
                 videoName = titleTxtBox.Text + ".mp4";
             }
-            #endregion  
-
-            #region Get current location and reverse geocode coordinates into city name
-            progressTxtBlock.Text = "Getting current location..."; 
-            string location_string = ""; 
-            try
-            {
-                string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
-                Geolocator gl = new Geolocator();
-                gl.PositionChanged += (s, args) => { /* empty */ };
-
-                Geoposition gp = await gl.GetGeopositionAsync();
-                var latitude = gp.Coordinate.Latitude;
-                var longitude = gp.Coordinate.Longitude;
-                var helper = new MapHelper(bing_maps_key);
-                var location = await helper.FindLocationByPointAsync(latitude, longitude);
-                var my_address = location.First().address;
-
-                 location_string = string.Format("{0}, {1}",
-                    my_address.locality, my_address.adminDistrict);
-            }
-            catch(Exception ex)
-            {
-                // Do something here... 
-            }
-            
-
-            #endregion 
-
-            #region Send metadata
-            progressTxtBlock.Text = "Uploading video metadata..."; 
-
-            // Send metadata first 
-            var VideoMetadataURI = "http://trout.wadec.com/API/uploadvideometadata";
-
-            // Create an HttpWebRequest to send to the Archive API
-            HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
 
             // Create a VideoMetadata object 
-            VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
+            VideoMetadata md = new VideoMetadata(SavedVideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);
+            #endregion  
 
-            // Set the method to POST
-            metadata_request.Method = "POST";
-
-            // Add headers 
-            metadata_request.Headers["X-ApiKey"] = "123456";
-            metadata_request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";        // HARDCODED!
-
-            // Set the ContentType property of the WebRequest
-            metadata_request.ContentType = "application/json";
-
-            // Create POST data and convert it to a byte array
-            byteArray = Encoding.UTF8.GetBytes(video_metadata_JSON);
-
-            // Create a stream request
-            dataStream = await metadata_request.GetRequestStreamAsync();
-
-            // Write the data to the stream
-            dataStream.Write(byteArray, 0, byteArray.Length);
-
-
-
+            #region Send metadata
+            progressTxtBlock.Text = "Uploading video metadata..."; 
             try
             {
-                // Get response from URL
-                response = await metadata_request.GetResponseAsync();
-
-                using (responseStream = response.GetResponseStream())
-                {
-                    reader = new StreamReader(responseStream);
-
-                    // Read a string of JSON into responseJSON
-                    responseJSON = reader.ReadToEnd();
-
-                    // Deserialize the JSON into a User object (using JSON.NET third party library)
-                    API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
-                }
+                var videoMetadataRequest = new ApiRequest("uploadvideometadata");
+                videoMetadataRequest.Authenticated = true;
+                videoMetadataRequest.Parameters.Add("VideoId", SavedVideoId.ToString());
+                videoMetadataRequest.AddJsonContent(md);
+                var result = await videoMetadataRequest.ExecuteAsync(); 
 
             }
-            catch (WebException ex)
+            catch (ApiException ex)
             {
-                // Do something here!!!
+                // api returned something other than 200
             }
-            #endregion 
-
+            catch (Exception ex)
+            {
+                // something bad happened, hopefully not api related
+            }
+            #endregion
             
-
-            #region Upload video to Archive API
-            progressTxtBlock.Text = "Uploading video..."; 
-            HttpClient client = new HttpClient(); 
-            MultipartFormDataContent form = new MultipartFormDataContent();
-            StorageFile file = await StorageFile.GetFileFromPathAsync(videoFile.Path);
-            var stream = await file.OpenReadAsync();
-            StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
-            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            streamContent.Headers.ContentDisposition.Name = "\"File\"";
-            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(videoFile.Path) + "\"";
-            streamContent.Headers.ContentType = new MediaTypeHeaderValue("video/mp4");
-            form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
-            form.Add(streamContent, "File");
-
-            string address = "http://trout.wadec.com/API/uploadvideofile";
-            try
-            {
-                var video_upload_response = client.PostAsync(address, form);
-                HttpContent response_content = video_upload_response.Result.Content;
-
-                if ((int)video_upload_response.Result.StatusCode != 200)
-                {
-                    var output = string.Format("Something went wrong when uploading your video. Please try again.\n\n\nError message: " + video_upload_response.Result.ReasonPhrase);
-                    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
-                    dialog.Title = "We're sorry!";
-                    // Add commands and set their callbacks
-                    dialog.Commands.Add(new UICommand("Try again", (command) =>
-                    {
-                        // Implement handler here
-                        submit_videoBtn_Click_1(sender, e); 
-                        
-                    }));
-
-                    dialog.Commands.Add(new UICommand("Discard", (command) =>
-                    {
-                        // Implement handler here
-                        uploadingPopUp.Visibility = Visibility.Collapsed;
-                        uploadingPopUp.IsOpen = false;
-                        backButton.Visibility = Visibility.Visible; ;
-                        ButtonsPanel.Visibility = Visibility.Visible;
-
-                    }));
-                    await dialog.ShowAsync();
-                    
-
-                     
-                    return;
-                }
-            }
-            catch(Exception ex)
-            {
-                // Do something here!!!
-            }
-
-
-            #endregion 
-
-            // Get a thumbnail image from the video file and upload it to the Archive API (linked via VideoId)
+            #region Get a thumbnail image from the video file and upload it
             // Get thumbnail of the video file 
             var thumb = await videoFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView, 1000, Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale);
 
@@ -567,21 +453,27 @@ namespace Archive
             bmpimg.SetSource(thumb);
             PreviewImage.Source = bmpimg;
 
-            client = new HttpClient();
-            form = new MultipartFormDataContent();
-            stream = await thumbFile.OpenReadAsync();
-            streamContent = new StreamContent(stream.AsStream(), 1024);
-            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            streamContent.Headers.ContentDisposition.Name = "\"File\"";
-            streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(thumbFile.Path) + "\"";
-            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-            form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
-            form.Add(streamContent, "File");
+            try
+            {
 
-            address = "http://trout.wadec.com/API/uploadvideoimage";
+                var thumbnailUploadRequest = new ApiRequest("uploadvideoimage");
+                thumbnailUploadRequest.Authenticated = true;
+                thumbnailUploadRequest.Parameters.Add("VideoId", SavedVideoId.ToString());
+                await thumbnailUploadRequest.AddFileContentAsync(thumbFile.Path);
 
-            await client.PostAsync(address, form); 
+                var result = await thumbnailUploadRequest.ExecuteAsync();
 
+            }
+            catch (ApiException ex)
+            {
+                // api returned something other than 200
+
+            }
+            catch (Exception ex)
+            {
+                // something bad happened, hopefully not api related
+            }
+            #endregion
 
             #region Upload complete, put the controls to normal
             uploadingPopUp.Visibility = Visibility.Collapsed;
@@ -590,6 +482,7 @@ namespace Archive
             ButtonsPanel.Visibility = Visibility.Visible;
             #endregion 
 
+            #region Show success toast notification 
             var notifier = ToastNotificationManager.CreateToastNotifier();
             if (notifier.Setting == NotificationSetting.Enabled)
             {
@@ -603,15 +496,207 @@ namespace Archive
                 
 
                 var toast = new ToastNotification(template);
-                notifier.Show(toast); 
+                notifier.Show(toast);
             }
-            
+            #endregion
+
+
+
+
             #region Show success message
             //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
             //output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";
             //Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
             //await dialog.ShowAsync();
             #endregion 
+
+            #region [OLD] Video upload request
+            //// Get VideoId from API first 
+            //var VideoUploadURI = "http://trout.wadec.com/API/createvideo";
+
+            //// Initiate HttpWebRequest with Archive API
+            //HttpWebRequest request = HttpWebRequest.CreateHttp(VideoUploadURI);
+
+            //// Set the method to POST
+            //request.Method = "POST";
+
+            //// Add headers 
+            //request.Headers["X-ApiKey"] = "123456";
+            //request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";          // HARDCODED!
+
+            //// Set the ContentType property of the WebRequest
+            //request.ContentType = "application/json";
+
+            //// Create POST data and convert it to a byte array
+            //byte[] byteArray = Encoding.UTF8.GetBytes(UserID_JSON);
+
+            //// Create a stream request
+            //Stream dataStream = await request.GetRequestStreamAsync();
+
+            //// Write the data to the stream
+            //dataStream.Write(byteArray, 0, byteArray.Length);
+
+
+            //try
+            //{
+            //    // Get response from URL
+            //    response = await request.GetResponseAsync();
+
+            //    using (responseStream = response.GetResponseStream())
+            //    {
+            //        reader = new StreamReader(responseStream);
+
+            //        // Read a string of JSON into responseJSON
+            //        responseJSON = reader.ReadToEnd();
+
+            //        // Deserialize the JSON into a User object (using JSON.NET third party library)
+            //        API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
+
+            //        // Get the VideoId
+            //        VideoId = API_response.VideoId;
+            //    }
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Do something here!!!
+            //}
+
+            #endregion 
+
+            #region [OLD] Send metadata
+            //progressTxtBlock.Text = "Uploading video metadata..."; 
+
+            //// Send metadata first 
+            //var VideoMetadataURI = "http://trout.wadec.com/API/uploadvideometadata";
+
+            //// Create an HttpWebRequest to send to the Archive API
+            //HttpWebRequest metadata_request = HttpWebRequest.CreateHttp(VideoMetadataURI);
+
+            //// Create a VideoMetadata object 
+            //VideoMetadata md = new VideoMetadata(VideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
+
+            //// Serialize the VideoMetadata object into JSON string
+            //string video_metadata_JSON = JsonConvert.SerializeObject(md);
+
+            //// Set the method to POST
+            //metadata_request.Method = "POST";
+
+            //// Add headers 
+            //metadata_request.Headers["X-ApiKey"] = "123456";
+            //metadata_request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";        // HARDCODED!
+
+            //// Set the ContentType property of the WebRequest
+            //metadata_request.ContentType = "application/json";
+
+            //// Create POST data and convert it to a byte array
+            //byte[] byteArray = Encoding.UTF8.GetBytes(video_metadata_JSON);
+
+            //// Create a stream request
+            //Stream dataStream = await metadata_request.GetRequestStreamAsync();
+
+            //// Write the data to the stream
+            //dataStream.Write(byteArray, 0, byteArray.Length);
+
+
+
+            //try
+            //{
+            //    // Get response from URL
+            //    response = await metadata_request.GetResponseAsync();
+
+            //    using (responseStream = response.GetResponseStream())
+            //    {
+            //        reader = new StreamReader(responseStream);
+
+            //        // Read a string of JSON into responseJSON
+            //        responseJSON = reader.ReadToEnd();
+
+            //        // Deserialize the JSON into a User object (using JSON.NET third party library)
+            //        API_response = JsonConvert.DeserializeObject<CreateVideoResponse>(responseJSON);
+            //    }
+
+            //}
+            //catch (WebException ex)
+            //{
+            //    // Do something here!!!
+            //}
+            #endregion 
+
+            #region [OLD] Upload video to Archive API
+            //progressTxtBlock.Text = "Uploading video..."; 
+            //HttpClient client = new HttpClient(); 
+            //MultipartFormDataContent form = new MultipartFormDataContent();
+            //StorageFile file = await StorageFile.GetFileFromPathAsync(videoFile.Path);
+            //var stream = await file.OpenReadAsync();
+            //StreamContent streamContent = new StreamContent(stream.AsStream(), 1024);
+            //streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            //streamContent.Headers.ContentDisposition.Name = "\"File\"";
+            //streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(videoFile.Path) + "\"";
+            //streamContent.Headers.ContentType = new MediaTypeHeaderValue("video/mp4");
+            //form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
+            //form.Add(streamContent, "File");
+
+            //string address = "http://trout.wadec.com/API/uploadvideofile";
+            //try
+            //{
+            //    var video_upload_response = client.PostAsync(address, form);
+            //    HttpContent response_content = video_upload_response.Result.Content;
+
+            //    if ((int)video_upload_response.Result.StatusCode != 200)
+            //    {
+            //        var output = string.Format("Something went wrong when uploading your video. Please try again.\n\n\nError message: " + video_upload_response.Result.ReasonPhrase);
+            //        Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+            //        dialog.Title = "We're sorry!";
+            //        // Add commands and set their callbacks
+            //        dialog.Commands.Add(new UICommand("Try again", (command) =>
+            //        {
+            //            // Implement handler here
+            //            submit_videoBtn_Click_1(sender, e); 
+
+            //        }));
+
+            //        dialog.Commands.Add(new UICommand("Discard", (command) =>
+            //        {
+            //            // Implement handler here
+            //            uploadingPopUp.Visibility = Visibility.Collapsed;
+            //            uploadingPopUp.IsOpen = false;
+            //            backButton.Visibility = Visibility.Visible; ;
+            //            ButtonsPanel.Visibility = Visibility.Visible;
+
+            //        }));
+            //        await dialog.ShowAsync();
+
+
+
+            //        return;
+            //    }
+            //}
+            //catch(Exception ex)
+            //{
+            //    // Do something here!!!
+            //}
+
+
+            #endregion 
+
+            #region [OLD] Thumbnail upload
+
+            //client = new HttpClient();
+            //form = new MultipartFormDataContent();
+            //stream = await thumbFile.OpenReadAsync();
+            //streamContent = new StreamContent(stream.AsStream(), 1024);
+            //streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            //streamContent.Headers.ContentDisposition.Name = "\"File\"";
+            //streamContent.Headers.ContentDisposition.FileName = "\"" + Path.GetFileName(thumbFile.Path) + "\"";
+            //streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            //form.Add(new StringContent(VideoId.ToString()), "\"VideoId\"");
+            //form.Add(streamContent, "File");
+
+            //address = "http://trout.wadec.com/API/uploadvideoimage";
+
+            //await client.PostAsync(address, form);
+            #endregion
         }
         #endregion  
 
