@@ -500,9 +500,6 @@ namespace Archive
             }
             #endregion
 
-
-
-
             #region Show success message
             //var output = string.Format("Your video was sent successfully!\nView it online at momento.wadec.com");
             //output += "\nShare your video:\n\tTwitter\n\tFacebook\n\tYouTube";

@@ -372,7 +372,7 @@ namespace Archive
             {
                 // Convert string from API (i.e., Upload/25.jpg) to url path (i.e., http://trout.wadec.com/upload/videoimage/25.jpg)
                 var imageURLfromAPI = video.VideoImage;
-                video.VideoImage = "http://trout.wadec.com/" + imageURLfromAPI; 
+                video.VideoImage = imageURLfromAPI; 
                 //video.VideoImage = "Assets/Person1.jpg";
                 ArchiveVideos.AddItem(video); 
             }

@@ -123,7 +123,7 @@ namespace Archive.Pages
                     {
                         // Convert string from API (i.e., Upload/25.jpg) to url path (i.e., http://trout.wadec.com/upload/videoimage/25.jpg)
                         var imageURLfromAPI = video.VideoImage;
-                        video.VideoImage = "http://trout.wadec.com/" + imageURLfromAPI;
+                        video.VideoImage = imageURLfromAPI;
                     }
 
                     videosGridView.ItemsSource = responseProfile.Videos;

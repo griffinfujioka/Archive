@@ -257,7 +257,7 @@
       <HintPath>..\packages\Callisto.1.2.6\lib\winrt45\Callisto.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\Downloads\Json45r11\Bin\WinRT\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\Json45r11\Bin\WinRT\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
