@@ -68,12 +68,15 @@ namespace Archive.Pages
         }
         #endregion
 
+        #region OnNavigatedTo
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             emailAddressTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
             base.OnNavigatedTo(e);
         }
+        #endregion
 
+        #region Submit sign up info
         private async void submitInfoBtn_Click_1(object sender, RoutedEventArgs e)
         {
             User responseUser = null;                     // The user which is returned if successful 
@@ -130,5 +133,6 @@ namespace Archive.Pages
 
 
         }
+        #endregion
     }
 }
