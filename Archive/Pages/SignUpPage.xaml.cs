@@ -76,10 +76,6 @@ namespace Archive.Pages
 
         private async void submitInfoBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            WebResponse response;                   // Response from createvideo URL 
-            Stream responseStream;                  // Stream data from responding URL
-            StreamReader reader;                    // Read data in stream 
-            string responseJSON;                    // The JSON string returned to us by the Archive API 
             User responseUser = null;                     // The user which is returned if successful 
             int userID = -1;                             // userID of returned User
 
@@ -98,61 +94,19 @@ namespace Archive.Pages
                 return; 
             }
 
-            // Create an AccountCreationObject out of the information 
-            var accountCreator = new AccountCreationObject() { Email = emailAddress, Username = username, Password = password };
-
-            // Serialize the AccountCreationObject into a JSON string 
-            var accountCreatorJSON = JsonConvert.SerializeObject(accountCreator); 
-
-            // Send JSON string to Archive API
-            string signUpURL = "http://trout.wadec.com/api/signup";
-
-            // Initiate HttpWebRequest with Archive API
-            HttpWebRequest request = HttpWebRequest.CreateHttp(signUpURL);
-
-            // Set the method to POST
-            request.Method = "POST";
-
-            // Add headers 
-            request.Headers["X-ApiKey"] = "123456";
-            request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";          // HARDCODED!
-
-            // Set the ContentType property of the WebRequest
-            request.ContentType = "application/json";
-
-            // Create POST data and convert it to a byte array
-            byte[] byteArray = Encoding.UTF8.GetBytes(accountCreatorJSON);
-
-             // Create a stream request
-            Stream dataStream = await request.GetRequestStreamAsync();
-
-            // Write the data to the stream
-            dataStream.Write(byteArray, 0, byteArray.Length);
-
-
 
             try
             {
-                // Get response from URL
-                response = await request.GetResponseAsync();
+                var signupRequest = new ApiRequest("signup");
+                signupRequest.Authenticated = true;
+                signupRequest.AddJsonContent(new { Email = emailAddress, Username = username, Password = password });
+                responseUser = await signupRequest.ExecuteAsync<User>();
 
-                using (responseStream = response.GetResponseStream())
-                {
-                    reader = new StreamReader(responseStream);
-
-                    // Read a string of JSON into responseJSON
-                    responseJSON = reader.ReadToEnd();
-
-                    // Deserialize the JSON into a User object (using JSON.NET third party library)
-                    responseUser = JsonConvert.DeserializeObject<User>(responseJSON);
-
-                    // Get the VideoId
+                if (responseUser != null)
                     userID = responseUser.UserId;
-                }
             }
-            catch(Exception ex)
+            catch
             {
-
             }
 
             string successOutput;
