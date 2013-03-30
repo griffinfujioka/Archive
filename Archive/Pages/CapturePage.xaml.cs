@@ -70,6 +70,7 @@ namespace Archive
         SkyDriveFolder archiveSkyDriveFolder;       // Archive folder in SkyDrive directory 
         private bool Is_SkyDrive_Enabled; 
         int VideoId;
+        
         public string[] tags; 
         #endregion 
 
@@ -275,13 +276,16 @@ namespace Archive
             CreateVideoResponse API_response;       // A simple object with only one attribute: VideoId 
             HttpClient httpClient = new HttpClient();
             HttpMessageHandler handler = new HttpClientHandler();
-            int SavedVideoId = -1; 
+            int SavedVideoId = -1;
+            VideoMetadata md = null;
             #endregion 
+
+            this.Frame.Navigate(typeof(GroupedItemsPage)); 
 
 
             #region Adjust some controls while the video is being uploaded
             //// Close the metadata popup 
-            //video_metadataPopup.IsOpen = false;
+            video_metadataPopup.IsOpen = false;
             //uploadingPopUp.Visibility = Visibility.Visible;
             //uploadingPopUp.IsOpen = true;
             //backButton.Visibility = Visibility.Collapsed;
@@ -337,7 +341,7 @@ namespace Archive
                 Geolocator gl = new Geolocator();
                 gl.PositionChanged += (s, args) => { /* empty */ };
 
-                Geoposition gp = await gl.GetGeopositionAsync().AsTask<Geoposition>().ConfigureAwait(false);
+                Geoposition gp = await gl.GetGeopositionAsync();
                 var latitude = gp.Coordinate.Latitude;
                 var longitude = gp.Coordinate.Longitude;
                 var helper = new MapHelper(bing_maps_key);
@@ -356,29 +360,33 @@ namespace Archive
             #endregion 
 
             #region Extract video metadata from metadata pop up 
-            string videoName = "Untitled";
-            string archive_videoName = videoName; 
-            string videoDescription = descriptionTxtBox.Text;
-            string tags = tagTxtBox.Text;
-            DateTime dateCreated = DateTime.Now;
-            bool isPublic = false;
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    string videoName = "Untitled";
+                    string archive_videoName = videoName;
+                    string videoDescription = descriptionTxtBox.Text;
+                    string tags = tagTxtBox.Text;
+                    DateTime dateCreated = DateTime.Now;
+                    bool isPublic = false;
 
-            if (privacyComboBox.SelectedIndex == 0)
-                isPublic = false;
-            else if (privacyComboBox.SelectedIndex == 1)
-                isPublic = true; 
+                    if (privacyComboBox.SelectedIndex == 0)
+                        isPublic = false;
+                    else if (privacyComboBox.SelectedIndex == 1)
+                        isPublic = true;
 
-            if (titleTxtBox.Text != "")
-            {
-                archive_videoName = titleTxtBox.Text; 
-                videoName = titleTxtBox.Text + ".mp4";
-            }
+                    if (titleTxtBox.Text != "")
+                    {
+                        archive_videoName = titleTxtBox.Text;
+                        videoName = titleTxtBox.Text + ".mp4";
+                    }
+                
 
             // Create a VideoMetadata object 
-            VideoMetadata md = new VideoMetadata(SavedVideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
+            md = new VideoMetadata(SavedVideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);
+                });
             #endregion  
 
             #region Send metadata
@@ -389,6 +397,7 @@ namespace Archive
                 videoMetadataRequest.Authenticated = true;
                 videoMetadataRequest.Parameters.Add("VideoId", SavedVideoId.ToString());
                 videoMetadataRequest.AddJsonContent(md);
+
                 var result = await videoMetadataRequest.ExecuteAsync(); 
 
             }
@@ -475,6 +484,8 @@ namespace Archive
             //    notifier.Show(toast);
             //}
             #endregion
+
+            
         }
         #endregion  
 
