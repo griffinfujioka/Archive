@@ -67,80 +67,17 @@ namespace Archive.Pages
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            WebResponse response;                   // Response from createvideo URL 
-            Stream responseStream;                  // Stream data from responding URL
-            StreamReader reader;                    // Read data in stream 
-            string responseJSON;                    // The JSON string returned to us by the Archive API 
-            Profile responseProfile;                 
+            Profile responseProfile;          
+       
             // Get the videoID of the video you want to stream 
             userID = Convert.ToInt32(e.Parameter);
 
-            //string profileURL = "http://trout.wadec.com/api/user/profile?userId=" + userID.ToString();
-
-            //// Initiate HttpWebRequest with Archive API
-            //HttpWebRequest request = HttpWebRequest.CreateHttp(profileURL);
-
-            //// Set the method to POST
-            //request.Method = "GET";
-
-            //// Add headers 
-            //request.Headers["X-ApiKey"] = "123456";
-            //request.Headers["X-AccessToken"] = "ix/S6We+A5GVOFRoEPdKxLquqOM= ";          // HARDCODED!
-
-            //// Set the ContentType property of the WebRequest
-            //request.ContentType = "application/json";
-
-            //try
-            //{
-            //    // Get response from URL
-            //    response = await request.GetResponseAsync();
-
-            //    using (responseStream = response.GetResponseStream())
-            //    {
-            //        reader = new StreamReader(responseStream);
-
-            //        // Read a string of JSON into responseJSON
-            //        responseJSON = reader.ReadToEnd();
-
-            //        // Deserialize the JSON into a User object (using JSON.NET third party library)
-            //        responseProfile = JsonConvert.DeserializeObject<Profile>(responseJSON);
-
-            //        DateTimeFormatter dtFormatter = new DateTimeFormatter("shortdate");
-            //        var signedUpDateShort = dtFormatter.Format(responseProfile.User.Created);
-
-            //        profilePicture.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(responseProfile.User.Avatar, UriKind.Absolute));
-            //        usernameTxtBlock.Text = responseProfile.User.Username;
-            //        emailTxtBlock.Text = responseProfile.User.Email;
-            //        dateJoinedTxtBlock.Text = "Date joined: " + signedUpDateShort;
-            //        numberOfVideosTxtBox.Text = responseProfile.Videos.Count.ToString();
-            //        numberOfFollowersTxtBox.Text = responseProfile.Followers.Count.ToString();
-            //        numberOfFollowingTxtBox.Text = responseProfile.Following.Count.ToString();
-
-
-                  
-
-            //        foreach (VideoModel video in responseProfile.Videos)
-            //        {
-            //            // Convert string from API (i.e., Upload/25.jpg) to url path (i.e., http://trout.wadec.com/upload/videoimage/25.jpg)
-            //            var imageURLfromAPI = video.VideoImage;
-            //            video.VideoImage = imageURLfromAPI;
-            //        }
-
-            //        videosGridView.ItemsSource = responseProfile.Videos;
-            //        followersGridView.ItemsSource = responseProfile.Followers;
-            //        followingGridView.ItemsSource = responseProfile.Following;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Do something here!!
-            //}
 
             try
             {
-                var profileRequest = new ApiRequest("user/profile?userId=" + userID.ToString());
+                var profileRequest = new ApiRequest("user/profile");
                 profileRequest.Authenticated = true;
-                await profileRequest.AddJsonContentAsync(new { userId = userID });
+                profileRequest.Parameters.Add("userId", userID.ToString()); 
                 responseProfile = await profileRequest.ExecuteAsync<Profile>();
 
                 DateTimeFormatter dtFormatter = new DateTimeFormatter("shortdate");
