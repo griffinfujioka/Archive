@@ -60,11 +60,6 @@ namespace Archive.Pages
         {
         }
 
-        private void followBtn_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             Profile responseProfile;          
@@ -115,6 +110,11 @@ namespace Archive.Pages
         private void followingGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId);
+        }
+
+        private void followButton_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

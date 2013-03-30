@@ -105,6 +105,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API Helpers\ApiChunkedVideoUpload.cs" />
     <Compile Include="API Helpers\ApiException.cs" />
     <Compile Include="API Helpers\ApiRequest.cs" />
     <Compile Include="API Helpers\Bing Maps Helpers\MapHelper.cs" />
@@ -141,6 +142,9 @@
     </Compile>
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\FindFriends.xaml.cs">
+      <DependentUpon>FindFriends.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PrivacyPolicy.xaml.cs">
       <DependentUpon>PrivacyPolicy.xaml</DependentUpon>
@@ -224,6 +228,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\FindFriends.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

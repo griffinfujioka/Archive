@@ -51,6 +51,7 @@
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <Image x:Name="profilePicture" MinHeight="180" Margin="80,5,20,20" VerticalAlignment="Top" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="usernameTxtBlock" Text="griffinfujioka" FontFamily="Segoe UI" FontSize="20" FontWeight="Black" Margin="80,10,20,5" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Button x:Name="followButton" Content="Follow" BorderThickness="0" Margin="80,5,5,5" Click="followButton_Click_1"/>
                 <TextBlock x:Name="emailTxtBlock" Text="fujiokag@hotmail.com" FontFamily="Segoe UI" FontSize="14" Margin="80,5,20,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 <TextBlock x:Name="dateJoinedTxtBlock" Text="Date joined: 3/12/13" FontFamily="Segoe UI" FontSize="14" Margin="80,5,20,10" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 <StackPanel Orientation="Horizontal">

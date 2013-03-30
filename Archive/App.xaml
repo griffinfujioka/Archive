@@ -60,6 +60,21 @@
                 <WrapGrid MaximumRowsOrColumns="1" VerticalChildrenAlignment="Top" HorizontalChildrenAlignment="Left" Margin="0,0,0,0"/>
             </ItemsPanelTemplate>
 
+            <DataTemplate x:Key="QueryResultsTemplate">
+                <Grid Height="110" Width="480" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="110" Height="110">
+                        <Image Source="{Binding Avatar}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
+                        <TextBlock Text="{Binding Username}" Style="{StaticResource TitleTextStyle}" TextWrapping="NoWrap"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -387,35 +387,20 @@ namespace Archive
         }
         #endregion
 
-        private void passwordTxtBox_PasswordChanged_1(object sender, RoutedEventArgs e)
+        private void findFriendsBtn_Click_1(object sender, RoutedEventArgs e)
         {
-
-            if (passwordTxtBox.Password.Length < 1)
-                return;
-
-            if (passwordTxtBox.Password[passwordTxtBox.Password.Length - 1] == ((char)13))
-            {
-                string username = usernameTxtBox.Text;
-                string password = passwordTxtBox.Password;
-                
-                Authenticate_User(username, password);
-            }
-                
+            this.Frame.Navigate(typeof(FindFriends)); 
         }
 
-        private void passwordTxtBox_KeyDown_1(object sender, KeyRoutedEventArgs e)
+        private void passwordTxtBox_KeyUp(object sender, KeyRoutedEventArgs e)
         {
-            if (passwordTxtBox.Password.Length < 1)
-                return;
-
-            if (passwordTxtBox.Password[passwordTxtBox.Password.Length - 1] == ((char)13))
+            if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 string username = usernameTxtBox.Text;
                 string password = passwordTxtBox.Password;
 
                 Authenticate_User(username, password);
             }
-               
         }
 
 
