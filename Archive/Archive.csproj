@@ -113,8 +113,6 @@
     <Compile Include="API Helpers\LoginRequest.cs" />
     <Compile Include="API Helpers\AccountCreationObject.cs" />
     <Compile Include="API Helpers\Profile.cs" />
-    <Compile Include="API Helpers\Request.cs" />
-    <Compile Include="API Helpers\VideoFeedFunctions.cs" />
     <Compile Include="API Helpers\VideoId.cs" />
     <Compile Include="API Helpers\VideoMetadata.cs" />
     <Compile Include="API Helpers\VideoModel.cs" />

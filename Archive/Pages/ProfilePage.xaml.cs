@@ -90,6 +90,10 @@ namespace Archive.Pages
                 followersGridView.ItemsSource = responseProfile.Followers;
                 followingGridView.ItemsSource = responseProfile.Following;
 
+                //publicVideosListView.ItemsSource = responseProfile.Videos;
+                //followersListView.ItemsSource = responseProfile.Followers;
+                //followingListView.ItemsSource = responseProfile.Following;
+
             }
             catch(Exception ex)
             {

@@ -48,8 +48,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="1" Grid.Column="0">
-                <Image x:Name="profilePicture" MinHeight="180" Margin="80,5,20,20" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+            <StackPanel x:Name="infoStackPanel" Grid.Row="1" Grid.Column="0">
+                <Image x:Name="profilePicture" MinHeight="180" Margin="80,5,20,20" VerticalAlignment="Top" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                    <Image.RenderTransform>
+                        <CompositeTransform/>
+                    </Image.RenderTransform>
+                </Image>
                 <TextBlock x:Name="usernameTxtBlock" Text="griffinfujioka" FontFamily="Segoe UI" FontSize="20" FontWeight="Black" Margin="80,10,20,5" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 <Button x:Name="followButton" Content="Follow" BorderThickness="0" Margin="80,5,5,5" Click="followButton_Click_1"/>
                 <TextBlock x:Name="emailTxtBlock" Text="fujiokag@hotmail.com" FontFamily="Segoe UI" FontSize="14" Margin="80,5,20,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
@@ -68,8 +72,53 @@
                     <TextBlock Text=" following" FontFamily="Segoe UI" FontSize="18" Margin="40,5,20,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </StackPanel>
 
+                <!-- Vertical scrolling list only used when snapped -->
+                <!--<ListView
+            x:Name="publicVideosListView"
+            AutomationProperties.AutomationId="ItemListView"
+            AutomationProperties.Name="Items In Group"
+            TabIndex="1"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Padding="10,0,0,60"
+            ItemTemplate="{StaticResource UsersListViewItemTemplate}"
+            SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True">
+                </ListView>-->
+
+                <!--<ListView
+            x:Name="followersListView"
+            AutomationProperties.AutomationId="ItemListView"
+            AutomationProperties.Name="Items In Group"
+            TabIndex="1"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Padding="10,0,0,60"
+            ItemTemplate="{StaticResource UsersListViewItemTemplate}"
+            SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True">
+                </ListView>-->
+
+                <!--<ListView
+            x:Name="followingListView"
+            AutomationProperties.AutomationId="ItemListView"
+            AutomationProperties.Name="Items In Group"
+            TabIndex="1"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Padding="10,0,0,60"
+            ItemTemplate="{StaticResource UsersListViewItemTemplate}"
+            SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True">
+                </ListView>-->
+
+
+
             </StackPanel>
-            <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40,10,40,10">
+            <Grid x:Name="gutsGrid" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40,10,40,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height=".33*"/>
@@ -125,9 +174,79 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="pageTitle" Storyboard.TargetProperty="Style">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedPageHeaderTextStyle}"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.ColumnSpan)" Storyboard.TargetName="infoStackPanel">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <x:Int32>2</x:Int32>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
                         </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="infoStackPanel">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <Thickness>0,82,10,142</Thickness>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="publicVideosListView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="followersListView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="followingListView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>-->
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="gutsGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="infoStackPanel" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <x:Double>NaN</x:Double>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="profilePicture" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="80"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="infoStackPanel">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <x:Int32>0</x:Int32>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.RowSpan)" Storyboard.TargetName="infoStackPanel">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <x:Int32>2</x:Int32>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+                        <DoubleAnimation Duration="0" To="-1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="profilePicture" d:IsOptimized="True"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="profilePicture">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <x:Double>132</x:Double>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="profilePicture">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <Thickness>89,5,89,20</Thickness>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+
+
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>

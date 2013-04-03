@@ -379,6 +379,12 @@ namespace Archive
         }
         #endregion
 
+        protected override void OnSearchActivated(SearchActivatedEventArgs args)
+        {
+            var frame = Window.Current.Content as Frame;
+            frame.Navigate(typeof(FindFriends), args.QueryText);
+            base.OnSearchActivated(args);
+        }
 
     }
 }

@@ -60,7 +60,8 @@ namespace Archive.Pages
                     searchRequest.Authenticated = true;
                     searchRequest.Parameters.Add("search", queryTxtBox.Text);
                     results = await searchRequest.ExecuteAsync<IList<User>>();
-                    itemGridView.ItemsSource = results; 
+                    itemGridView.ItemsSource = results;
+                    itemListView.ItemsSource = results;
                 }
                 catch (Exception ex)
                 {
@@ -81,6 +82,28 @@ namespace Archive.Pages
         private void itemGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId);
+        }
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter != null)
+            {
+                queryTxtBox.Text = e.Parameter.ToString(); 
+                try
+                {
+                    var searchRequest = new ApiRequest("user/search");
+                    searchRequest.Authenticated = true;
+                    searchRequest.Parameters.Add("search", queryTxtBox.Text);
+                    results = await searchRequest.ExecuteAsync<IList<User>>();
+                    itemGridView.ItemsSource = results;
+                    itemListView.ItemsSource = results;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            base.OnNavigatedTo(e);
         }
     }
 }
