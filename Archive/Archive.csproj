@@ -117,6 +117,8 @@
     <Compile Include="API Helpers\VideoId.cs" />
     <Compile Include="API Helpers\VideoMetadata.cs" />
     <Compile Include="API Helpers\VideoModel.cs" />
+    <Compile Include="API Helpers\VideoUploadInBackgroundModel.cs" />
+    <Compile Include="API Helpers\VideoUploadTask.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -184,6 +186,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BadgeTemp.png" />
     <Content Include="Assets\Logo.png" />
     <Content Include="Assets\Person1.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

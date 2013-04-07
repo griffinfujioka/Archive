@@ -130,12 +130,10 @@
             </ListView.GroupStyle>
         </ListView>
 
-        <StackPanel x:Name="systemStatusStackPanel" Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="140, 15, 10, 15">
-            
+        <ProgressRing x:Name="progressRing" Margin="10,5,10,5" Width="150" Height="60" Visibility="Collapsed" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
-        </StackPanel>
         <StackPanel x:Name="loginStackPanel" Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <ProgressRing x:Name="progressRing" Margin="10,5,10,5" Width="100" Height="30" Visibility="Collapsed" Foreground="Gray" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+           
             <StackPanel x:Name="loginPopUp" Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
                 
                 <TextBlock x:Name="usernameTxtBlock" Text="Username:" FontSize="16" FontFamily="Segoe UI" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,5,10,5" Foreground="White"/>

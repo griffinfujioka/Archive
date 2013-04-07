@@ -543,7 +543,7 @@
     </Style>
     <Style x:Key="SearchAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="SearchAppBarButton"/>
-        <Setter Property="AutomationProperties.Name" Value="Search"/>
+        <Setter Property="AutomationProperties.Name" Value="Find friends"/>
         <Setter Property="Content" Value="&#xE11A;"/>
     </Style>
     <Style x:Key="HelpAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">

@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Json;    // JSON Serialization
 namespace Archive.API_Helpers
 {
     [DataContract]
-    class VideoMetadata
+    public class VideoMetadata
     {
 
         [DataMember(Name = "VideoId")]

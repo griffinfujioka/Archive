@@ -129,7 +129,7 @@
                     <StackPanel Grid.Row="0" Orientation="Vertical">
                         <TextBlock Text="Public videos" FontFamily="Segoe UI" FontSize="22"/>
                         <GridView x:Name="videosGridView" BorderThickness="0"  Width="Auto" Height="Auto" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" ItemTemplate="{StaticResource ProfileVideoItemTemplate}" ItemContainerStyle="{StaticResource StoreFrontTileStyle}" ItemsPanel="{StaticResource StoreFrontGridItemsPanelTemplate}"  VerticalAlignment="Stretch"
-            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="None" IsItemClickEnabled="True" ItemClick="videosGridView_ItemClick_1" />
+            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="None" IsItemClickEnabled="True" ItemClick="videosGridView_ItemClick_1" Margin="40,0,0,0" />
 
                     </StackPanel>
 
@@ -137,13 +137,13 @@
                     <StackPanel Grid.Row="1"  Orientation="Vertical">
                         <TextBlock Text="Followers" FontFamily="Segoe UI" FontSize="22"/>
                         <GridView x:Name="followersGridView" BorderThickness="0"  Width="Auto" Height="Auto" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" ItemTemplate="{StaticResource FollowerItemTemplate}" ItemContainerStyle="{StaticResource StoreFrontTileStyle}" ItemsPanel="{StaticResource StoreFrontGridItemsPanelTemplate}"  VerticalAlignment="Stretch"
-            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="None" IsItemClickEnabled="True" ItemClick="followersGridView_ItemClick_1"/>
+            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="None" IsItemClickEnabled="True" ItemClick="followersGridView_ItemClick_1" Margin="40,0,0,0"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="2"  Orientation="Vertical">
                         <TextBlock Text="Following" FontFamily="Segoe UI" FontSize="22"/>
                         <GridView x:Name="followingGridView" BorderThickness="0"  Width="Auto" Height="Auto" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" ItemTemplate="{StaticResource FollowerItemTemplate}" ItemContainerStyle="{StaticResource StoreFrontTileStyle}" ItemsPanel="{StaticResource StoreFrontGridItemsPanelTemplate}"  VerticalAlignment="Stretch"
-            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="None" IsItemClickEnabled="True" ItemClick="followingGridView_ItemClick_1" />
+            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="None" IsItemClickEnabled="True" ItemClick="followingGridView_ItemClick_1" Margin="40,0,0,0" />
                     </StackPanel>
 
 

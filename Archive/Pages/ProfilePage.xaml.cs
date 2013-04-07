@@ -76,7 +76,8 @@ namespace Archive.Pages
             // Get the userId of the user we're currently looking at
             userID = Convert.ToInt32(e.Parameter);
 
-
+            if (userID == App.LoggedInUser.UserId)
+                followButton.Visibility = Visibility.Collapsed; 
 
             try
             {

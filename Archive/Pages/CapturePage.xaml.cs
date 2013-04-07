@@ -489,6 +489,12 @@ namespace Archive
             //}
             #endregion
 
+            // Background task stuff
+            var VideoUploadObject = new VideoUploadInBackgroundModel(App.LoggedInUser.UserId, md, thumbFile.Path, videoFile.Path);
+
+            VideoUploadTask.RegisterVideoUpload(VideoUploadObject); 
+            
+
             
         }
         #endregion  

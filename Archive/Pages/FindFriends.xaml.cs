@@ -88,12 +88,28 @@ namespace Archive.Pages
         {
             if (e.Parameter != null)
             {
-                queryTxtBox.Text = e.Parameter.ToString(); 
+                queryTxtBox.Text = e.Parameter.ToString();
                 try
                 {
                     var searchRequest = new ApiRequest("user/search");
                     searchRequest.Authenticated = true;
                     searchRequest.Parameters.Add("search", queryTxtBox.Text);
+                    results = await searchRequest.ExecuteAsync<IList<User>>();
+                    itemGridView.ItemsSource = results;
+                    itemListView.ItemsSource = results;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            else
+            {
+                try
+                {
+                    var searchRequest = new ApiRequest("user/search");
+                    searchRequest.Authenticated = true;
+                    searchRequest.Parameters.Add("search", "");
                     results = await searchRequest.ExecuteAsync<IList<User>>();
                     itemGridView.ItemsSource = results;
                     itemListView.ItemsSource = results;

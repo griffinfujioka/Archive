@@ -243,27 +243,27 @@ namespace Archive
         public async void AuthenticateArchiveAPI()
         {
             // Testing some functionality here: trying to contact Archive API
-            HttpClient httpClient;
-            HttpMessageHandler handler = new HttpClientHandler();
-            handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
-            httpClient = new HttpClient(handler);
+            //HttpClient httpClient;
+            //HttpMessageHandler handler = new HttpClientHandler();
+            //handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
+            //httpClient = new HttpClient(handler);
 
 
-            var AuthenticationURI = (ArchiveAPIuri + "/REQUEST_token");
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, AuthenticationURI);
-            httpRequestMessage.Headers.Add("X-ApiKey", "123456");
-            HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+            //var AuthenticationURI = (ArchiveAPIuri + "/REQUEST_token");
+            //var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, AuthenticationURI);
+            //httpRequestMessage.Headers.Add("X-ApiKey", "123456");
+            //HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
             // Use an enum like that: System.Net.HttpStatusCode.Accepted;
 
-            switch ((int)response.StatusCode)
-            {
-                case 200:       // Everything is good! 
-                    App.API_Authenticated = true; 
-                    // Parse some JSON to receive RequestTokenResponse: (string token, string method)
-                    break; 
-                default:
-                    break; 
-            }
+            //switch ((int)response.StatusCode)
+            //{
+            //    case 200:       // Everything is good! 
+            //        App.API_Authenticated = true; 
+            //        // Parse some JSON to receive RequestTokenResponse: (string token, string method)
+            //        break; 
+            //    default:
+            //        break; 
+            //}
         }
         #endregion 
 

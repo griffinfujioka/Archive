@@ -12,7 +12,7 @@
     <Grid Background="White">
         <StackPanel>
             <TextBlock FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,10,10,10" Foreground="Black"
-                       Text="Archive requires access to your Microsoft Live ID for the purposes of accessing your pre-arranged SkyDrive cloud storage. Archive does not transmit or share any of your information. "/>
+                       Text="Archive does not access, transmit, or share any of your personal information. The application requires a network connection in order to communicate with the Archive API and uses the geolocation services of your device to provide a location for each video you upload."/>
         </StackPanel>
     </Grid>
 </UserControl>

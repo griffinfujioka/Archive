@@ -87,11 +87,14 @@
                                     </Paragraph>
                                     <Paragraph LineStackingStrategy="MaxHeight">
                                         <InlineUIContainer>
-                                            <Image x:Name="image" MaxHeight="480" Margin="0,20,0,10" Stretch="Uniform" Source="{Binding VideoImage}" AutomationProperties.Name="{Binding Title}"/>
+                                            <Image x:Name="image" MaxHeight="360" Height="360" Margin="0,20,0,10" Stretch="Uniform" Source="{Binding VideoImage}" AutomationProperties.Name="{Binding Title}"/>
                                         </InlineUIContainer>
                                     </Paragraph>
                                     <Paragraph>
-                                        <Run FontWeight="SemiLight" Text="{Binding Content}"/>
+                                        <LineBreak/>
+                                        <Run FontWeight="Normal" Text="{Binding Taken}"/>
+                                        <LineBreak/>
+                                        <Run FontWeight="Normal" Text="{Binding Location}"/>
                                     </Paragraph>
                                 </RichTextBlock>
 

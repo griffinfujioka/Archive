@@ -88,6 +88,14 @@ namespace Archive.Pages
             var password = passwordTxtBox.Password;
             var confirmPassword = confirmPasswordTxtBox.Password;
 
+            if (emailAddress == "" || username == "" || password == "" || confirmPassword == "")
+            {
+                var output = string.Format("Please fill out all fields.");
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(output);
+                await dialog.ShowAsync();
+                return; 
+            }
+
             // Make sure the passwords match 
             if (password != confirmPassword)
             {
@@ -115,7 +123,7 @@ namespace Archive.Pages
             string successOutput;
             if (userID > 0)
             {
-                successOutput = string.Format("Account created successfully. Welcome to Archive " + responseUser.Username + ".");
+                successOutput = string.Format("Welcome to Archive, " + responseUser.Username + ".");
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(successOutput);
                 await dialog.ShowAsync();
                 App.LoggedInUser = responseUser;
@@ -134,5 +142,14 @@ namespace Archive.Pages
 
         }
         #endregion
+
+        private void confirmPasswordTxtBox_KeyUp_1(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+
+                submitInfoBtn_Click_1(sender, e); 
+            }
+        }
     }
 }
