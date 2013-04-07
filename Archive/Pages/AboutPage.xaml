@@ -15,11 +15,12 @@
             <TextBlock Text="Contributors: " FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,20,10,10"/>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden">
                 <StackPanel>
-                    <TextBlock Text="Wade Christie" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
-                    <TextBlock Text="Griffin Fujioka" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
-                    <TextBlock Text="Cameron Hawkins" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
-                    <TextBlock Text="Matt Karcher" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
-                    <TextBlock Text="Jimmy Lee" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="Wade Christie - API" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="Griffin Fujioka - Windows 8" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="Cameron Hawkins - iOS" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="Matt Karcher - Android" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="Jimmy Lee - Web" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="David Heyduck - Artwork" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
                 </StackPanel>
             </ScrollViewer>
         </StackPanel>

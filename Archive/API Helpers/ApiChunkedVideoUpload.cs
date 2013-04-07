@@ -30,7 +30,7 @@ namespace Archive
 			this.filePath = filePath;
 		}
 
-		public async void Execute()
+		public async Task Execute()
 		{
 			// hack for testing from a project file
 			//var videoFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(this.filePath));
@@ -42,7 +42,7 @@ namespace Archive
 			var totalChunks = (long)((fileSize + CHUNK_SIZE) / CHUNK_SIZE);
 
 			// send chunked upload request
-			var chunkedUploadRequest = new ApiRequest("video/requestchunkedupload");
+			var chunkedUploadRequest = new ApiRequest("video/uploadchunked/request");
 			chunkedUploadRequest.Authenticated = true;
 			chunkedUploadRequest.AddJsonContent(new { VideoId = this.videoId, TotalChunks = totalChunks });
 			var chunkedUploadRequestResponse = await chunkedUploadRequest.ExecuteAsync();
@@ -68,7 +68,7 @@ namespace Archive
 
 				if (readCount > 0)
 				{
-					var uploadChunkRequest = new ApiRequest("video/chunkedupload");
+					var uploadChunkRequest = new ApiRequest("video/uploadchunked/upload");
 					uploadChunkRequest.Authenticated = true;
 					uploadChunkRequest.Parameters.Add("VideoId", videoId.ToString());
 					uploadChunkRequest.Parameters.Add("ChunkId", i.ToString());

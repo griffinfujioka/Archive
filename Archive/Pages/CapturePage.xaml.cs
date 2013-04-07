@@ -318,7 +318,11 @@ namespace Archive
                 SavedVideoId = videoId.VideoId;
 
                 var videoUpload = new ApiChunkedVideoUpload(SavedVideoId, videoFile.Path);
-                videoUpload.Execute(); 
+                await videoUpload.Execute();
+
+                var isVideoComplete = new ApiRequest("video/uploadchunked/iscomplete");
+                isVideoComplete.Parameters.Add("videoId", SavedVideoId.ToString());
+                var array = await isVideoComplete.ExecuteAsync(); 
 
                 
             }

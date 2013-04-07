@@ -10,7 +10,7 @@ namespace Archive.API_Helpers
     public class Profile
     {
         [DataMember(Name = "User")]
-         public User User { get; set; }
+         public UserProfile User { get; set; }
 
         [DataMember(Name = "Videos")]
          public List<VideoModel> Videos { get; set; }

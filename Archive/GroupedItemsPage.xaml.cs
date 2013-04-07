@@ -290,6 +290,14 @@ namespace Archive
             }
 
             
+            #region Adjust UI controls
+            loginPopUp.Visibility = Visibility.Collapsed;
+            loginBtn.Visibility = Visibility.Collapsed;
+            signUpBtn.Visibility = Visibility.Collapsed;
+            progressRing.Visibility = Visibility.Visible;
+            progressRing.IsActive = true;
+            usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
+            #endregion
 
             try
             {
@@ -303,20 +311,18 @@ namespace Archive
                 appSettings[passwordKey] = password;
                 appSettings[User] = JsonConvert.SerializeObject(App.LoggedInUser);
 
-                #region Adjust UI controls 
-                loginPopUp.Visibility = Visibility.Collapsed; 
-                logoutBtn.Visibility = Visibility.Visible;
-                profileBtn.Visibility = Visibility.Visible;
-                loginBtn.Visibility = Visibility.Collapsed;
-                signUpBtn.Visibility = Visibility.Collapsed; 
-                usernameTxtBlock.Focus(Windows.UI.Xaml.FocusState.Pointer);
-                #endregion
+               
 
                 
                 await App.LoadUsersVideos();
                 IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
                 if (ArchiveGroup != null)
                     this.DefaultViewModel["Groups"] = ArchiveGroup;
+
+                progressRing.Visibility = Visibility.Collapsed;
+                progressRing.IsActive = false;
+                logoutBtn.Visibility = Visibility.Visible;
+                profileBtn.Visibility = Visibility.Visible;
                 
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
                 await dialog.ShowAsync();
@@ -325,8 +331,10 @@ namespace Archive
             }
             catch (ApiException ex)
             {
-                // api returned something other than 200
+                // api returned something other than 200 
                 InvalidLoginCredentials();
+                progressRing.Visibility = Visibility.Collapsed;
+                progressRing.IsActive = false;
             }
             catch (Exception ex)
             {

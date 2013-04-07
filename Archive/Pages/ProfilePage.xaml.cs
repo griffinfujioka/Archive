@@ -26,17 +26,22 @@ namespace Archive.Pages
     /// </summary>
     public sealed partial class ProfilePage : Archive.Common.LayoutAwarePage
     {
-        public int userID; 
+        public int userID;
+        public bool isFollowing;    // True if the currently logged in user is following the currently being viewed user
+        
 
         public ProfilePage()
         {
             if (App.LoggedInUser == null)
                 return;
 
+            
+
             this.InitializeComponent();
             
         }
 
+        #region Load state
         /// <summary>
         /// Populates the page with content passed during navigation.  Any saved state is also
         /// provided when recreating a page from a prior session.
@@ -49,7 +54,9 @@ namespace Archive.Pages
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
         }
+        #endregion
 
+        #region Save state
         /// <summary>
         /// Preserves state associated with this page in case the application is suspended or the
         /// page is discarded from the navigation cache.  Values must conform to the serialization
@@ -59,21 +66,31 @@ namespace Archive.Pages
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
         }
+        #endregion
 
+        #region On Navigated To
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Profile responseProfile;          
-       
-            // Get the videoID of the video you want to stream 
+            Profile responseProfile;
+
+            // Get the userId of the user we're currently looking at
             userID = Convert.ToInt32(e.Parameter);
+
 
 
             try
             {
                 var profileRequest = new ApiRequest("user/profile");
                 profileRequest.Authenticated = true;
-                profileRequest.Parameters.Add("userId", userID.ToString()); 
+                profileRequest.Parameters.Add("userId", userID.ToString());
+                profileRequest.Parameters.Add("currentUserId", App.LoggedInUser.UserId.ToString()); 
                 responseProfile = await profileRequest.ExecuteAsync<Profile>();
+
+                isFollowing = responseProfile.User.Following;
+                if (isFollowing)
+                    followButton.Content = "Unfollow";
+                else
+                    followButton.Content = "Follow";
 
                 DateTimeFormatter dtFormatter = new DateTimeFormatter("shortdate");
                 var signedUpDateShort = dtFormatter.Format(responseProfile.User.Created);
@@ -90,35 +107,54 @@ namespace Archive.Pages
                 followersGridView.ItemsSource = responseProfile.Followers;
                 followingGridView.ItemsSource = responseProfile.Following;
 
-                //publicVideosListView.ItemsSource = responseProfile.Videos;
-                //followersListView.ItemsSource = responseProfile.Followers;
-                //followingListView.ItemsSource = responseProfile.Following;
-
             }
             catch(Exception ex)
             {
             }
             base.OnNavigatedTo(e);
         }
+        #endregion
 
+        #region Videos Item Click
         private void videosGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             this.Frame.Navigate(typeof(ItemDetailPage), (e.ClickedItem as VideoModel).VideoId); 
         }
+        #endregion
 
+        #region Followers Item Click
         private void followersGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId); 
         }
+        #endregion
 
+        #region Following Item Click
         private void followingGridView_ItemClick_1(object sender, ItemClickEventArgs e)
         {
             this.Frame.Navigate(typeof(ProfilePage), (e.ClickedItem as User).UserId);
         }
+        #endregion
 
-        private void followButton_Click_1(object sender, RoutedEventArgs e)
+        #region Follow button clicked
+        private async void followButton_Click_1(object sender, RoutedEventArgs e)
         {
+            if (followButton.Content.ToString() == "Follow")
+            {
+                var followRequest = new ApiRequest("user/follow");
+                await followRequest.AddJsonContentAsync(new { UserId = App.LoggedInUser.UserId, FollowingId = userID });
+                await followRequest.ExecuteAsync();
+                followButton.Content = "Unfollow"; 
+            }
+            else if (followButton.Content.ToString() == "Unfollow")
+            {
+                var unfollowRequest = new ApiRequest("user/unfollow");
+                await unfollowRequest.AddJsonContentAsync(new { UserId = App.LoggedInUser.UserId, FollowingId = userID });
+                await unfollowRequest.ExecuteAsync();
+                followButton.Content = "Follow";
+            }
 
         }
+        #endregion
     }
 }
