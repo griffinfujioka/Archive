@@ -43,7 +43,7 @@ namespace Archive
         /// </param>
         /// <param name="pageState">A dictionary of state preserved by this page during an earlier
         /// session.  This will be null the first time a page is visited.</param>
-        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             
 
@@ -60,8 +60,18 @@ namespace Archive
                 var item = VideosDataSource.GetVideo(Convert.ToInt32(navigationParameter.ToString()));
                 this.DefaultViewModel["Group"] = "AllVideosGroup";      // HARDCODE!
                 this.DefaultViewModel["Items"] = App.ArchiveVideos.AllVideosGroup.Items;
+
+                var profileRequest = new ApiRequest("user/profile");
+                profileRequest.Authenticated = true;
+                profileRequest.Parameters.Add("userId", item.UserId.ToString());
+                profileRequest.Parameters.Add("currentUserId", App.LoggedInUser.UserId.ToString()); 
+                Profile responseProfile = await profileRequest.ExecuteAsync<Profile>();
+                this.authorDisplayControl.DataContext = responseProfile.User;
+
+
                 this.flipView.SelectedItem = item;
                 selectedVideoID = item.VideoId;
+                
             }
             catch
             {
@@ -96,10 +106,29 @@ namespace Archive
             base.OnNavigatedTo(e);
         }
 
-        private void flipView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        private async void flipView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             var selectedItem = (VideoModel)this.flipView.SelectedItem;
             selectedVideoID = selectedItem.VideoId;
+
+            try
+            {
+                var profileRequest = new ApiRequest("user/profile");
+                profileRequest.Authenticated = true;
+                profileRequest.Parameters.Add("userId", selectedItem.UserId.ToString());
+                profileRequest.Parameters.Add("currentUserId", App.LoggedInUser.UserId.ToString());
+                Profile responseProfile = await profileRequest.ExecuteAsync<Profile>();
+                this.authorDisplayControl.DataContext = responseProfile.User;
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void authorDisplayControl_Tapped_1(object sender, TappedRoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ProfilePage), (authorDisplayControl.DataContext as User).UserId);
         }
 
         

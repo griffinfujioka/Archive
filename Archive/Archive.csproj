@@ -123,6 +123,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="API Helpers\User.cs" />
+    <Compile Include="Controls\CreatorInformationControl.xaml.cs">
+      <DependentUpon>CreatorInformationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\User.xaml.cs">
+      <DependentUpon>User.xaml</DependentUpon>
+    </Compile>
     <Compile Include="JSON\JsonConverter.cs" />
     <Compile Include="JSON\JSON_VideoModel_Converter.cs" />
     <Compile Include="Pages\CapturePage.xaml.cs">
@@ -209,6 +215,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\CreatorInformationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\User.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\CapturePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -108,6 +108,16 @@ namespace Archive.Pages
                 followersGridView.ItemsSource = responseProfile.Followers;
                 followingGridView.ItemsSource = responseProfile.Following;
 
+                progressRing.Visibility = Visibility.Collapsed; 
+                videosTxtBlock.Visibility = Visibility.Visible;
+                followersTxtBlock.Visibility = Visibility.Visible;
+                followingTxtBlock.Visibility = Visibility.Visible;
+                videosSideTxtBlock.Visibility = Visibility.Visible;
+                followersSideTxtBlock.Visibility = Visibility.Visible;
+                followingSideTxtBlock.Visibility = Visibility.Visible;
+                followButton.Visibility = Visibility.Visible; 
+
+
             }
             catch(Exception ex)
             {
