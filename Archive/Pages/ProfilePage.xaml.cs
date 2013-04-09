@@ -40,19 +40,7 @@ namespace Archive.Pages
 
             this.InitializeComponent();
 
-            SolidColorBrush scb = new SolidColorBrush();
-            if (followButton.Content.ToString() == "Follow")
-            {
-                scb.Color = Color.FromArgb(255, 85, 107, 47);
-                followButton.Background = scb;
-            }
-            else if (followButton.Content.ToString() == "Unfollow")
-            {
-               
-                followButton.Content = "Follow";
-                scb.Color = Color.FromArgb(255, 139, 139, 137);
-                followButton.Background = scb;
-            }
+
 
             
         }
@@ -93,6 +81,7 @@ namespace Archive.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             Profile responseProfile;
+            SolidColorBrush scb = new SolidColorBrush();
 
             // Get the userId of the user we're currently looking at
             userID = Convert.ToInt32(e.Parameter);
@@ -109,9 +98,17 @@ namespace Archive.Pages
                 this.DataContext = responseProfile;
                 isFollowing = responseProfile.User.Following;
                 if (isFollowing)
+                {
                     followButton.Content = "Unfollow";
+                    scb.Color = Color.FromArgb(255, 139, 139, 137);
+                    followButton.Background = scb; 
+                }
                 else
+                {
                     followButton.Content = "Follow";
+                    scb.Color = Color.FromArgb(255, 85, 107, 47);
+                    followButton.Background = scb; 
+                }
 
                 DateTimeFormatter dtFormatter = new DateTimeFormatter("shortdate");
                 var signedUpDateShort = dtFormatter.Format(responseProfile.User.Created);

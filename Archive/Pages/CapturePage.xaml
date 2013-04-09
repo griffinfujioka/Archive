@@ -53,7 +53,7 @@
                     <TextBlock Text="Tags:" FontSize="16" HorizontalAlignment="Left" Margin="10,5,10,5" Foreground="Black"/>
                     <StackPanel Orientation="Horizontal">
                         <TextBox x:Name="tagTxtBox" Height="40" Width="278" Foreground="Black" Margin="10,5,1,5" Background="Gray" HorizontalAlignment="Left" KeyUp="tagTxtBox_KeyUp_1" />
-                        <Button x:Name="addTagBtn" Content="Add tags" Height="35" Width="100" FontSize="16" Margin="1,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="addTagBtn_Click"/>
+                        <Button x:Name="addTagBtn" Content="Add" Height="40" Width="100" FontSize="16" Margin="1,5,10,5" BorderThickness="0" HorizontalAlignment="Left" IsTabStop="True" Foreground="Black" Background="Gray" Click="addTagBtn_Click"/>
                     </StackPanel>
                     <StackPanel Height="50">
                         <ScrollViewer VerticalScrollBarVisibility="Hidden" Margin="10,0,10,8" Height="50">

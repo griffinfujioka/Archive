@@ -126,6 +126,9 @@
     <Compile Include="Controls\CreatorInformationControl.xaml.cs">
       <DependentUpon>CreatorInformationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FlipviewVideoItem.xaml.cs">
+      <DependentUpon>FlipviewVideoItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\User.xaml.cs">
       <DependentUpon>User.xaml</DependentUpon>
     </Compile>
@@ -215,6 +218,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Controls\CreatorInformationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FlipviewVideoItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -267,20 +267,20 @@ namespace Archive
                     video_metadataPopup.IsOpen = true;
 
                     #region Get current location and reverse geocode coordinates into city name
-                    string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
-                    Geolocator gl = new Geolocator();
-                    gl.PositionChanged += (s, args) => { /* empty */ };
+                //    string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+                //    Geolocator gl = new Geolocator();
+                //    gl.PositionChanged += (s, args) => { /* empty */ };
 
-                    Geoposition gp = await gl.GetGeopositionAsync();
-                    var latitude = gp.Coordinate.Latitude;
-                    var longitude = gp.Coordinate.Longitude;
-                    var helper = new MapHelper(bing_maps_key);
-                    var location = await helper.FindLocationByPointAsync(latitude, longitude);
-                    var address = location.First().address;
+                //    Geoposition gp = await gl.GetGeopositionAsync();
+                //    var latitude = gp.Coordinate.Latitude;
+                //    var longitude = gp.Coordinate.Longitude;
+                //    var helper = new MapHelper(bing_maps_key);
+                //    var location = await helper.FindLocationByPointAsync(latitude, longitude);
+                //    var address = location.First().address;
 
-                    var location_string = string.Format("{0}, {1}",
-                address.locality, address.adminDistrict);
-                    locationTxtBlock.Text = location_string;
+                //    var location_string = string.Format("{0}, {1}",
+                //address.locality, address.adminDistrict);
+                //    locationTxtBlock.Text = location_string;
                     // Here I've got the coordinates, but can't figure out the city name
 
 
@@ -420,6 +420,7 @@ namespace Archive
                     foreach (string t in tagsList)
                     {
                         tags[i] = t;
+                        i++; 
                     }
             // Create a VideoMetadata object 
             md = new VideoMetadata(SavedVideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic, tags);
@@ -758,7 +759,10 @@ namespace Archive
 
         private void tagTxtBox_KeyUp_1(object sender, KeyRoutedEventArgs e)
         {
-
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                addTagBtn_Click(sender, e); 
+            }
         }
     }
 }

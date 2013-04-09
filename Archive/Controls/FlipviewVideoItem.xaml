@@ -1,0 +1,32 @@
+﻿<UserControl
+    x:Class="Archive.Controls.FlipviewVideoItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Archive.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mmppf="using:Microsoft.PlayerFramework"
+    xmlns:adaptive="using:Microsoft.PlayerFramework.Adaptive"
+    mc:Ignorable="d"
+    d:DesignHeight="768"
+    d:DesignWidth="1226">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" 
+                                                                   AutoPlay="False" 
+                                                                   IsFullScreen="False" 
+                                                                   IsPlayPauseVisible="True"
+                                                                   IsPauseEnabled="True" 
+                                                                   >
+            <mmppf:MediaPlayer.Plugins>
+                <adaptive:AdaptivePlugin />
+            </mmppf:MediaPlayer.Plugins>
+        </mmppf:MediaPlayer>
+
+    </Grid>
+</UserControl>

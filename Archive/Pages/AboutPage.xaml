@@ -24,9 +24,10 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <StackPanel Orientation="Vertical" Margin="40,10,40,10">
-                <TextBlock Text="Archive currently uses Gravatar as a tool for maintaining user profile images. Click the button below to sign-up for Gravatar." TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"/>
+            <StackPanel Orientation="Vertical" Margin="10,10,40,10">
+                <TextBlock Text="Archive currently uses Gravatar as a tool for maintaining user profile images. Click the button below to sign-up for Gravatar." TextWrapping="Wrap" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" HorizontalAlignment="Left"/>
                 <Button x:Name="getGravatarButton" Width="Auto" Height="Auto" Content="Visit Gravatar" BorderThickness="0" Margin="5,5,5,5" HorizontalAlignment="Center" Background="LightGray" Click="getGravatarButton_Click"/>
+                <TextBlock Text="Archive utilizes user interface controls from open-source projects; specifically the Callisto project and Microsoft Player Framework. Additionally, Archive uses JSON.NET for JSON serialialization and deserialization." TextWrapping="Wrap" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" HorizontalAlignment="Left" Margin="0,40,0,20"/>
             </StackPanel>
         </StackPanel>
     </Grid>

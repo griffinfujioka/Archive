@@ -117,7 +117,7 @@ namespace Archive
         /// session.  This will be null the first time a page is visited.</param>
         protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            
+            videosProgressRing.Visibility = Visibility.Visible;
             // Load user's video from Archive API
             if (App.LoggedInUser != null)
             {
@@ -128,6 +128,8 @@ namespace Archive
                     IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
                     if (ArchiveGroup != null)
                         this.DefaultViewModel["Groups"] = ArchiveGroup;
+
+                    videosProgressRing.Visibility = Visibility.Collapsed;
                 }
                 catch
                 {

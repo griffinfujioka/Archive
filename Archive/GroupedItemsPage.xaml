@@ -50,13 +50,14 @@
             ItemsSource="{Binding Source={StaticResource groupedItemsViewSource}}"
             ItemTemplate="{StaticResource Standard250x250ItemTemplate}"
             SelectionMode="None"
-            IsSwipeEnabled="false"
             IsItemClickEnabled="True"
             ItemClick="ItemView_ItemClick"
             Grid.Row="1"
             Margin="0,0,0,20"
             Grid.Column="0"
             Grid.ColumnSpan="2"
+            IsSwipeEnabled="True"
+            
             >
 
             <GridView.ItemsPanel>
