@@ -26,7 +26,11 @@
             <DataTemplate x:Key="ProfileVideoItemTemplate">
                 <Grid HorizontalAlignment="Left" Width="200">
                     <StackPanel Orientation="Vertical">
-                        <Image Source="{Binding MediumImageUrl}" Height="150" Width="150" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                        <Border CornerRadius="5" MinHeight="150" MinWidth="150" Margin="5,5,5,5" VerticalAlignment="Top" HorizontalAlignment="Center">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding MediumImageUrl}" />
+                            </Border.Background>
+                        </Border>
                         <TextBlock TextWrapping="Wrap" Text="{Binding Title}" Width="140" HorizontalAlignment="Left" Margin="5,5,5,5"/>
                     </StackPanel>
                 </Grid>
@@ -35,7 +39,11 @@
             <DataTemplate x:Key="FollowerItemTemplate">
                 <Grid HorizontalAlignment="Left">
                     <StackPanel Orientation="Vertical">
-                        <Image Source="{Binding Avatar}" Height="150" Width="150" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                        <Border CornerRadius="5" MinHeight="150" MinWidth="150" Margin="5,5,5,5" VerticalAlignment="Top" HorizontalAlignment="Center">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Avatar}" />
+                            </Border.Background>
+                        </Border>
                         <TextBlock TextWrapping="Wrap" Text="{Binding Username}" HorizontalAlignment="Left" Margin="5,5,5,5"/>
                     </StackPanel>
                 </Grid>

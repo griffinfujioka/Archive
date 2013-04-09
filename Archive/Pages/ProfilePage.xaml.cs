@@ -90,6 +90,7 @@ namespace Archive.Pages
                 profileRequest.Parameters.Add("currentUserId", App.LoggedInUser.UserId.ToString()); 
                 responseProfile = await profileRequest.ExecuteAsync<Profile>();
 
+                this.DataContext = responseProfile;
                 isFollowing = responseProfile.User.Following;
                 if (isFollowing)
                     followButton.Content = "Unfollow";
@@ -99,7 +100,7 @@ namespace Archive.Pages
                 DateTimeFormatter dtFormatter = new DateTimeFormatter("shortdate");
                 var signedUpDateShort = dtFormatter.Format(responseProfile.User.Created);
 
-                profilePicture.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(responseProfile.User.Avatar, UriKind.Absolute));
+                //profilePicture.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(responseProfile.User.Avatar, UriKind.Absolute));
                 usernameTxtBlock.Text = responseProfile.User.Username;
                 emailTxtBlock.Text = responseProfile.User.Email;
                 dateJoinedTxtBlock.Text = "Date joined: " + signedUpDateShort;

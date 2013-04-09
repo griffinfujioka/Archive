@@ -77,7 +77,7 @@
                         UserControl chosen as the templated item because it supports visual state management
                         Loaded/unloaded events explicitly subscribe to view state updates from the page
                     -->
-                    <UserControl x:Name="userControl" Loaded="StartLayoutUpdates" Unloaded="StopLayoutUpdates">
+                    <UserControl Loaded="StartLayoutUpdates" Unloaded="StopLayoutUpdates">
                         
                         
                             <Grid Grid.Row="1">
@@ -85,32 +85,33 @@
                             <!-- Content is allowed to flow across as many columns as needed -->
                             <common:RichTextColumns x:Name="richTextColumns" Margin="140,0,117,20">
                                 
-                                <RichTextBlock x:Name="richTextBlock" Width="560" Style="{StaticResource ItemRichTextStyle}" IsTextSelectionEnabled="False">
+                                <RichTextBlock x:Name="richTextBlock" Width="750" Style="{StaticResource ItemRichTextStyle}" IsTextSelectionEnabled="False">
                                     <Paragraph>
                                         <Run FontSize="40" FontWeight="Light" Text="{Binding Title}"/>
                                         <LineBreak/>
                                         <LineBreak/>
                                         <Run FontWeight="Normal" Text="{Binding Description}"/>
                                     </Paragraph>
-                                    <Paragraph LineStackingStrategy="MaxHeight">
+                                    <Paragraph LineStackingStrategy="MaxHeight" Margin="0,0,0,10" >
                                         <InlineUIContainer>
-                                            <!--<Image x:Name="image" MaxHeight="360" Height="360" Margin="0,20,0,10" Stretch="Uniform" Source="{Binding LargeImageUrl}" AutomationProperties.Name="{Binding Title}"/>-->
-                                            <!--<MediaElement x:Name="mediaElement" Source="{Binding VideoUrl}" Height="300" Width="360" AutoPlay="False"/>-->
-                                            <!--<WebView x:Name="MainWebView" Source="{Binding VideoUrl}" HorizontalAlignment="Center" Height="360" Margin="10,10,10,10" VerticalAlignment="Center" />-->
-                                            <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="400" Width="480" Margin="10,10,10,10">
-                                                <mmppf:MediaPlayer.Plugins>
-                                                    <adaptive:AdaptivePlugin />
-                                                </mmppf:MediaPlayer.Plugins>
-                                            </mmppf:MediaPlayer>
+                                           
+                                                <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" AutoPlay="False" IsFullScreenChanged="MediaPlayer_IsFullScreenChanged_1" IsFullScreen="False">
+                                                    <mmppf:MediaPlayer.Plugins>
+                                                        <adaptive:AdaptivePlugin />
+                                                    </mmppf:MediaPlayer.Plugins>
+                                                </mmppf:MediaPlayer>
                                         </InlineUIContainer>
-                                    </Paragraph>
-                                    <Paragraph>
-                                        <LineBreak/>
+                                        <Run FontWeight="SemiBold" Text="Date taken: "/>
                                         <Run FontWeight="Normal" Text="{Binding Taken}"/>
                                         <LineBreak/>
+                                        <Run FontWeight="SemiBold" Text="Location"/>
                                         <Run FontWeight="Normal" Text="{Binding Location}"/>
                                     </Paragraph>
+                                    
+                                
                                 </RichTextBlock>
+                                
+
 
                                 <!-- Additional columns are created from this template -->
                                 <common:RichTextColumns.ColumnTemplate>

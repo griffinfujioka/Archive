@@ -51,11 +51,12 @@
             <ProgressRing x:Name="progressRing" Height="50" Width="50" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" IsActive="True"/>
             
             <StackPanel x:Name="infoStackPanel" Grid.Row="1" Grid.Column="0">
-                <Image x:Name="profilePicture" MinHeight="180" Margin="80,5,20,20" VerticalAlignment="Top" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                    <Image.RenderTransform>
-                        <CompositeTransform/>
-                    </Image.RenderTransform>
-                </Image>
+                <Border CornerRadius="5" MinHeight="180" MinWidth="180" Margin="80,5,20,20" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding User.Avatar}" />
+                    </Border.Background>
+                </Border>
+                
                 <TextBlock x:Name="usernameTxtBlock" FontFamily="Segoe UI" FontSize="20" FontWeight="Black" Margin="80,10,20,5" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 <Button x:Name="followButton" Content="Follow" BorderThickness="0" Margin="80,5,5,5" Visibility="Collapsed" Click="followButton_Click_1"/>
                 <TextBlock x:Name="emailTxtBlock" FontFamily="Segoe UI" FontSize="14" Margin="80,5,20,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>

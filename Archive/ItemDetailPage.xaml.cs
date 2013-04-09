@@ -119,6 +119,12 @@ namespace Archive
 
         private async void flipView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
+
+            // HACK - Come back and fix this shit
+            if (this.flipView.SelectedItem == null)
+                return; 
+
+
             var selectedItem = (VideoModel)this.flipView.SelectedItem;
             selectedVideoID = selectedItem.VideoId;
 
@@ -140,6 +146,22 @@ namespace Archive
         private void authorDisplayControl_Tapped_1(object sender, TappedRoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(ProfilePage), (authorDisplayControl.DataContext as User).UserId);
+        }
+
+        private void MediaPlayer_IsFullScreenChanged_1(object sender, RoutedPropertyChangedEventArgs<bool> e)
+        {
+            var bounds = Window.Current.Bounds;
+            var height = bounds.Height;
+            var width = bounds.Width;
+
+
+            (sender as Microsoft.PlayerFramework.MediaPlayer).IsFullScreen = true; 
+
+        }
+
+        private void playerCanvas_SizeChanged_1(object sender, SizeChangedEventArgs e)
+        {
+    
         }
 
         
