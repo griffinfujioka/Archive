@@ -26,6 +26,10 @@ namespace Archive.API_Helpers
         [DataMember(Name = "Avatar")] 
         public string Avatar { get; set; }
 
+        [DataMember(Name = "TotalVideos")]
+        public int TotalVideos { get; set; }
+
+
         public User()
         {
             Username = "";

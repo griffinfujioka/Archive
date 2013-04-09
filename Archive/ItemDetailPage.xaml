@@ -10,6 +10,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Archive.Controls"
+    xmlns:mmppf="using:Microsoft.PlayerFramework"
+    xmlns:adaptive="using:Microsoft.PlayerFramework.Adaptive"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -40,6 +42,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        
+
         <!--
             The remainder of the page is one large FlipView that displays details for
             one item at a time, allowing the user to flip through all items in the chosen
@@ -51,6 +55,7 @@
             AutomationProperties.Name="Item Details"
             TabIndex="1"
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+            
             Grid.Column="0"
             Grid.Row="0"
             Grid.ColumnSpan="2"
@@ -72,11 +77,12 @@
                         UserControl chosen as the templated item because it supports visual state management
                         Loaded/unloaded events explicitly subscribe to view state updates from the page
                     -->
-                    <UserControl Loaded="StartLayoutUpdates" Unloaded="StopLayoutUpdates">
+                    <UserControl x:Name="userControl" Loaded="StartLayoutUpdates" Unloaded="StopLayoutUpdates">
                         
                         
                             <Grid Grid.Row="1">
-                                <!-- Content is allowed to flow across as many columns as needed -->
+                            
+                            <!-- Content is allowed to flow across as many columns as needed -->
                             <common:RichTextColumns x:Name="richTextColumns" Margin="140,0,117,20">
                                 
                                 <RichTextBlock x:Name="richTextBlock" Width="560" Style="{StaticResource ItemRichTextStyle}" IsTextSelectionEnabled="False">
@@ -88,7 +94,14 @@
                                     </Paragraph>
                                     <Paragraph LineStackingStrategy="MaxHeight">
                                         <InlineUIContainer>
-                                            <Image x:Name="image" MaxHeight="360" Height="360" Margin="0,20,0,10" Stretch="Uniform" Source="{Binding VideoImage}" AutomationProperties.Name="{Binding Title}"/>
+                                            <!--<Image x:Name="image" MaxHeight="360" Height="360" Margin="0,20,0,10" Stretch="Uniform" Source="{Binding LargeImageUrl}" AutomationProperties.Name="{Binding Title}"/>-->
+                                            <!--<MediaElement x:Name="mediaElement" Source="{Binding VideoUrl}" Height="300" Width="360" AutoPlay="False"/>-->
+                                            <!--<WebView x:Name="MainWebView" Source="{Binding VideoUrl}" HorizontalAlignment="Center" Height="360" Margin="10,10,10,10" VerticalAlignment="Center" />-->
+                                            <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="400" Width="480" Margin="10,10,10,10">
+                                                <mmppf:MediaPlayer.Plugins>
+                                                    <adaptive:AdaptivePlugin />
+                                                </mmppf:MediaPlayer.Plugins>
+                                            </mmppf:MediaPlayer>
                                         </InlineUIContainer>
                                     </Paragraph>
                                     <Paragraph>
@@ -167,7 +180,7 @@
             
         </Grid>
 
-        <controls:CreatorInformationControl x:Name="authorDisplayControl"  Grid.Row="0" Grid.RowSpan="1" Grid.Column="1" DataContext="{Binding}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="20,40,20,20" Tapped="authorDisplayControl_Tapped_1"/>
+        <controls:CreatorInformationControl x:Name="authorDisplayControl"  Grid.Row="0" Grid.RowSpan="1" Grid.Column="2" DataContext="{Binding}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="20,40,20,20" Tapped="authorDisplayControl_Tapped_1"/>
 
         <Grid x:Name="buttonsGrid" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

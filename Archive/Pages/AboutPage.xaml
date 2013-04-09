@@ -6,16 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
+    d:DesignHeight="500"
     d:DesignWidth="400">
     
     <Grid>
         <StackPanel>
-            <TextBlock Text="This completely redesigned video blogging service brought to you by a senior design team at Washington State University." FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,10,10,10"/>
+            <TextBlock Text="This completely redesigned video blogging service is brought to you by a senior design team at Washington State University." FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,10,10,10"/>
             <TextBlock Text="Contributors: " FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="10,20,10,10"/>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden">
                 <StackPanel>
-                    <TextBlock Text="Wade Christie - API" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
+                    <TextBlock Text="Wade Christie - API/server side" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
                     <TextBlock Text="Griffin Fujioka - Windows 8" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
                     <TextBlock Text="Cameron Hawkins - iOS" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
                     <TextBlock Text="Matt Karcher - Android" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
@@ -23,6 +23,11 @@
                     <TextBlock Text="David Heyduck - Artwork" FontFamily="Segoe UI" FontWeight="SemiLight" FontSize="14" TextWrapping="Wrap" Margin="15,5,5,5"/>
                 </StackPanel>
             </ScrollViewer>
+
+            <StackPanel Orientation="Vertical" Margin="40,10,40,10">
+                <TextBlock Text="Archive currently uses Gravatar as a tool for maintaining user profile images. Click the button below to sign-up for Gravatar." TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"/>
+                <Button x:Name="getGravatarButton" Width="Auto" Height="Auto" Content="Visit Gravatar" BorderThickness="0" Margin="5,5,5,5" HorizontalAlignment="Center" Background="LightGray" Click="getGravatarButton_Click"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

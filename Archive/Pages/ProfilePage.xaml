@@ -44,7 +44,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="140"/>
+                <RowDefinition Height="120"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -73,6 +73,8 @@
                     <TextBlock x:Name="numberOfFollowingTxtBox" Text="" FontFamily="Segoe UI" FontSize="36" Margin="80,5,20,10" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                     <TextBlock x:Name="followingSideTxtBlock" Text=" following" FontFamily="Segoe UI" FontSize="18" Margin="40,5,20,10" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </StackPanel>
+
+                
 
                 <!-- Vertical scrolling list only used when snapped -->
                 <!--<ListView

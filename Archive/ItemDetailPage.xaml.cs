@@ -15,7 +15,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Archive.DataModel;
 using Archive.API_Helpers;
-using Archive.Pages;      // VideoModel
+using Archive.Pages;
+using System.Net.Http;
+using Newtonsoft.Json;      // VideoModel
 
 // The Item Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
 
@@ -27,10 +29,13 @@ namespace Archive
     /// </summary>
     public sealed partial class ItemDetailPage : Archive.Common.LayoutAwarePage
     {
-        int selectedVideoID = -1; 
+        int selectedVideoID = -1;
+        public const string videoStreamURL = "http://trout.wadec.com/api/videos/view?videoId="; 
         public ItemDetailPage()
         {
             this.InitializeComponent();
+
+
             
         }
 
@@ -54,19 +59,24 @@ namespace Archive
                 {
                     navigationParameter = pageState["SelectedItem"];
                 }
+
+                if (selectedVideoID >= 0)
+                {
+                    HttpClient http = new HttpClient();
+                    HttpResponseMessage response = await http.GetAsync(videoStreamURL + selectedVideoID.ToString());
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var desContent = JsonConvert.DeserializeObject<string>(content);
+                   
+                    //MainWebView.NavigateToString(desContent);
+                }
+
                 // TODO: Create an appropriate data model for your problem domain to replace the sample data
                 //var item = SampleDataSource.GetItem((String)navigationParameter);
                 //this.pageTitle.Text = (App.ArchiveVideos.GetVideo(Convert.ToInt32(navigationParameter))).Title; 
                 var item = VideosDataSource.GetVideo(Convert.ToInt32(navigationParameter.ToString()));
                 this.DefaultViewModel["Group"] = "AllVideosGroup";      // HARDCODE!
                 this.DefaultViewModel["Items"] = App.ArchiveVideos.AllVideosGroup.Items;
-
-                var profileRequest = new ApiRequest("user/profile");
-                profileRequest.Authenticated = true;
-                profileRequest.Parameters.Add("userId", item.UserId.ToString());
-                profileRequest.Parameters.Add("currentUserId", App.LoggedInUser.UserId.ToString()); 
-                Profile responseProfile = await profileRequest.ExecuteAsync<Profile>();
-                this.authorDisplayControl.DataContext = responseProfile.User;
 
 
                 this.flipView.SelectedItem = item;
@@ -95,6 +105,7 @@ namespace Archive
 
         private void playBtn_Click(object sender, RoutedEventArgs e)
         {
+           
             if (selectedVideoID >= 0)
             {
                 this.Frame.Navigate(typeof(StreamVideoPage), selectedVideoID);
@@ -115,7 +126,7 @@ namespace Archive
             {
                 var profileRequest = new ApiRequest("user/profile");
                 profileRequest.Authenticated = true;
-                profileRequest.Parameters.Add("userId", selectedItem.UserId.ToString());
+                profileRequest.Parameters.Add("userId", selectedItem.User.UserId.ToString());
                 profileRequest.Parameters.Add("currentUserId", App.LoggedInUser.UserId.ToString());
                 Profile responseProfile = await profileRequest.ExecuteAsync<Profile>();
                 this.authorDisplayControl.DataContext = responseProfile.User;

@@ -188,7 +188,6 @@
     <None Include="Archive_StoreKey.pfx" />
     <None Include="Common\ReadMe.txt" />
     <None Include="Archive_TemporaryKey.pfx" />
-    <None Include="griffin.JSON" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -290,6 +289,15 @@
     </SDKReference>
     <SDKReference Include="LiveSDKXAML, Version=5.0">
       <Name>Live SDK</Name>
+    </SDKReference>
+    <SDKReference Include="Microsoft.Media.AdaptiveStreamingClient, Version=1.0">
+      <Name>Microsoft Smooth Streaming Client SDK for Windows 8</Name>
+    </SDKReference>
+    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.8.0.5">
+      <Name>Microsoft Player Framework</Name>
+    </SDKReference>
+    <SDKReference Include="Microsoft.PlayerFramework.Xaml.Adaptive, Version=1.8.0.5">
+      <Name>Microsoft Player Framework Adaptive Streaming Plugin</Name>
     </SDKReference>
     <SDKReference Include="Microsoft.VCLibs, version=11.0">
       <Name>Microsoft Visual C++ Runtime Package</Name>

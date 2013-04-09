@@ -53,6 +53,11 @@ namespace Archive.Pages
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
+            // Get the userId of the user we're currently looking at
+            userID = Convert.ToInt32(navigationParameter);
+
+            if (userID == App.LoggedInUser.UserId)
+                followButton.Visibility = Visibility.Collapsed; 
         }
         #endregion
 
@@ -76,8 +81,6 @@ namespace Archive.Pages
             // Get the userId of the user we're currently looking at
             userID = Convert.ToInt32(e.Parameter);
 
-            if (userID == App.LoggedInUser.UserId)
-                followButton.Visibility = Visibility.Collapsed; 
 
             try
             {
@@ -100,7 +103,7 @@ namespace Archive.Pages
                 usernameTxtBlock.Text = responseProfile.User.Username;
                 emailTxtBlock.Text = responseProfile.User.Email;
                 dateJoinedTxtBlock.Text = "Date joined: " + signedUpDateShort;
-                numberOfVideosTxtBox.Text = responseProfile.Videos.Count.ToString();
+                numberOfVideosTxtBox.Text = responseProfile.User.TotalVideos.ToString();
                 numberOfFollowersTxtBox.Text = responseProfile.Followers.Count.ToString();
                 numberOfFollowingTxtBox.Text = responseProfile.Following.Count.ToString();
 
@@ -167,5 +170,10 @@ namespace Archive.Pages
 
         }
         #endregion
+
+        private async void getGravatarButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://Gravatar.com"));
+        }
     }
 }

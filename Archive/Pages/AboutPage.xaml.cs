@@ -22,5 +22,10 @@ namespace Archive.Pages
         {
             this.InitializeComponent();
         }
+
+        private async void getGravatarButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://Gravatar.com"));
+        }
     }
 }
