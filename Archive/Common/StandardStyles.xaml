@@ -106,6 +106,7 @@
 
     <Style x:Key="TitleTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}">
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="16"/>
     </Style>
 
     <Style x:Key="SubtitleTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}">
@@ -1645,8 +1646,15 @@
                 <Image Source="{Binding MediumImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
             </Border>
             <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
-                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="50" Margin="15,0,15,0"/>
-                <TextBlock Text="{Binding Description}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="Wrap" Height="40" Margin="15,0,15,10"/>
+                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="47"  Margin="15,0,15,2"/>
+                
+               <!-- <TextBlock Text="{Binding Description}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" Height="40" TextWrapping="Wrap" Margin="15,0,15,10"/>-->
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Author: " FontSize="12" Foreground="White"  FontWeight="Normal" Margin="15,0,5,5" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding User.Username}" Foreground="White"  FontSize="12" FontWeight="Normal" Margin="5,0,5,5" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                </StackPanel>
+                
             </StackPanel>
         </Grid>
     </DataTemplate>

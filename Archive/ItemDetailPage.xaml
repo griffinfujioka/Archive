@@ -80,31 +80,39 @@
                     <UserControl Loaded="StartLayoutUpdates" Unloaded="StopLayoutUpdates">
                         
                         
-                            <Grid Grid.Row="1">
+                            <Grid Grid.Row="1" HorizontalAlignment="Center">
                             
                             <!-- Content is allowed to flow across as many columns as needed -->
                             <common:RichTextColumns x:Name="richTextColumns" Margin="140,0,117,20">
                                 
                                 <RichTextBlock x:Name="richTextBlock" Width="750" Style="{StaticResource ItemRichTextStyle}" IsTextSelectionEnabled="False">
                                     <Paragraph>
-                                        <Run FontSize="40" FontWeight="Light" Text="{Binding Title}"/>
+                                        <Run FontSize="32" FontWeight="SemiBold" Text="{Binding Title}"/>
                                         <LineBreak/>
                                         <LineBreak/>
-                                        <Run FontWeight="Normal" Text="{Binding Description}"/>
                                     </Paragraph>
-                                    <Paragraph LineStackingStrategy="MaxHeight" Margin="0,0,0,10" >
+                                    <Paragraph LineStackingStrategy="MaxHeight" Margin="0,0,0,10" FontFamily="Global User Interface" >
                                         <InlineUIContainer>
                                            
-                                                <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" AutoPlay="False" IsFullScreenChanged="MediaPlayer_IsFullScreenChanged_1" IsFullScreen="False">
+                                                <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" 
+                                                                   AutoPlay="False" 
+                                                                   IsFullScreenChanged="MediaPlayer_IsFullScreenChanged_1" 
+                                                                   IsFullScreen="False" 
+                                                                   IsPlayPauseVisible="True"
+                                                                   IsPauseEnabled="True" 
+                                                                   >
                                                     <mmppf:MediaPlayer.Plugins>
                                                         <adaptive:AdaptivePlugin />
                                                     </mmppf:MediaPlayer.Plugins>
                                                 </mmppf:MediaPlayer>
                                         </InlineUIContainer>
-                                        <Run FontWeight="SemiBold" Text="Date taken: "/>
+                 
+                                        <Run FontWeight="Normal" Text="{Binding Description}"/>
+                                        <LineBreak/>
+                                        <Run FontWeight="Normal" Text="Date taken: "/>
                                         <Run FontWeight="Normal" Text="{Binding Taken}"/>
                                         <LineBreak/>
-                                        <Run FontWeight="SemiBold" Text="Location"/>
+                                        <Run FontWeight="Normal" Text="Location"/>
                                         <Run FontWeight="Normal" Text="{Binding Location}"/>
                                     </Paragraph>
                                     
@@ -185,7 +193,7 @@
 
         <Grid x:Name="buttonsGrid" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Click="playBtn_Click"/>
+            <!--<Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Click="playBtn_Click"/>-->
             <Button x:Name="shareBtn" Style="{StaticResource PeopleAppBarButtonStyle}" Tag="Share" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button x:Name="editBtn" Style="{StaticResource EditAppBarButtonStyle}" Tag="Edit" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </StackPanel>

@@ -30,6 +30,9 @@ namespace Archive.API_Helpers
         [DataMember(Name = "Public")]
         public bool Public { get; set; }
 
+        [DataMember(Name = "Tags")]
+        public string[] Tags { get; set; }
+
         public VideoMetadata()
         {
             this.Title = "";
@@ -37,7 +40,7 @@ namespace Archive.API_Helpers
             this.DateCreated = DateTime.Now; 
         }
 
-        public VideoMetadata(int VideoId, string Title, string Description, string Location, DateTime DateCreated, bool Public)
+        public VideoMetadata(int VideoId, string Title, string Description, string Location, DateTime DateCreated, bool Public, string[] tags)
         {
             this.VideoId = VideoId; 
             this.Title = Title;
@@ -45,6 +48,7 @@ namespace Archive.API_Helpers
             this.Location = Location; 
             this.DateCreated = DateCreated;
             this.Public = Public;
+            this.Tags = tags;
         }
 
     }

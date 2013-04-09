@@ -9,6 +9,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization.DateTimeFormatting;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -38,6 +39,21 @@ namespace Archive.Pages
             
 
             this.InitializeComponent();
+
+            SolidColorBrush scb = new SolidColorBrush();
+            if (followButton.Content.ToString() == "Follow")
+            {
+                scb.Color = Color.FromArgb(255, 85, 107, 47);
+                followButton.Background = scb;
+            }
+            else if (followButton.Content.ToString() == "Unfollow")
+            {
+               
+                followButton.Content = "Follow";
+                scb.Color = Color.FromArgb(255, 139, 139, 137);
+                followButton.Background = scb;
+            }
+
             
         }
 
@@ -154,12 +170,15 @@ namespace Archive.Pages
         #region Follow button clicked
         private async void followButton_Click_1(object sender, RoutedEventArgs e)
         {
+            SolidColorBrush scb = new SolidColorBrush();
             if (followButton.Content.ToString() == "Follow")
             {
                 var followRequest = new ApiRequest("user/follow");
                 await followRequest.AddJsonContentAsync(new { UserId = App.LoggedInUser.UserId, FollowingId = userID });
                 await followRequest.ExecuteAsync();
-                followButton.Content = "Unfollow"; 
+                followButton.Content = "Unfollow";
+                scb.Color = Color.FromArgb(255, 139, 139, 137);
+                followButton.Background = scb;
             }
             else if (followButton.Content.ToString() == "Unfollow")
             {
@@ -167,6 +186,8 @@ namespace Archive.Pages
                 await unfollowRequest.AddJsonContentAsync(new { UserId = App.LoggedInUser.UserId, FollowingId = userID });
                 await unfollowRequest.ExecuteAsync();
                 followButton.Content = "Follow";
+                scb.Color = Color.FromArgb(255, 85, 107, 47);
+                followButton.Background = scb;
             }
 
         }

@@ -24,14 +24,14 @@
             
             <!-- Templates for Profile page -->
             <DataTemplate x:Key="ProfileVideoItemTemplate">
-                <Grid HorizontalAlignment="Left" Width="200">
+                <Grid HorizontalAlignment="Left">
                     <StackPanel Orientation="Vertical">
                         <Border CornerRadius="5" MinHeight="150" MinWidth="150" Margin="5,5,5,5" VerticalAlignment="Top" HorizontalAlignment="Center">
                             <Border.Background>
                                 <ImageBrush ImageSource="{Binding MediumImageUrl}" />
                             </Border.Background>
                         </Border>
-                        <TextBlock TextWrapping="Wrap" Text="{Binding Title}" Width="140" HorizontalAlignment="Left" Margin="5,5,5,5"/>
+                        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Title}" Margin="5,5,5,5"/>
                     </StackPanel>
                 </Grid>
             </DataTemplate>
@@ -44,7 +44,7 @@
                                 <ImageBrush ImageSource="{Binding Avatar}" />
                             </Border.Background>
                         </Border>
-                        <TextBlock TextWrapping="Wrap" Text="{Binding Username}" HorizontalAlignment="Left" Margin="5,5,5,5"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Username}" HorizontalAlignment="Center" Margin="5,5,5,5"/>
                     </StackPanel>
                 </Grid>
             </DataTemplate>

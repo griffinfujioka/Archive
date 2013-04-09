@@ -70,8 +70,11 @@ namespace Archive
         SkyDriveFolder archiveSkyDriveFolder;       // Archive folder in SkyDrive directory 
         private bool Is_SkyDrive_Enabled; 
         int VideoId;
-        
-        public string[] tags; 
+
+        public int numberOfTags;
+        public string[] tags;
+        public string location_string;
+        public List<string> tagsList; 
         #endregion 
 
         #region Constructor
@@ -85,9 +88,10 @@ namespace Archive
             VideoId = -1;
             authClient = new LiveAuthClient();
             Is_SkyDrive_Enabled = false;
-            tags = new string[] { };        // Initialize the tags array - it is an array of strings
             Loaded += OnLoaded;             // Subscribe to the page Loaded event, run code in OnLoaded 
-            privacyComboBox.SelectedIndex = 0; 
+            privacyComboBox.SelectedIndex = 0;
+            numberOfTags = 0;
+            tagsList = new List<string>(); 
 
         }
         #endregion 
@@ -140,33 +144,60 @@ namespace Archive
         {
             // See if we can connect to SkyDrive 
             // If the user has given us permission to use SkyDrive... 
-            LiveLoginResult result = await authClient.LoginAsync(scopes);
+            //LiveLoginResult result = await authClient.LoginAsync(scopes);
 
-            if (result.Status == LiveConnectSessionStatus.Connected)
+            //if (result.Status == LiveConnectSessionStatus.Connected)
+            //{
+            //    Is_SkyDrive_Enabled = true;
+            //    cxnClient = new LiveConnectClient(authClient.Session);
+
+            //    // Get hold of the root folder from SkyDrive. 
+            //    // NB: this does not traverse the network and get the full folder details.
+            //    root = new SkyDriveFolder(
+            //      cxnClient, SkyDriveWellKnownFolder.Root);
+
+            //    // This *does* traverse the network and get those details.
+            //    await root.LoadAsync();
+
+
+            //    // Try to open the Archive folder 
+            //    try
+            //    {
+            //        archiveSkyDriveFolder = await root.GetFolderAsync("Archive");
+            //    }
+            //    catch { }
+
+
+            //    if (archiveSkyDriveFolder == null)
+            //        archiveSkyDriveFolder = await root.CreateFolderAsync("Archive");
+            //}
+
+
+            location_string = "";
+            try
             {
-                Is_SkyDrive_Enabled = true;
-                cxnClient = new LiveConnectClient(authClient.Session);
+                string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+                Geolocator gl = new Geolocator();
+                gl.PositionChanged += (s, args) => { /* empty */ };
 
-                // Get hold of the root folder from SkyDrive. 
-                // NB: this does not traverse the network and get the full folder details.
-                root = new SkyDriveFolder(
-                  cxnClient, SkyDriveWellKnownFolder.Root);
+                Geoposition gp = await gl.GetGeopositionAsync();
+                var latitude = gp.Coordinate.Latitude;
+                var longitude = gp.Coordinate.Longitude;
+                var helper = new MapHelper(bing_maps_key);
+                var location = await helper.FindLocationByPointAsync(latitude, longitude);
+                var my_address = location.First().address;
 
-                // This *does* traverse the network and get those details.
-                await root.LoadAsync();
+                location_string = string.Format("{0}, {1}",
+                   my_address.locality, my_address.adminDistrict);
 
-
-                // Try to open the Archive folder 
-                try
-                {
-                    archiveSkyDriveFolder = await root.GetFolderAsync("Archive");
-                }
-                catch { }
-
-
-                if (archiveSkyDriveFolder == null)
-                    archiveSkyDriveFolder = await root.CreateFolderAsync("Archive");
+                locationTxtBlock.Text = location_string;
             }
+            catch (Exception ex)
+            {
+                // Do something here... 
+            }
+
+
 
         }
         #endregion 
@@ -338,27 +369,27 @@ namespace Archive
 
             #region Get current location and reverse geocode coordinates into city name
             progressTxtBlock.Text = "Getting current location...";
-            string location_string = "";
-            try
-            {
-                string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
-                Geolocator gl = new Geolocator();
-                gl.PositionChanged += (s, args) => { /* empty */ };
+            //string location_string = "";
+            //try
+            //{
+            //    string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
+            //    Geolocator gl = new Geolocator();
+            //    gl.PositionChanged += (s, args) => { /* empty */ };
 
-                Geoposition gp = await gl.GetGeopositionAsync();
-                var latitude = gp.Coordinate.Latitude;
-                var longitude = gp.Coordinate.Longitude;
-                var helper = new MapHelper(bing_maps_key);
-                var location = await helper.FindLocationByPointAsync(latitude, longitude);
-                var my_address = location.First().address;
+            //    Geoposition gp = await gl.GetGeopositionAsync();
+            //    var latitude = gp.Coordinate.Latitude;
+            //    var longitude = gp.Coordinate.Longitude;
+            //    var helper = new MapHelper(bing_maps_key);
+            //    var location = await helper.FindLocationByPointAsync(latitude, longitude);
+            //    var my_address = location.First().address;
 
-                location_string = string.Format("{0}, {1}",
-                   my_address.locality, my_address.adminDistrict);
-            }
-            catch (Exception ex)
-            {
-                // Do something here... 
-            }
+            //    location_string = string.Format("{0}, {1}",
+            //       my_address.locality, my_address.adminDistrict);
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Do something here... 
+            //}
 
 
             #endregion 
@@ -369,7 +400,6 @@ namespace Archive
                     string videoName = "Untitled";
                     string archive_videoName = videoName;
                     string videoDescription = descriptionTxtBox.Text;
-                    string tags = tagTxtBox.Text;
                     DateTime dateCreated = DateTime.Now;
                     bool isPublic = false;
 
@@ -383,10 +413,16 @@ namespace Archive
                         archive_videoName = titleTxtBox.Text;
                         videoName = titleTxtBox.Text + ".mp4";
                     }
-                
 
+                    tags = new string[tagsList.Count];
+                    int i = 0;
+
+                    foreach (string t in tagsList)
+                    {
+                        tags[i] = t;
+                    }
             // Create a VideoMetadata object 
-            md = new VideoMetadata(SavedVideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic);
+            md = new VideoMetadata(SavedVideoId, archive_videoName, videoDescription, location_string, dateCreated.ToUniversalTime(), isPublic, tags);
 
             // Serialize the VideoMetadata object into JSON string
             string video_metadata_JSON = JsonConvert.SerializeObject(md);
@@ -626,6 +662,7 @@ namespace Archive
         #region Add tag button clicked
         private void addTagBtn_Click(object sender, RoutedEventArgs e)
         {
+            tagsList.Add(tagTxtBox.Text);
             tagsTxtBlock.Text += "#" + tagTxtBox.Text + " ";
             tagTxtBox.Text = "";
             tagTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard); 
@@ -715,6 +752,11 @@ namespace Archive
         #endregion 
 
         private void privacyComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void tagTxtBox_KeyUp_1(object sender, KeyRoutedEventArgs e)
         {
 
         }

@@ -53,10 +53,11 @@
             <StackPanel x:Name="infoStackPanel" Grid.Row="1" Grid.Column="0">
                 <Border CornerRadius="5" MinHeight="180" MinWidth="180" Margin="80,5,20,20" VerticalAlignment="Top" HorizontalAlignment="Center">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding User.Avatar}" />
+                        <ImageBrush x:Name="profilePicture" ImageSource="{Binding User.Avatar}" />
                     </Border.Background>
                 </Border>
                 
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                 <TextBlock x:Name="usernameTxtBlock" FontFamily="Segoe UI" FontSize="20" FontWeight="Black" Margin="80,10,20,5" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 <Button x:Name="followButton" Content="Follow" BorderThickness="0" Margin="80,5,5,5" Visibility="Collapsed" Click="followButton_Click_1"/>
                 <TextBlock x:Name="emailTxtBlock" FontFamily="Segoe UI" FontSize="14" Margin="80,5,20,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
@@ -74,8 +75,9 @@
                     <TextBlock x:Name="numberOfFollowingTxtBox" Text="" FontFamily="Segoe UI" FontSize="36" Margin="80,5,20,10" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                     <TextBlock x:Name="followingSideTxtBlock" Text=" following" FontFamily="Segoe UI" FontSize="18" Margin="40,5,20,10" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </StackPanel>
+                </StackPanel>
 
-                
+
 
                 <!-- Vertical scrolling list only used when snapped -->
                 <!--<ListView
