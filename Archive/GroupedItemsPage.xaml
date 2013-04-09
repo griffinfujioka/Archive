@@ -36,7 +36,9 @@
             <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
-
+        
+        
+        <ProgressRing x:Name="progressRing" Height="50" Width="50" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" IsActive="True"/>
 
         <!-- Horizontal scrolling grid used in most view states -->
         <GridView
@@ -130,7 +132,7 @@
             </ListView.GroupStyle>
         </ListView>
 
-        <ProgressRing x:Name="progressRing" Margin="10,5,10,5" Width="150" Height="60" Visibility="Collapsed" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <ProgressRing x:Name="videosProgressRing" Margin="10,5,10,5" Width="150" Height="60" Visibility="Collapsed" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
         <StackPanel x:Name="loginStackPanel" Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center">
            
@@ -197,6 +199,13 @@
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="lowerButtonsGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videosProgressRing" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="progressRing" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
