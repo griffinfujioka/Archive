@@ -30,7 +30,9 @@ namespace Archive
     public sealed partial class ItemDetailPage : Archive.Common.LayoutAwarePage
     {
         int selectedVideoID = -1;
-        public const string videoStreamURL = "http://trout.wadec.com/api/videos/view?videoId="; 
+        public const string videoStreamURL = "http://trout.wadec.com/api/videos/view?videoId=";
+        public List<string> tagsList; 
+
         public ItemDetailPage()
         {
             this.InitializeComponent();
@@ -126,10 +128,12 @@ namespace Archive
 
             // There is a bug which should be addressed here, but I'm not sure how to solve it. 
             // In the case that the flip view is changed, the video should stop playing. 
-
+            
             var selectedItem = (VideoModel)this.flipView.SelectedItem;
+            
             selectedVideoID = selectedItem.VideoId;
             pageTitle.Text = selectedItem.Title; 
+            
 
             //tagsListBox.ItemsSource = selectedItem.Tags;
             foreach (string tag in selectedItem.Tags)
@@ -173,6 +177,56 @@ namespace Archive
         private void playerCanvas_SizeChanged_1(object sender, SizeChangedEventArgs e)
         {
     
+        }
+
+        private void editBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = (VideoModel)this.flipView.SelectedItem;
+            titleTxtBox.Text = selectedItem.Title;
+            descriptionTxtBox.Text = selectedItem.Description;
+            var completeTagsString = "";
+            foreach (string tag in selectedItem.Tags)
+            {
+                completeTagsString += "#" + tag + " "; 
+            }
+            tagsTxtBlock.Text = completeTagsString;
+            locationTxtBlock.Text = selectedItem.Location;
+
+            if (selectedItem.IsPublic)
+                privacyComboBox.SelectedIndex = 1; 
+
+            video_metadataPopup.IsOpen = true; 
+        }
+
+        private void tagTxtBox_KeyUp_1(object sender, KeyRoutedEventArgs e)
+        {
+
+        }
+
+        private void addTagBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            tagsList.Add(tagTxtBox.Text);
+            tagsTxtBlock.Text += "#" + tagTxtBox.Text + " ";
+            tagTxtBox.Text = "";
+            tagTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard); 
+        }
+
+        private void privacyComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void submit_videoBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            // Send the new info up to the server
+
+
+            video_metadataPopup.IsOpen = false; 
+        }
+
+        private void cancelUploadButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            video_metadataPopup.IsOpen = false; 
         }
 
         

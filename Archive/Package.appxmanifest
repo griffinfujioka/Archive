@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Archive.App">
-      <VisualElements DisplayName="Archive: Video Blogging" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Archive" ForegroundText="light" BackgroundColor="#FFFFFF" ToastCapable="true">
+      <VisualElements DisplayName="Archive" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Archive" ForegroundText="light" BackgroundColor="#FFFFFF" ToastCapable="true">
         <LockScreen Notification="badge" BadgeLogo="Assets/BadgeTemp.png" />
         <DefaultTile ShowName="allLogos" ShortName="Archive" />
         <SplashScreen Image="Assets\SplashScreen.png" />

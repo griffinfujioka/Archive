@@ -275,13 +275,8 @@ namespace Archive.DataModel
                 "",
                 "");
 
-            this.PrivateVideosGroup = new VideoDataGroup("PrivateVideosGroup",
-                "Private Videos",
-                "",
-                "",
-                ""); 
+
             this.AllGroups.Add(AllVideosGroup);
-            this.AllGroups.Add(PrivateVideosGroup); 
         }
 
         // Create a VideosDataSource object from a list of videos 

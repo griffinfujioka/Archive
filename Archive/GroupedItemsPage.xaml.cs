@@ -222,7 +222,8 @@ namespace Archive
                 
                 App.ArchiveVideos = null;
                 VideosDataSource.Unload(); 
-                //this.DefaultViewModel["Groups"] = App.ArchiveVideos;
+                
+                this.DefaultViewModel["Groups"] = App.ArchiveVideos;
             }
             catch
             {
