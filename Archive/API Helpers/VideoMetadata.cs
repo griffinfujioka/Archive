@@ -27,8 +27,8 @@ namespace Archive.API_Helpers
         [DataMember(Name = "Taken")]
         public DateTime DateCreated { get; set; }
 
-        [DataMember(Name = "Public")]
-        public bool Public { get; set; }
+        [DataMember(Name = "IsPublic")]
+        public bool IsPublic { get; set; }
 
         [DataMember(Name = "Tags")]
         public string[] Tags { get; set; }
@@ -47,7 +47,7 @@ namespace Archive.API_Helpers
             this.Description = Description;
             this.Location = Location; 
             this.DateCreated = DateCreated;
-            this.Public = Public;
+            this.IsPublic = Public;
             this.Tags = tags;
         }
 

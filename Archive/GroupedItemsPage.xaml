@@ -36,9 +36,9 @@
             <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
-        
-        
-        <ProgressRing x:Name="progressRing" Height="50" Width="50" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" IsActive="True"/>
+
+
+        <ProgressRing x:Name="progressRing" Height="50" Width="50" Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" IsActive="True"/>
 
         <!-- Horizontal scrolling grid used in most view states -->
         <GridView

@@ -35,27 +35,31 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="140"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Margin="20,400,20,20">
+            <ListBox x:Name="tagsListBox" Margin="10,20,10,20" Background="{x:Null}" Foreground="Gray"/>
+        </StackPanel>
 
         <!--
             The remainder of the page is one large FlipView that displays details for
             one item at a time, allowing the user to flip through all items in the chosen
             group
         -->
+        
+        <!--<controls:FlipviewVideoItem x:Name="flipView"></controls:FlipviewVideoItem>-->
         <FlipView
             x:Name="flipView"
             AutomationProperties.AutomationId="ItemsFlipView"
             AutomationProperties.Name="Item Details"
             TabIndex="1"
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-            
+            Margin="20,10,20,10"
             Grid.Column="0"
             Grid.Row="0"
             Grid.ColumnSpan="2"
@@ -66,24 +70,58 @@
 
             <FlipView.ItemContainerStyle>
                 <Style TargetType="FlipViewItem">
-                    <Setter Property="Margin" Value="0,80,0,0"/>
+                    <Setter Property="Margin" Value="0,120,0,0"/>
                 </Style>
             </FlipView.ItemContainerStyle>
 
             <FlipView.ItemTemplate>
                 <DataTemplate>
 
-                    <!--
-                        UserControl chosen as the templated item because it supports visual state management
-                        Loaded/unloaded events explicitly subscribe to view state updates from the page
-                    -->
                     <UserControl Loaded="StartLayoutUpdates" Unloaded="StopLayoutUpdates">
                         
                         
                             <Grid Grid.Row="1" HorizontalAlignment="Center">
-                            
-                            <!-- Content is allowed to flow across as many columns as needed -->
-                            <common:RichTextColumns x:Name="richTextColumns" Margin="140,0,117,20">
+
+                            <StackPanel Orientation="Vertical">
+                                <mmppf:MediaPlayer x:Name="mediaPlayer" Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" 
+                                                                   AutoPlay="False" 
+                                                                   IsFullScreenChanged="MediaPlayer_IsFullScreenChanged_1" 
+                                                                   IsFullScreen="False" 
+                                                                   IsPlayPauseVisible="True"
+                                                                   IsPauseEnabled="True" 
+                                                                   >
+                                    <mmppf:MediaPlayer.Plugins>
+                                        <adaptive:AdaptivePlugin />
+                                    </mmppf:MediaPlayer.Plugins>
+                                </mmppf:MediaPlayer>
+
+                                <Grid Width="Auto" Height="Auto" Margin="20,20,20,20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Description: " FontSize="16" FontWeight="SemiBold" Grid.Column="0" Grid.Row="0" Margin="0,5,0,5"/>
+                                    <TextBlock Text="Location: " FontSize="16" FontWeight="SemiBold" Grid.Column="0" Grid.Row="1" Margin="0,5,0,5"/>
+                                    <TextBlock Text="Date Taken: " FontSize="16" FontWeight="SemiBold" Grid.Column="0" Grid.Row="2" Margin="0,5,0,5"/>
+                                   
+
+                                    <TextBlock Text="{Binding Description}" FontSize="12" Grid.Column="1" Grid.Row="0" Margin="0,5,0,5"/>
+                                    <TextBlock Text="{Binding Location}" Grid.Column="1" Grid.Row="1" Margin="0,5,0,5"/>
+                                    <TextBlock Text="{Binding Taken}" Grid.Column="1" Grid.Row="2" Margin="0,5,0,5"/>
+                                    
+                                    
+                                </Grid>
+
+                            </StackPanel>
+
+
+                            <!--<common:RichTextColumns x:Name="richTextColumns" Margin="140,0,117,20">
                                 
                                 <RichTextBlock x:Name="richTextBlock" Width="750" Style="{StaticResource ItemRichTextStyle}" IsTextSelectionEnabled="False">
                                     <Paragraph>
@@ -121,7 +159,7 @@
                                 
 
 
-                                <!-- Additional columns are created from this template -->
+                          
                                 <common:RichTextColumns.ColumnTemplate>
                                     <DataTemplate>
                                         <RichTextBlockOverflow Width="560" Margin="80,0,0,0">
@@ -135,12 +173,12 @@
 
                             <VisualStateManager.VisualStateGroups>
 
-                                <!-- Visual states reflect the application's view state inside the FlipView -->
+                       
                                 <VisualStateGroup x:Name="ApplicationViewStates">
                                     <VisualState x:Name="FullScreenLandscape"/>
                                     <VisualState x:Name="Filled"/>
 
-                                    <!-- Respect the narrower 100-pixel margin convention for portrait -->
+                                  
                                     <VisualState x:Name="FullScreenPortrait">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="richTextColumns" Storyboard.TargetProperty="Margin">
@@ -152,15 +190,12 @@
                                         </Storyboard>
                                     </VisualState>
 
-                                    <!-- When snapped, the content is reformatted and scrolls vertically -->
+                                    
                                     <VisualState x:Name="Snapped">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="richTextColumns" Storyboard.TargetProperty="Margin">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="17,-50,17,57"/>
                                             </ObjectAnimationUsingKeyFrames>
-                                            <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="scrollViewer" Storyboard.TargetProperty="Style">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource VerticalScrollViewerStyle}"/>
-                                            </ObjectAnimationUsingKeyFrames>-->
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="richTextBlock" Storyboard.TargetProperty="Width">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="280"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -171,7 +206,7 @@
                                         </Storyboard>
                                     </VisualState>
                                 </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
+                            </VisualStateManager.VisualStateGroups>-->
                             </Grid>
                     </UserControl>
                 </DataTemplate>
@@ -185,7 +220,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}" Margin="60,80,30,30"/>
-            <!--<TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource PageHeaderTextStyle}" Grid.Column="1" IsHitTestVisible="false"/>-->
+            <TextBlock x:Name="pageTitle" Style="{StaticResource PageHeaderTextStyle}" Grid.Column="1" IsHitTestVisible="false"/>
             
         </Grid>
 
@@ -193,7 +228,6 @@
 
         <Grid x:Name="buttonsGrid" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <!--<Button x:Name="playBtn" Style="{StaticResource PlayAppBarButtonStyle}" Tag="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Click="playBtn_Click"/>-->
             <Button x:Name="shareBtn" Style="{StaticResource PeopleAppBarButtonStyle}" Tag="Share" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button x:Name="editBtn" Style="{StaticResource EditAppBarButtonStyle}" Tag="Edit" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </StackPanel>

@@ -119,14 +119,25 @@ namespace Archive
 
         private async void flipView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
-
+            tagsListBox.Items.Clear(); 
             // HACK - Come back and fix this shit
             if (this.flipView.SelectedItem == null)
                 return; 
 
+            // There is a bug which should be addressed here, but I'm not sure how to solve it. 
+            // In the case that the flip view is changed, the video should stop playing. 
 
             var selectedItem = (VideoModel)this.flipView.SelectedItem;
             selectedVideoID = selectedItem.VideoId;
+            pageTitle.Text = selectedItem.Title; 
+
+            //tagsListBox.ItemsSource = selectedItem.Tags;
+            foreach (string tag in selectedItem.Tags)
+            {
+                var lbi = new ListBoxItem();
+                lbi.Content = "#" + tag;
+                tagsListBox.Items.Add(lbi); 
+            }
 
             try
             {

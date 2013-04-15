@@ -317,6 +317,7 @@ namespace Archive
         /// </summary>
         public static async Task LoadUsersVideos()
         {
+            ObservableCollection<VideoModel> privateVideos = new ObservableCollection<VideoModel>(); 
             if (App.LoggedInUser == null)
                 return;
 
@@ -371,8 +372,12 @@ namespace Archive
             foreach (var video in MyVideos)
             {
 
-                ArchiveVideos.AddItem(video); 
+                ArchiveVideos.AddItem(video);
+                if (!video.IsPublic)
+                    privateVideos.Add(video);
             }
+
+            
         }
         #endregion
 

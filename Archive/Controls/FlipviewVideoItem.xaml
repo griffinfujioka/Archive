@@ -10,23 +10,85 @@
     mc:Ignorable="d"
     d:DesignHeight="768"
     d:DesignWidth="1226">
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="140"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" 
+
+    <FlipView
+            x:Name="flipView"
+            AutomationProperties.AutomationId="ItemsFlipView"
+            AutomationProperties.Name="Item Details"
+            TabIndex="1"
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            ScrollViewer.HorizontalScrollMode="Disabled"
+          SelectionChanged="flipView_SelectionChanged_1"
+            
+            >
+
+        <FlipView.ItemContainerStyle>
+            <Style TargetType="FlipViewItem">
+                <Setter Property="Margin" Value="0,80,0,0"/>
+            </Style>
+        </FlipView.ItemContainerStyle>
+
+        <FlipView.ItemTemplate>
+            <DataTemplate>
+                <Grid Grid.Row="1" HorizontalAlignment="Center" Style="{StaticResource LayoutRootStyle}">
+                    <StackPanel Orientation="Vertical">
+                        <mmppf:MediaPlayer Source="{Binding VideoUrl}" Height="394" Width="700" Margin="10,10,10,10" FontFamily="Global User Interface" AutoHide="False" 
                                                                    AutoPlay="False" 
+                                                                   IsFullScreenChanged="MediaPlayer_IsFullScreenChanged_1" 
                                                                    IsFullScreen="False" 
                                                                    IsPlayPauseVisible="True"
                                                                    IsPauseEnabled="True" 
                                                                    >
-            <mmppf:MediaPlayer.Plugins>
-                <adaptive:AdaptivePlugin />
-            </mmppf:MediaPlayer.Plugins>
-        </mmppf:MediaPlayer>
+                            <mmppf:MediaPlayer.Plugins>
+                                <adaptive:AdaptivePlugin />
+                            </mmppf:MediaPlayer.Plugins>
+                        </mmppf:MediaPlayer>
+                        <TextBlock Text="{Binding Description}"/>
+                        <TextBlock Text="{Binding Location}"/>
+                        <TextBlock Text="{Binding Taken}"/>
+                    </StackPanel>
 
-    </Grid>
+
+
+
+                        <VisualStateManager.VisualStateGroups>
+
+
+                            <VisualStateGroup x:Name="ApplicationViewStates">
+                                <VisualState x:Name="FullScreenLandscape"/>
+                                <VisualState x:Name="Filled"/>
+
+
+                                <VisualState x:Name="FullScreenPortrait">
+                                    <Storyboard>
+                                        
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="image" Storyboard.TargetProperty="MaxHeight">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="400"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+
+                                <VisualState x:Name="Snapped">
+                                    <Storyboard>
+                                       
+                                        <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="scrollViewer" Storyboard.TargetProperty="Style">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource VerticalScrollViewerStyle}"/>
+                                            </ObjectAnimationUsingKeyFrames>-->
+                                      
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="image" Storyboard.TargetProperty="MaxHeight">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="160"/>
+                                        </ObjectAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+            </DataTemplate>
+        </FlipView.ItemTemplate>
+    </FlipView>
 </UserControl>

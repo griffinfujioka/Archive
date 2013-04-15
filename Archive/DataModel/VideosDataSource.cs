@@ -220,6 +220,14 @@ namespace Archive.DataModel
             set { _allVideosGroup = value; }
         }
 
+        // A group to store all of a user's videos 
+        private VideoDataGroup _privateVideosGroup = null;
+        public VideoDataGroup PrivateVideosGroup
+        {
+            get { return _privateVideosGroup; }
+            set { _privateVideosGroup = value; }
+        }
+
 
         private ObservableCollection<VideoModel> _allVideos = new ObservableCollection<VideoModel>();
         public ObservableCollection<VideoModel> AllVideos
@@ -267,7 +275,13 @@ namespace Archive.DataModel
                 "",
                 "");
 
+            this.PrivateVideosGroup = new VideoDataGroup("PrivateVideosGroup",
+                "Private Videos",
+                "",
+                "",
+                ""); 
             this.AllGroups.Add(AllVideosGroup);
+            this.AllGroups.Add(PrivateVideosGroup); 
         }
 
         // Create a VideosDataSource object from a list of videos 
@@ -298,6 +312,7 @@ namespace Archive.DataModel
         public static void Unload()
         {
             _videosDataSource._allGroups.Clear();
+            //_videosDataSource.AllVideosGroup.Items.Clear(); 
         }
 
         async public Task Load()

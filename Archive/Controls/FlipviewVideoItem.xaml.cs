@@ -22,5 +22,15 @@ namespace Archive.Controls
         {
             this.InitializeComponent();
         }
+
+        private void flipView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void MediaPlayer_IsFullScreenChanged_1(object sender, RoutedPropertyChangedEventArgs<bool> e)
+        {
+
+        }
     }
 }

@@ -59,6 +59,9 @@ namespace Archive
             this.InitializeComponent();
             Loaded += OnLoaded;
 
+
+            videosProgressRing.Visibility = Visibility.Visible;
+
             appSettings = ApplicationData.Current.LocalSettings.Values;
            
             var bounds = Window.Current.Bounds;
@@ -117,7 +120,7 @@ namespace Archive
         /// session.  This will be null the first time a page is visited.</param>
         protected async override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            videosProgressRing.Visibility = Visibility.Visible;
+            
             // Load user's video from Archive API
             if (App.LoggedInUser != null)
             {
@@ -129,7 +132,7 @@ namespace Archive
                     if (ArchiveGroup != null)
                         this.DefaultViewModel["Groups"] = ArchiveGroup;
 
-                    videosProgressRing.Visibility = Visibility.Collapsed;
+                    
                 }
                 catch
                 {
@@ -140,6 +143,7 @@ namespace Archive
             {
                 this.DefaultViewModel["Groups"] = null; 
             }
+            videosProgressRing.Visibility = Visibility.Collapsed;
         }
         #endregion 
 
@@ -195,23 +199,35 @@ namespace Archive
         #region Logout button clicked 
         private async void signOutButton_Click_1(object sender, RoutedEventArgs e)
         {
-            appSettings.Remove(usernameKey);    // Clear the username key from appSettings
-            appSettings.Remove(passwordKey);    // Clear the password key from appSettings
-            appSettings.Remove(User);           // Clear the User key from appSettings
-            Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("You are now logged out.");
-            await dialog.ShowAsync();
-            loginBtn.Visibility = Visibility.Visible;
-            signUpBtn.Visibility = Visibility.Visible;
-            logoutBtn.Visibility = Visibility.Collapsed;
-            profileBtn.Visibility = Visibility.Collapsed; 
-            lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
+            try
+            {
+                appSettings.Remove(usernameKey);    // Clear the username key from appSettings
+                appSettings.Remove(passwordKey);    // Clear the password key from appSettings
+                appSettings.Remove(User);           // Clear the User key from appSettings
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("You are now logged out.");
+                await dialog.ShowAsync();
+                loginBtn.Visibility = Visibility.Visible;
+                signUpBtn.Visibility = Visibility.Visible;
+                logoutBtn.Visibility = Visibility.Collapsed;
+                profileBtn.Visibility = Visibility.Collapsed;
+                lowerButtonsStackPanel.Visibility = Visibility.Collapsed;
 
-            // Clear the username and password textboxes
-            usernameTxtBox.Text = "";
-            passwordTxtBox.Password = "";
+                // Clear the username and password textboxes
+                usernameTxtBox.Text = "";
+                passwordTxtBox.Password = "";
 
-            this.DefaultViewModel["Groups"] = null; 
-            App.ArchiveVideos = null; 
+                videosProgressRing.Visibility = Visibility.Collapsed;
+                progressRing.Visibility = Visibility.Collapsed;
+
+                
+                App.ArchiveVideos = null;
+                VideosDataSource.Unload(); 
+                //this.DefaultViewModel["Groups"] = App.ArchiveVideos;
+            }
+            catch
+            {
+                // Do something here... 
+            }
 
         }
         #endregion 

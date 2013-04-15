@@ -367,32 +367,6 @@ namespace Archive
             }
             #endregion
 
-            #region Get current location and reverse geocode coordinates into city name
-            progressTxtBlock.Text = "Getting current location...";
-            //string location_string = "";
-            //try
-            //{
-            //    string bing_maps_key = "AsU97otKt6mDgr4kQR8HxTUiHzzzxy08NBR1iLqssnnzllYMxT4zQQ84J5Rbr9fh";
-            //    Geolocator gl = new Geolocator();
-            //    gl.PositionChanged += (s, args) => { /* empty */ };
-
-            //    Geoposition gp = await gl.GetGeopositionAsync();
-            //    var latitude = gp.Coordinate.Latitude;
-            //    var longitude = gp.Coordinate.Longitude;
-            //    var helper = new MapHelper(bing_maps_key);
-            //    var location = await helper.FindLocationByPointAsync(latitude, longitude);
-            //    var my_address = location.First().address;
-
-            //    location_string = string.Format("{0}, {1}",
-            //       my_address.locality, my_address.adminDistrict);
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Do something here... 
-            //}
-
-
-            #endregion 
 
             #region Extract video metadata from metadata pop up 
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>

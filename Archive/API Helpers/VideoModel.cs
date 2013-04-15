@@ -12,7 +12,7 @@ namespace Archive.API_Helpers
         public int VideoId { get; set; }
         public User User { get; set; }
         public DateTime Created { get; set; }
-        public bool Public { get; set; }
+        public bool IsPublic { get; set; }
 
         // metadata
         public string Title { get; set; }
