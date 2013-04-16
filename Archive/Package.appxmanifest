@@ -15,10 +15,10 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Archive.App">
-      <VisualElements DisplayName="Archive" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Archive" ForegroundText="light" BackgroundColor="#FFFFFF" ToastCapable="true">
+      <VisualElements DisplayName="Archive" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Archive" ForegroundText="light" BackgroundColor="#9D1309" ToastCapable="true">
         <LockScreen Notification="badge" BadgeLogo="Assets/BadgeTemp.png" />
-        <DefaultTile ShowName="allLogos" ShortName="Archive" />
-        <SplashScreen Image="Assets\SplashScreen.png" />
+        <DefaultTile ShowName="allLogos" ShortName="Archive" WideLogo="Assets\WideLogo.png" />
+        <SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#9D1309" />
       </VisualElements>
       <Extensions>
         <Extension Category="windows.search" />

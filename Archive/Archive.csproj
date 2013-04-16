@@ -194,6 +194,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Archive Greeting Banner-Red.png" />
+    <Content Include="Assets\Archive Greeting Banner.png" />
     <Content Include="Assets\BadgeTemp.png" />
     <Content Include="Assets\Logo.png" />
     <Content Include="Assets\Person1.jpg">
@@ -210,6 +212,7 @@
     <Content Include="Assets\LightGray.png" />
     <Content Include="Assets\MediumGray.png" />
     <Content Include="Assets\DarkGray.png" />
+    <Content Include="Assets\WideLogo.png" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>

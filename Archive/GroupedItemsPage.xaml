@@ -40,6 +40,7 @@
         <ProgressRing x:Name="videosProgressRing" IsActive="True" Margin="10,5,10,5" Width="150" Height="60" Visibility="Collapsed" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Foreground="Gray"  HorizontalAlignment="Center" VerticalAlignment="Top" />
         <ProgressRing x:Name="progressRing" Height="50" Width="50" Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" IsActive="True"/>
 
+        <Image x:Name="greetingsBanner" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Source="Assets/Archive Greeting Banner.png" Visibility="Collapsed"  Margin="160,160,80,160"/>
         <!-- Horizontal scrolling grid used in most view states -->
         <GridView
             x:Name="itemGridView"

@@ -74,7 +74,8 @@ namespace Archive
             // If the user is not logged in 
             if (!appSettings.ContainsKey(usernameKey) || !appSettings.ContainsKey(passwordKey))
             {
-         
+
+                greetingsBanner.Visibility = Visibility.Visible; 
                 usernameTxtBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Collapsed;
@@ -86,6 +87,7 @@ namespace Archive
             }
             else
             {
+                greetingsBanner.Visibility = Visibility.Collapsed;
                 loginPopUp.Visibility = Visibility.Collapsed; 
                 logoutBtn.Visibility = Visibility.Visible;
                 profileBtn.Visibility = Visibility.Visible; 
@@ -130,7 +132,10 @@ namespace Archive
                     await App.LoadUsersVideos();
                     IEnumerable<VideoDataGroup> ArchiveGroup = App.ArchiveVideos.AllGroups;
                     if (ArchiveGroup != null)
+                    {
                         this.DefaultViewModel["Groups"] = ArchiveGroup;
+                        greetingsBanner.Visibility = Visibility.Collapsed; 
+                    }
 
                     
                 }
@@ -201,6 +206,7 @@ namespace Archive
         {
             try
             {
+                greetingsBanner.Visibility = Visibility.Visible; 
                 appSettings.Remove(usernameKey);    // Clear the username key from appSettings
                 appSettings.Remove(passwordKey);    // Clear the password key from appSettings
                 appSettings.Remove(User);           // Clear the User key from appSettings
@@ -224,6 +230,7 @@ namespace Archive
                 VideosDataSource.Unload(); 
                 
                 this.DefaultViewModel["Groups"] = App.ArchiveVideos;
+                
             }
             catch
             {
@@ -261,7 +268,9 @@ namespace Archive
         /// <returns></returns>
         public async void AuthenticateArchiveAPI()
         {
-            // Testing some functionality here: trying to contact Archive API
+            greetingsBanner.Visibility = Visibility.Collapsed;
+
+            // Contact Archive API
             HttpClient httpClient;
             HttpMessageHandler handler = new HttpClientHandler();
             handler = new PlugInHandler(handler); // Adds a custom header to every request and response message.            
@@ -300,6 +309,7 @@ namespace Archive
         #region Authenticate user 
         public async void Authenticate_User(string username, string password)
         {
+            greetingsBanner.Visibility = Visibility.Collapsed;
 
             if (!App.HasNetworkConnection)
             {
@@ -353,6 +363,7 @@ namespace Archive
                 // api returned something other than 200 
                 InvalidLoginCredentials();
                 progressRing.Visibility = Visibility.Collapsed;
+                greetingsBanner.Visibility = Visibility.Visible;
                 progressRing.IsActive = false;
             }
             catch (Exception ex)
