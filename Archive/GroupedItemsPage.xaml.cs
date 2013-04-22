@@ -227,9 +227,18 @@ namespace Archive
 
                 
                 App.ArchiveVideos = null;
-                VideosDataSource.Unload(); 
                 
-                this.DefaultViewModel["Groups"] = App.ArchiveVideos;
+                VideosDataSource.Unload();
+                GC.Collect(); 
+                
+                GC.WaitForPendingFinalizers();
+                
+                try
+                {
+
+                    this.DefaultViewModel["Groups"] = null;
+                }
+                catch { }
                 
             }
             catch
@@ -356,6 +365,7 @@ namespace Archive
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Welcome back " + username + "!");
                 await dialog.ShowAsync();
                 lowerButtonsStackPanel.Visibility = Visibility.Visible;
+                itemGridView.Visibility = Visibility.Visible; 
                  
             }
             catch (ApiException ex)

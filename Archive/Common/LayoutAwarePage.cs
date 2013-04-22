@@ -50,6 +50,8 @@ namespace Archive.Common
         /// </summary>
         public LayoutAwarePage()
         {
+            //NavigationCacheMode = NavigationCacheMode.Enabled;
+
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled) return;
 
             // Create an empty default view model
@@ -330,8 +332,10 @@ namespace Archive.Common
         /// property provides the group to be displayed.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            //if (this._pageKey != null && e.NavigationMode == NavigationMode.Back) return;
+
             // Returning to a cached page through navigation shouldn't trigger state loading
-            if (this._pageKey != null) return;
+            if (this._pageKey != null) return; // Just hacking away over here. 
 
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
             this._pageKey = "Page-" + this.Frame.BackStackDepth;
@@ -370,7 +374,7 @@ namespace Archive.Common
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
             var pageState = new Dictionary<String, Object>();
             this.SaveState(pageState);
-            if(_pageKey != null)
+            if (_pageKey != null)
                 frameState[_pageKey] = pageState;
         }
 
@@ -422,6 +426,7 @@ namespace Archive.Common
 
             private void InvokeMapChanged(CollectionChange change, K key)
             {
+
                 var eventHandler = MapChanged;
                 if (eventHandler != null)
                 {

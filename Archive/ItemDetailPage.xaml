@@ -137,7 +137,7 @@
                                     </mmppf:MediaPlayer.Plugins>
                                 </mmppf:MediaPlayer>
 
-                                <Grid Grid.Column="0" Width="Auto" Height="Auto" Margin="20,20,20,20">
+                                <Grid Grid.Column="0" Width="Auto" Height="Auto" Margin="20,10,20,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="140"/>
                                         <ColumnDefinition MaxWidth="600" Width="*"/>
